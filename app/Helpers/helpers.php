@@ -41,6 +41,7 @@ if (! function_exists('history')) {
      */
     function history()
     {
+        return true;
         return app('history');
     }
 }
@@ -263,5 +264,12 @@ if (! function_exists('getNextPrice')) {
         }
 
         return $totalCost - ($extraCost * 2) - 540;
+    }
+}
+if (! function_exists('str_plural')) {
+
+    function str_plural($value)
+    {
+        return $value;
     }
 }

@@ -127,4 +127,15 @@ class BaseModel extends Model
             return $actionLogger->getActionLogs($model, false, $limit);
         }
     }
+
+    /**
+     * Find Hashed
+     * 
+     * @param int $id
+     * @return Object|Exception
+     */
+    public function findHashed($id)
+    {
+        return $this->findOrFail($id);
+    }
 }
