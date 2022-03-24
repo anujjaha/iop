@@ -42,8 +42,8 @@ class ModuleGenerator
     {
         $this->moduleName = ucfirst($moduleName);
         $this->tableName = 'data_table_name';
-        $this->createModuleViewFilePath = storage_path() . DIRECTORY_SEPARATOR . 'commonview' . DIRECTORY_SEPARATOR . 'module-view';
-        $this->commonModuleViewFilePath = storage_path() . DIRECTORY_SEPARATOR . 'commonview' . DIRECTORY_SEPARATOR . 'common-view';
+        $this->createModuleViewFilePath = storage_path().DIRECTORY_SEPARATOR.'commonview'.DIRECTORY_SEPARATOR.'module-view';
+        $this->commonModuleViewFilePath = storage_path().DIRECTORY_SEPARATOR.'commonview'.DIRECTORY_SEPARATOR.'common-view';
     }
 
     public function getTableName()
@@ -60,22 +60,22 @@ class ModuleGenerator
 
     public function generateRoute()
     {
-        $routePath = base_path() . DIRECTORY_SEPARATOR . $this->routePath;
-        $fileName = $this->moduleName . '.php';
-        $file = $routePath . DIRECTORY_SEPARATOR . $fileName;
+        $routePath = base_path().DIRECTORY_SEPARATOR.$this->routePath;
+        $fileName = $this->moduleName.'.php';
+        $file = $routePath.DIRECTORY_SEPARATOR.$fileName;
         $content = $this->getRouteTemplate($this->moduleName);
 
-        if (!is_writable($routePath)) {
+        if (! is_writable($routePath)) {
             // Change Folder Permission
             //chmod($routePath, 0755);
-            exec('sudo chmod ' . $routePath . ' 777');
+            exec('sudo chmod ' . $routePath .' 777');
         }
 
         $status = File::put($file, $content);
 
         if ($status) {
             //chmod($file, 0777);
-            exec('sudo chmod ' . $file . ' 777');
+            exec('sudo chmod ' . $file .' 777');
 
             return true;
         }
@@ -85,15 +85,15 @@ class ModuleGenerator
 
     public function generateModel()
     {
-        $modelPath = base_path() . DIRECTORY_SEPARATOR . $this->modelPath;
-        $fileName = $this->moduleName . '.php';
+        $modelPath = base_path().DIRECTORY_SEPARATOR.$this->modelPath;
+        $fileName = $this->moduleName.'.php';
 
-        if (!is_dir($modelPath . DIRECTORY_SEPARATOR . $this->moduleName)) {
-            mkdir($modelPath . DIRECTORY_SEPARATOR . $this->moduleName, 0777, true);
+        if (! is_dir($modelPath.DIRECTORY_SEPARATOR.$this->moduleName)) {
+            mkdir($modelPath.DIRECTORY_SEPARATOR.$this->moduleName, 0777, true);
         }
 
-        $filePath = $modelPath . DIRECTORY_SEPARATOR . $this->moduleName;
-        $file = $filePath . DIRECTORY_SEPARATOR . $fileName;
+        $filePath = $modelPath.DIRECTORY_SEPARATOR.$this->moduleName;
+        $file = $filePath.DIRECTORY_SEPARATOR.$fileName;
         $content = $this->getModelTemplate($this->moduleName, $this->tableName);
         $status = $this->generateContent($filePath, $file, $content);
 
@@ -109,32 +109,32 @@ class ModuleGenerator
     {
         $moduleName = isset($moduleName) ? $moduleName : $this->moduleName;
         $tableName = isset($tableName) ? $tableName : $this->tableName;
-        $viewPath = base_path() . DIRECTORY_SEPARATOR . $this->viewPath;
-        $backendPath = $viewPath . DIRECTORY_SEPARATOR . 'backend';
-        $commonPath = $viewPath . DIRECTORY_SEPARATOR . 'common';
-        $baseBackendPath = $backendPath . DIRECTORY_SEPARATOR . strtolower($moduleName);
-        $baseCommonPath = $commonPath . DIRECTORY_SEPARATOR . strtolower($moduleName);
+        $viewPath = base_path().DIRECTORY_SEPARATOR.$this->viewPath;
+        $backendPath = $viewPath.DIRECTORY_SEPARATOR.'backend';
+        $commonPath = $viewPath.DIRECTORY_SEPARATOR.'common';
+        $baseBackendPath = $backendPath.DIRECTORY_SEPARATOR.strtolower($moduleName);
+        $baseCommonPath = $commonPath.DIRECTORY_SEPARATOR.strtolower($moduleName);
         $commonFormFile = 'form.blade.php';
 
-        if (!is_dir($baseBackendPath)) {
+        if (! is_dir($baseBackendPath)) {
             mkdir($baseBackendPath, 0777, true);
         }
 
-        if (!is_dir($baseCommonPath)) {
+        if (! is_dir($baseCommonPath)) {
             mkdir($baseCommonPath, 0777, true);
         }
 
         foreach ($this->createModuleViewFiles as $viewFile) {
-            copy($this->createModuleViewFilePath . DIRECTORY_SEPARATOR . $viewFile, $baseBackendPath . DIRECTORY_SEPARATOR . $viewFile);
-            @chmod($baseBackendPath . DIRECTORY_SEPARATOR . $viewFile, 0777);
+            copy($this->createModuleViewFilePath.DIRECTORY_SEPARATOR.$viewFile, $baseBackendPath.DIRECTORY_SEPARATOR.$viewFile);
+            @chmod($baseBackendPath.DIRECTORY_SEPARATOR.$viewFile, 0777);
         }
 
         foreach ($this->commonModuleViewFiles as $viewFile) {
-            copy($this->commonModuleViewFilePath . DIRECTORY_SEPARATOR . $viewFile, $baseCommonPath . DIRECTORY_SEPARATOR . $viewFile);
-            @chmod($baseCommonPath . DIRECTORY_SEPARATOR . $viewFile, 0777);
+            copy($this->commonModuleViewFilePath.DIRECTORY_SEPARATOR.$viewFile, $baseCommonPath.DIRECTORY_SEPARATOR.$viewFile);
+            @chmod($baseCommonPath.DIRECTORY_SEPARATOR.$viewFile, 0777);
         }
 
-        $formFile = $baseCommonPath . DIRECTORY_SEPARATOR . $commonFormFile;
+        $formFile = $baseCommonPath.DIRECTORY_SEPARATOR.$commonFormFile;
         $formHTML = '';
         $columns = Schema::getColumnListing($tableName);
 
@@ -145,13 +145,12 @@ class ModuleGenerator
 
             $fieldTitle = ucwords(str_replace('_', ' ', $column));
             $formHTML .= <<<EOD
-    <div class="form-group">
-        {{ Form::label('$column', '$fieldTitle :', ['class' => 'col-lg-2 control-label']) }}
-        <div class="col-lg-10">
-            {{ Form::text('$column', null, ['class' => 'form-control', 'placeholder' => '$fieldTitle', 'required' => 'required']) }}
-        </div>
+<div class="form-group">
+    {{ Form::label('$column', '$fieldTitle :', ['class' => 'col-lg-2 control-label']) }}
+    <div class="col-lg-10">
+        {{ Form::text('$column', null, ['class' => 'form-control', 'placeholder' => '$fieldTitle', 'required' => 'required']) }}
     </div>
-
+</div>
 EOD;
         }
 
@@ -163,13 +162,13 @@ EOD;
 
     public function generateModelRelationship($filepath)
     {
-        $basePath = $filepath . DIRECTORY_SEPARATOR . 'Traits' . DIRECTORY_SEPARATOR . 'Relationship';
+        $basePath = $filepath.DIRECTORY_SEPARATOR.'Traits'.DIRECTORY_SEPARATOR.'Relationship';
 
-        if (!is_dir($basePath)) {
+        if (! is_dir($basePath)) {
             mkdir($basePath, 0777, true);
         }
 
-        $file = $basePath . DIRECTORY_SEPARATOR . 'Relationship.php';
+        $file = $basePath.DIRECTORY_SEPARATOR.'Relationship.php';
         $content = $this->getRelationshipContent();
 
         return $this->generateContent($basePath, $file, $content);
@@ -177,13 +176,13 @@ EOD;
 
     public function generateModelAttribute($filepath)
     {
-        $basePath = $filepath . DIRECTORY_SEPARATOR . 'Traits' . DIRECTORY_SEPARATOR . 'Attribute';
+        $basePath = $filepath.DIRECTORY_SEPARATOR.'Traits'.DIRECTORY_SEPARATOR.'Attribute';
 
-        if (!is_dir($basePath)) {
+        if (! is_dir($basePath)) {
             mkdir($basePath, 0777, true);
         }
 
-        $file = $basePath . DIRECTORY_SEPARATOR . 'Attribute.php';
+        $file = $basePath.DIRECTORY_SEPARATOR.'Attribute.php';
         $content = $this->getModelAttributeContent();
 
         return $this->generateContent($basePath, $file, $content);
@@ -191,16 +190,16 @@ EOD;
 
     public function generateContent($filePath, $file, $content)
     {
-        if (!is_writable($filePath)) {
+        if (! is_writable($filePath)) {
             // Change Folder Permission
             //chmod($filePath, 0755);
-            exec('sudo chmod ' . $filePath . ' 777');
+            exec('sudo chmod ' . $filePath .' 777');
         }
 
         $status = File::put($file, $content);
 
         if ($status) {
-            exec('sudo chmod ' . $file . ' 777');
+            exec('sudo chmod ' . $file .' 777');
             //chmod($file, 0777);
 
             return true;
@@ -211,18 +210,18 @@ EOD;
 
     public function generateController()
     {
-        $basePath = base_path() . DIRECTORY_SEPARATOR . $this->controllerPath;
-        $fileName = 'Admin' . $this->moduleName . 'Controller.php';
+        $basePath = base_path().DIRECTORY_SEPARATOR.$this->controllerPath;
+        $fileName = 'Admin'.$this->moduleName.'Controller.php';
 
-        if (!is_dir($basePath . DIRECTORY_SEPARATOR . $this->moduleName)) {
-            mkdir($basePath . DIRECTORY_SEPARATOR . $this->moduleName, 0777, true);
+        if (! is_dir($basePath.DIRECTORY_SEPARATOR.$this->moduleName)) {
+            mkdir($basePath.DIRECTORY_SEPARATOR.$this->moduleName, 0777, true);
         }
 
-        $filePath = $basePath . DIRECTORY_SEPARATOR . $this->moduleName;
-        $file = $filePath . DIRECTORY_SEPARATOR . $fileName;
+        $filePath = $basePath.DIRECTORY_SEPARATOR.$this->moduleName;
+        $file = $filePath.DIRECTORY_SEPARATOR.$fileName;
         $content = $this->getControllerTemplate($this->moduleName);
 
-        if (!is_writable($filePath)) {
+        if (! is_writable($filePath)) {
             // Change Folder Permission
             chmod($filePath, 0755);
         }
@@ -240,14 +239,14 @@ EOD;
 
     public function generateAPIRoute()
     {
-        $basePath = base_path() . DIRECTORY_SEPARATOR . $this->apiRoutePath;
-        $fileName = ucfirst($this->moduleName) . '.php';
+        $basePath = base_path().DIRECTORY_SEPARATOR.$this->apiRoutePath;
+        $fileName = ucfirst($this->moduleName).'.php';
 
-        if (!is_dir($basePath)) {
+        if (! is_dir($basePath)) {
             mkdir($basePath, 0777, true);
         }
 
-        $file = $basePath . DIRECTORY_SEPARATOR . $fileName;
+        $file = $basePath.DIRECTORY_SEPARATOR.$fileName;
         $content = $this->getAPIRouteTemplate($this->moduleName);
         $status = File::put($file, $content);
 
@@ -262,14 +261,14 @@ EOD;
 
     public function generateAPIController()
     {
-        $basePath = base_path() . DIRECTORY_SEPARATOR . $this->apiControllerPath;
-        $fileName = 'API' . ucfirst($this->moduleName) . 'Controller.php';
+        $basePath = base_path().DIRECTORY_SEPARATOR.$this->apiControllerPath;
+        $fileName = 'API'.ucfirst($this->moduleName).'Controller.php';
 
-        if (!is_dir($basePath)) {
+        if (! is_dir($basePath)) {
             mkdir($basePath, 0777, true);
         }
 
-        $file = $basePath . DIRECTORY_SEPARATOR . $fileName;
+        $file = $basePath.DIRECTORY_SEPARATOR.$fileName;
         $content = $this->getAPIControllerTemplate($this->moduleName);
         $status = File::put($file, $content);
 
@@ -284,20 +283,20 @@ EOD;
 
     public function generateAPITransformer($alias = null)
     {
-        $basePath = base_path() . DIRECTORY_SEPARATOR . $this->apiTransformPath;
-        $fileName = ucfirst($this->moduleName) . 'Transformer.php';
+        $basePath = base_path().DIRECTORY_SEPARATOR.$this->apiTransformPath;
+        $fileName = ucfirst($this->moduleName).'Transformer.php';
 
-        if (!is_dir($basePath)) {
+        if (! is_dir($basePath)) {
             mkdir($basePath, 0777, true);
         }
 
-        $file = $basePath . DIRECTORY_SEPARATOR . $fileName;
+        $file = $basePath.DIRECTORY_SEPARATOR.$fileName;
         $content = $this->getAPITransformerTemplate($alias);
         $status = File::put($file, $content);
 
         if ($status) {
             //chmod($file, 0777);
-            exec('sudo chmod ' . $file . ' 777');
+            exec('sudo chmod ' . $file .' 777');
 
             return true;
         }
@@ -321,7 +320,7 @@ EOD;
         $sr = 0;
         foreach ($columns as $column) {
             $first = $sr == 0 ? '(int)' : '';
-            $text .= '"###LOWER-CASE-NAME###' . ucfirst(camel_case($column)) . '" => ' . $first . ' ##$##item->' . $column . ', ';
+            $text .= '"###LOWER-CASE-NAME###'.ucfirst(camel_case($column)).'" => '.$first.' ##$##item->'.$column.', ';
             $sr++;
         }
 
@@ -360,28 +359,28 @@ EOD;
 
     public function generateEloquent()
     {
-        $basePath = base_path() . DIRECTORY_SEPARATOR . $this->eloquentPath;
-        $fileName = 'Eloquent' . $this->moduleName . 'Repository.php';
+        $basePath = base_path().DIRECTORY_SEPARATOR.$this->eloquentPath;
+        $fileName = 'Eloquent'.$this->moduleName.'Repository.php';
 
-        if (!is_dir($basePath . DIRECTORY_SEPARATOR . $this->moduleName)) {
-            mkdir($basePath . DIRECTORY_SEPARATOR . $this->moduleName, 0777, true);
+        if (! is_dir($basePath.DIRECTORY_SEPARATOR.$this->moduleName)) {
+            mkdir($basePath.DIRECTORY_SEPARATOR.$this->moduleName, 0777, true);
         }
 
-        $filePath = $basePath . DIRECTORY_SEPARATOR . $this->moduleName;
-        $file = $filePath . DIRECTORY_SEPARATOR . $fileName;
+        $filePath = $basePath.DIRECTORY_SEPARATOR.$this->moduleName;
+        $file = $filePath.DIRECTORY_SEPARATOR.$fileName;
         $content = $this->getEloquentTemplate($this->moduleName);
 
-        if (!is_writable($filePath)) {
+        if (! is_writable($filePath)) {
             // Change Folder Permission
             //chmod($filePath, 0755);
-            exec('sudo chmod ' . $file . ' 777');
+            exec('sudo chmod ' . $file .' 777');
         }
 
         $status = File::put($file, $content);
 
         if ($status) {
             //chmod($file, 0777);
-            exec('sudo chmod ' . $file . ' 777');
+            exec('sudo chmod ' . $file .' 777');
 
             return true;
         }
@@ -598,16 +597,16 @@ Route::group(['namespace' => 'Api'], function()
 ?>
 EOD;
 
-return str_replace($keyword, $change, $html);
-}
+        return str_replace($keyword, $change, $html);
+    }
 
-public function getRelationshipContent($moduleName = null)
-{
-$moduleName = isset($moduleName) ? $moduleName : $this->moduleName;
-$keyword = '###MODULE-NAME###';
-$change = $moduleName;
-$html = <<<EOD <?php
-namespace App\Models\###MODULE-NAME###\Traits\Relationship;
+    public function getRelationshipContent($moduleName = null)
+    {
+        $moduleName = isset($moduleName) ? $moduleName : $this->moduleName;
+        $keyword = '###MODULE-NAME###';
+        $change = $moduleName;
+        $html = <<<EOD
+<?php namespace App\Models\###MODULE-NAME###\Traits\Relationship;
 
 trait Relationship
 {
@@ -624,7 +623,9 @@ EOD;
         $keyword = '###MODULE-NAME###';
         $change = $moduleName;
         $html = <<<EOD
-<?php namespace App\Models\###MODULE-NAME###\Traits\Attribute;
+<?php 
+
+namespace App\Models\###MODULE-NAME###\Traits\Attribute;
 
 /**
  * Trait Attribute
@@ -697,7 +698,7 @@ EOD;
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Backend\User\Admin###MODULE-NAME###Controller;
+use App\Http\Controllers\Backend\###MODULE-NAME###\Admin###MODULE-NAME###Controller;
 
 Route::group([], function () {
     /*
@@ -729,7 +730,7 @@ EOD;
 
         $fillable = '';
         foreach ($columns as $column) {
-            $fillable .= '"' . $column . '", ';
+            $fillable .= '"'.$column.'", ';
         }
 
         $html = <<<EOD
@@ -805,9 +806,9 @@ EOD;
 
 namespace App\Http\Controllers\Backend\###MODULE-NAME###;
 
-use Datatables;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Yajra\Datatables\Datatables;
 use App\Repositories\###MODULE-NAME###\Eloquent###MODULE-NAME###Repository;
 
 /**
@@ -980,10 +981,10 @@ EOD;
         $gridColumns = '';
         $gridHeaders = '';
         foreach ($columns as $column) {
-            $gridHeaders .= "'" . $column . "'        => '" . ucwords($column) . "',\n";
-            $gridColumns .= "'" . $column . "' =>   [
-                'data'          => '" . $column . "',
-                'name'          => '" . $column . "',
+            $gridHeaders .= "'".$column."'        => '".ucwords($column)."',\n";
+            $gridColumns .= "'".$column."' =>   [
+                'data'          => '".$column."',
+                'name'          => '".$column."',
                 'searchable'    => true,
                 'sortable'      => true
             ],\n\t\t";
@@ -998,7 +999,9 @@ EOD;
         ]";
 
         $html = <<<EOD
-<?php namespace App\Repositories\###MODULE-NAME###;
+<?php 
+
+namespace App\Repositories\###MODULE-NAME###;
 
 /**
  * Class Eloquent###MODULE-NAME###Repository
@@ -1324,12 +1327,13 @@ class Create###Tablename###Fields extends Migration
     {
         Schema::create('###tablename###', function (Blueprint ##$##table) {
 EOD;
-        $html .= "\n\t\t\t";
-        foreach ($inputFields as $inputF) {
-            $html = $html . $this->getInputTemplate($inputF) . " \n\t\t\t";
-        }
-
-        $html = $html .  <<<EOD
+    $html .= "\n\t\t\t";
+            foreach($inputFields as $inputF)
+            {
+                $html = $html . $this->getInputTemplate($inputF) . " \n\t\t\t";
+            }
+            
+            $html = $html .  <<<EOD
 ##$##table->timestamps();
         });
     }
@@ -1361,22 +1365,22 @@ EOD;
     public function generateMigrationFile($table, $tableFields)
     {
         $migrationPath = 'database/migrations';
-        $migratePath = base_path() . DIRECTORY_SEPARATOR . $migrationPath;
+        $migratePath = base_path().DIRECTORY_SEPARATOR.$migrationPath;
         $fileName = "auto_" . date("Y_m_d_his") . '_' . $table->notes . '.php';
-        $file = $migratePath . DIRECTORY_SEPARATOR . $fileName;
+        $file = $migratePath.DIRECTORY_SEPARATOR.$fileName;
         $content = $this->getMigrationTemplate($table, $tableFields);
 
-        if (!is_writable($migratePath)) {
+        if (! is_writable($migratePath)) {
             // Change Folder Permission
             //chmod($migratePath, 0755);
-            exec('sudo chmod ' . $migratePath . ' 777');
+            exec('sudo chmod ' . $migratePath .' 777');
         }
 
         $status = File::put($file, $content);
 
         if ($status) {
             //chmod($file, 0777);
-            exec('sudo chmod ' . $file . ' 777');
+            exec('sudo chmod ' . $file .' 777');
 
             return true;
         }
@@ -1392,8 +1396,9 @@ EOD;
      */
     public function getInputTemplate($input)
     {
-        if ($input->is_primary_field === 1) {
-            return "\t##$##table->bigIncrements('" . $input->field_name . "');";
+        if($input->is_primary_field === 1)
+        {
+            return "\t##$##table->bigIncrements('". $input->field_name ."');";
         }
 
         $isNullable = '';
@@ -1402,59 +1407,64 @@ EOD;
         $isDefault  = '';
         $isSoftDelete = '';
 
-        if ($input->is_nullable == 1) {
+        if($input->is_nullable == 1)
+        {
             $isNullable = '->nullable()';
         }
 
-        if ($input->is_index_field == 1) {
+        if($input->is_index_field == 1)
+        {
             $isIndex = '->index()';
         }
 
-        if ($input->is_unique_field == 1) {
+        if($input->is_unique_field == 1)
+        {
             $isUnique = '->unique()';
         }
 
-        if ($input->is_soft_delete == 1) {
+        if($input->is_soft_delete == 1)
+        {
             $isSoftDelete = '->nullable()->default(null)';
         }
 
-        $postString = $isNullable . $isIndex . $isUnique . $isDefault;
+        $postString = $isNullable . $isIndex . $isUnique . $isDefault; 
 
-        if (
+        if(
             $input->is_soft_delete == 0
             &&
-            isset($input->default_value)
+            isset($input->default_value) 
             &&
-            !empty($input->default_value)
-        ) {
-            $isDefault = '->default("' . $input->default_value . '")';
+            !empty($input->default_value))
+        {
+            $isDefault = '->default("'. $input->default_value .'")';
         }
 
-        switch ($input->field_type) {
+        switch($input->field_type)
+        {
             case 'int':
-                return "##$##table->integer('" . $input->field_name . "')" . $postString . ";";
-
+                return "##$##table->integer('". $input->field_name ."')". $postString .";";
+            
             case 'float':
-                return "##$##table->float('" . $input->field_name . "', 10 , 3)" . $postString . ";";
+                return "##$##table->float('". $input->field_name ."', 10 , 3)". $postString .";";
 
             case 'date':
-                return "##$##table->date('" . $input->field_name . "')" . $postString . ";";
+                    return "##$##table->date('". $input->field_name ."')". $postString .";";
 
             case 'longText':
-                return "##$##table->longText('" . $input->field_name . "')" . $postString . ";";
-
+                return "##$##table->longText('". $input->field_name ."')". $postString .";";
+            
             case 'string':
-                return "##$##table->string('" . $input->field_name . "')" . $postString . ";";
-
+                return "##$##table->string('". $input->field_name ."')". $postString .";";
+            
             case 'timestamp':
-                return "##$##table->timestamp('" . $input->field_name . "')" . $postString . ";";
-
+                return "##$##table->timestamp('". $input->field_name ."')". $postString .";";
+            
             case 'datetime':
-                return "##$##table->datetime('" . $input->field_name . "')" . $postString . ";";
-
-            default:
-                return "##$##table->string('" . $input->field_name . "')" . $postString . ";";
-                break;
+                    return "##$##table->datetime('". $input->field_name ."')". $postString .";";
+            
+            default: 
+                return "##$##table->string('". $input->field_name ."')". $postString .";";
+            break;
         }
     }
 }
