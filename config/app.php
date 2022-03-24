@@ -180,6 +180,8 @@ return [
         // JWT
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
+        // Access
+        App\Providers\AccessServiceProvider::class,
 
     ],
 

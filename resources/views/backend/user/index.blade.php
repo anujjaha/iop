@@ -1,11 +1,6 @@
 @extends('backend.layouts.app')
 
-@section ('title', isset($repository->moduleTitle) ? $repository->moduleTitle. ' Management' : 'Management')
-
-@include('backend.includes.datatable-asset')
-
 @section('content')
-
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">{{ isset($repository->moduleTitle) ? str_plural($repository->moduleTitle) : '' }} Listing
@@ -26,6 +21,7 @@
     </div>
 </div>
 
+
 @endsection
 
 @section('after-scripts')
@@ -43,3 +39,5 @@ jQuery(document).ready(function() {
 });
 </script>
 @endsection
+
+@include('backend.includes.datatable-asset')

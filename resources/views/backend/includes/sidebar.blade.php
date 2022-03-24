@@ -4,7 +4,7 @@
         <!-- Sidebar user (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="info">
-                <a href="{{ route('admin.dashboard.index') }}" class="d-block">Alexander Pierce</a>
+                <a href="{{ route('admin.dashboard.index') }}" class="d-block">{{ access()->user()->name }}</a>
             </div>
         </div>
 
@@ -13,14 +13,21 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-header">Quick Access</li>
                 <li class="nav-item">
+                    <a href="{{ route('admin.users.index') }}" class="nav-link">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            Users
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('admin.mastertable.index') }}" class="nav-link">
-                        <i class="nav-icon far fa-image"></i>
+                        <i class="nav-icon fas fa-table"></i>
                         <p>
                             Master Table
                         </p>
                     </a>
                 </li>
-
             </ul>
         </nav>
     </div>
