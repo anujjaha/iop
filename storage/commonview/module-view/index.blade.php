@@ -1,66 +1,43 @@
 @extends ('backend.layouts.app')
 
-@section ('title',  isset($repository->moduleTitle) ? $repository->moduleTitle. ' Management' : 'Management')
+@section ('title', isset($repository->moduleTitle) ? $repository->moduleTitle. ' Management' : 'Management')
 
-@section('after-styles')
-    {{ Html::style("css/backend/plugin/datatables/dataTables.bootstrap.min.css") }}
-@endsection
-
-@section('page-header')
-    <h1>{{ isset($repository->moduleTitle) ? $repository->moduleTitle : '' }} Management</h1>
-@endsection
+@include('backend.includes.datatable-asset')
 
 @section('content')
-
-    <div class="box box-success">
-        <div class="box-header with-border">
-            <h3 class="box-title">{{ isset($repository->moduleTitle) ? str_plural($repository->moduleTitle) : '' }} Listing</h3>
-
-            <div class="box-tools pull-right">
-                @include('common.'.strtolower($repository->moduleTitle).'.header-buttons', ['createRoute' => $repository->getActionRoute('createRoute')])
-            </div>
-        </div>
-
-        <div class="box-body">
-            <div class="table-responsive">
-                <table id="items-table" class="table table-condensed table-hover">
-                    <thead>
-                        <tr id="tableHeadersContainer"></tr>
-                    </thead>
-                </table>
-            </div>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ isset($repository->moduleTitle) ? str_plural($repository->moduleTitle) : '' }} Listing
+        </h3>
+        <div class="card-tools">
+            @include('common.'.strtolower($repository->moduleTitle).'.header-buttons', ['createRoute' =>
+            $repository->getActionRoute('createRoute')])
         </div>
     </div>
-
-    <div class="box box-info">
-        <div class="box-header with-border">
-            <h3 class="box-title">History</h3>
-            <div class="box-tools pull-right">
-                <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-            </div>
-        </div>
-        <div class="box-body">
-            {!! history()->renderType(ucfirst($repository->moduleTitle)) !!}
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="items-table" class="table table-bordered table-hover">
+                <thead>
+                    <tr id="tableHeadersContainer"></tr>
+                </thead>
+            </table>
         </div>
     </div>
+</div>
 @endsection
 
 @section('after-scripts')
+<script type="text/javascript">
+var headers = JSON.parse('{!! $repository->getTableHeaders() !!}'),
+    columns = JSON.parse('{!! $repository->getTableColumns() !!}'),
+    moduleConfig = {
+        getTableDataUrl: '{!! route($repository->getActionRoute("dataRoute")) !!}'
+    };
 
-    {{ Html::script("js/backend/plugin/datatables/jquery.dataTables.min.js") }}
-    {{ Html::script("js/backend/plugin/datatables/dataTables.bootstrap.min.js") }}
-
-    <script>
-        var headers      = JSON.parse('{!! $repository->getTableHeaders() !!}'),
-            columns      = JSON.parse('{!! $repository->getTableColumns() !!}');
-            moduleConfig = {
-                getTableDataUrl: '{!! route($repository->getActionRoute("dataRoute")) !!}'
-            };
-
-        jQuery(document).ready(function()
-        {
-            BaseCommon.Utils.setTableHeaders(document.getElementById("tableHeadersContainer"), headers);
-            BaseCommon.Utils.setTableColumns(document.getElementById("items-table"), moduleConfig.getTableDataUrl, 'GET', columns);
-    	});
-    </script>
+jQuery(document).ready(function() {
+    BaseCommon.Utils.setTableHeaders(document.getElementById("tableHeadersContainer"), headers);
+    BaseCommon.Utils.setTableColumns(document.getElementById("items-table"), moduleConfig.getTableDataUrl,
+        'GET', columns);
+});
+</script>
 @endsection
