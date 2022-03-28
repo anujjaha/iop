@@ -109,9 +109,11 @@ class ModuleRemover
         $viewPath = base_path() . DIRECTORY_SEPARATOR . $this->viewPath;
         $backendPath = $viewPath . DIRECTORY_SEPARATOR . 'backend';
         $commonPath = $viewPath . DIRECTORY_SEPARATOR . 'common';
+        $baseBackendPath = $backendPath . DIRECTORY_SEPARATOR . strtolower($this->moduleName);
+        $baseCommonPath = $commonPath . DIRECTORY_SEPARATOR . strtolower($this->moduleName);
 
-        $this->forceRemoveDir($backendPath);
-        $this->forceRemoveDir($commonPath);
+        $this->forceRemoveDir($baseBackendPath);
+        $this->forceRemoveDir($baseCommonPath);
         
         return true;
     }
