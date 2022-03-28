@@ -27,10 +27,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['middleware' => 'jwt.customauth'], function () {
-    includeRouteFiles(__DIR__.'/API/');
-
-
-    Route::get('/user-c', function (Request $request) {
-        return $request->user();
-    });
+    includeRouteFiles(__DIR__ . '/API/');
 });

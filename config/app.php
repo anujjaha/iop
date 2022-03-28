@@ -183,6 +183,9 @@ return [
         // Access
         App\Providers\AccessServiceProvider::class,
 
+        // Hasher
+        App\Providers\HasherServiceProvider::class,
+
     ],
 
     /*
