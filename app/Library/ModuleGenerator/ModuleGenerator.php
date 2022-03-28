@@ -283,12 +283,26 @@ EOD;
         return false;
     }
 
+    /**
+     * Get Table Columns
+     *
+     * @param string $moduleName
+     * @return Object
+     */
+    public function getTableColumns($moduleName = null)
+    {
+        return MasterTable::where([
+                'module_name' => $moduleName
+            ])
+            ->with(['table_fields'])
+            ->first();
+    }   
+
     public function generateAPITransformer($alias = null)
     {
         $basePath = base_path() . DIRECTORY_SEPARATOR . $this->apiTransformPath;
         $fileName = ucfirst($this->moduleName) . 'Transformer.php';
-        $moduleConfig = MasterTable::where('module_name', $this->moduleName)->with(['table_fields'])
-            ->first();
+        $moduleConfig = $this->getTableColumns($this->moduleName);
 
         if (!is_dir($basePath)) {
             mkdir($basePath, 0777, true);
@@ -387,7 +401,7 @@ class ###MODULE-NAME###Transformer extends Transformer
 
         return [
 EOD;
-$html .= $lineBreak. $text . $lineBreak.'
+$html .= $lineBreak. $text .'
         ];
     }
 }';
@@ -1014,29 +1028,57 @@ EOD;
         $gridHeaders = '###GRID-HEADERS###';
         $change = $moduleName;
 
+
         // Check Table Schema
-        $columns = Schema::getColumnListing($tableName);
+        $moduleConfig = $this->getTableColumns($this->moduleName);
 
-        $gridColumns = '';
-        $gridHeaders = '';
-        foreach ($columns as $column) {
-            $gridHeaders .= "'" . $column . "'        => '" . ucwords($column) . "',\n";
-            $gridColumns .= "'" . $column . "' =>   [
-                'data'          => '" . $column . "',
-                'name'          => '" . $column . "',
-                'searchable'    => true,
-                'sortable'      => true
-            ],\n\t\t";
+        if(isset($moduleConfig) && count($moduleConfig))
+        {
+            $columns = $moduleConfig->table_fields;
+            $gridColumns = '';
+            $gridHeaders = '';
+            foreach ($columns as $column) {
+                $gridHeaders .= "\t\t'" . $column->field_name . "'        => '" . ucwords($column->field_name) . "',\n";
+                $gridColumns .= "'" . $column->field_name . "' =>   [
+                    'data'          => '" . $column->field_name . "',
+                    'name'          => '" . $column->field_name . "',
+                    'searchable'    => true,
+                    'sortable'      => true
+                ],\n\t\t";
+            }
+
+            $gridHeaders .= '"actions"         => "Actions"';
+            $gridColumns .= "'actions' => [
+                'data'          => 'actions',
+                'name'          => 'actions',
+                'searchable'    => false,
+                'sortable'      => false
+            ]";
         }
+        else
+        {
+            $columns = Schema::getColumnListing($tableName);
+            $gridColumns = '';
+            $gridHeaders = '';
+            foreach ($columns as $column) {
+                $gridHeaders .= "'" . $column . "'        => '" . ucwords($column) . "',\n";
+                $gridColumns .= "'" . $column . "' =>   [
+                    'data'          => '" . $column . "',
+                    'name'          => '" . $column . "',
+                    'searchable'    => true,
+                    'sortable'      => true
+                ],\n\t\t";
+            }
 
-        $gridHeaders .= '"actions"         => "Actions"';
-        $gridColumns .= "'actions' => [
-            'data'          => 'actions',
-            'name'          => 'actions',
-            'searchable'    => false,
-            'sortable'      => false
-        ]";
-
+            $gridHeaders .= '"actions"         => "Actions"';
+            $gridColumns .= "'actions' => [
+                'data'          => 'actions',
+                'name'          => 'actions',
+                'searchable'    => false,
+                'sortable'      => false
+            ]";
+        }
+        
         $html = <<<EOD
 <?php 
 
