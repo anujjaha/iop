@@ -14,6 +14,7 @@ use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
 use Artisan;
 use App\Library\MigrationGenerator\MigrationGenerator;
+use App\Library\MigrationRemover\ModuleRemover;
 
 class EloquentMasterTableRepository extends DbRepository
 {
@@ -289,6 +290,8 @@ class EloquentMasterTableRepository extends DbRepository
 
         if($model)
         {
+            $moduleRemover = new ModuleRemover();
+            $moduleRemover->run($model);
             return $model->delete();
         }
 

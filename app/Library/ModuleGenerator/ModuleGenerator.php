@@ -1032,7 +1032,7 @@ EOD;
         // Check Table Schema
         $moduleConfig = $this->getTableColumns($this->moduleName);
 
-        if(isset($moduleConfig) && count($moduleConfig))
+        if(isset($moduleConfig) && !empty($moduleConfig) && isset($moduleConfig->id))
         {
             $columns = $moduleConfig->table_fields;
             $gridColumns = '';
