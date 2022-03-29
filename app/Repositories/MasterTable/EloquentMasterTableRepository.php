@@ -293,9 +293,6 @@ class EloquentMasterTableRepository extends DbRepository
             $moduleRemover = new ModuleRemover();
             $moduleRemover->run($model);
             
-            die('x');
-            return true;
-
             return $model->delete();
         }
 

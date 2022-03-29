@@ -40,25 +40,25 @@
                     <td>
                         <select name="is_primary_field[]" class="form-control">
                             <option selected="selected" value="0">No</option>
-                            <option  value="1">Yes</option>
+                            <option value="1">Yes</option>
                         </select>
                     </td>
                     <td>
                         <select name="is_index_field[]" class="form-control">
                             <option selected="selected" value="0">No</option>
-                            <option  value="1">Yes</option>
+                            <option value="1">Yes</option>
                         </select>
                     </td>
                     <td>
                         <select name="is_unique_field[]" class="form-control">
                             <option selected="selected" value="0">No</option>
-                            <option  value="1">Yes</option>
+                            <option value="1">Yes</option>
                         </select>
                     </td>
                     <td>
                         <select name="is_soft_delete[]" class="form-control">
                             <option selected="selected" value="0">No</option>
-                            <option  value="1">Yes</option>
+                            <option value="1">Yes</option>
                         </select>
                     </td>
                     <td>
