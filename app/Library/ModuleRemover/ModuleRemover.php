@@ -3,8 +3,8 @@
 namespace App\Library\ModuleRemover;
 
 use File;
-use Schema;
 use Artisan;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Class Module Generator.
@@ -23,6 +23,8 @@ class ModuleRemover
     protected $apiRoutePath = 'routes/API';
     protected $apiControllerPath = 'app/Http/Controllers/Api';
     protected $apiTransformPath = 'app/Http/Transformers';
+    protected $migrationPath = 'database/migrations';
+
     
     public function __construct()
     {
@@ -32,7 +34,7 @@ class ModuleRemover
     {
         $this->moduleName = ucfirst($module->module_name);
         
-        $this->removeMigrationFile();
+        $this->removeMigrationFile($module);
         $this->removeAPIFiles();
         $this->removeModuleController();
         $this->removeModuleTransformer();
@@ -161,8 +163,17 @@ class ModuleRemover
         return true;
     }
 
-    protected function removeMigrationFile()
+    protected function removeMigrationFile($module = null)
     {
+        if(isset($module->id) && isset($module->migrated_file))
+        {
+            $migrationFile   = base_path().DIRECTORY_SEPARATOR.$this->migrationPath . DIRECTORY_SEPARATOR . $module->migrated_file;
+
+            Schema::dropIfExists($module->title);
+            return $this->forceRemoveFile($migrationFile);
+        }
+
+
         return true;
     }
 }

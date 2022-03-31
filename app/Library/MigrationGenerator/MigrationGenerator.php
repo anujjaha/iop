@@ -99,7 +99,7 @@ EOD;
         if(file_put_contents( $migratePath . DIRECTORY_SEPARATOR .$file, $content))
         {
             chmod($migratePath . DIRECTORY_SEPARATOR .$file, 0777);
-            return true;
+            return $file;
         }
         
         // if ($status) {

@@ -233,10 +233,12 @@ class EloquentMasterTableRepository extends DbRepository
         {
             if($this->createTableFields($model, $input))
             {
+                $migrateFile = $this->runMigration($model);
                 // Run Migration
-                if($this->runMigration($model))
+                if(isset($migrateFile) && !empty($migrateFile))
                 {
                     $model->is_migrated = 1;
+                    $model->migrated_file = $migrateFile;
                     $model->migrated_date_time = date('Y-m-d H:i:s');
 
                     // Run Module Generator
@@ -461,15 +463,15 @@ class EloquentMasterTableRepository extends DbRepository
      */
     public function runMigration($model)
     {
-        $migGen = new MigrationGenerator();
-        $migStatus = $migGen->generateMigrationFile($model, 
+        $migGen     = new MigrationGenerator();
+        $migFile    = $migGen->generateMigrationFile($model, 
             $this->tableFieldModel->where('master_table_id', $model->id)->get()
         );
 
-        if($migStatus)
+        if($migFile)
         {
             Artisan::call('migrate');
-            return true;
+            return $migFile;
         }
 
         return false;

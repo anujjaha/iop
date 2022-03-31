@@ -27,7 +27,7 @@ class MasterTable extends BaseModel
      */
     protected $fillable = [
         "created_at", "deleted_at", "execute_date_time", "id", "is_executed", "is_migrated", "migrated_date_time", "notes", "title", "updated_at", 
-        "extra_notes", "module_name"
+        "extra_notes", "module_name", "migrated_file"
     ];
 
     /**
