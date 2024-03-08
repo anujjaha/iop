@@ -216,7 +216,7 @@ var BaseCommon =
 			element.innerHTML  = tableHeader;
 		},
 
-		setTableColumns: function(element, fetchurl, method, columns)
+		setTableColumns: function(element, fetchurl, method, columns, order = null)
 		{
 			jQuery(element).DataTable({
 			    processing: true,
@@ -227,7 +227,7 @@ var BaseCommon =
 			        type: method
 			    },
 			    columns: columns,
-			    order: [[0, "asc"]],
+			    order: order ? order : [[0, "asc"]],
 			    searchDelay: 1200
 			});
 		}

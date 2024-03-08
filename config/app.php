@@ -185,6 +185,7 @@ return [
 
         // Hasher
         App\Providers\HasherServiceProvider::class,
+        LaravelQRCode\Providers\QRCodeServiceProvider::class,
 
     ],
 
@@ -204,6 +205,7 @@ return [
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'QRCode' => LaravelQRCode\Facades\QRCode::class,
     ])->toArray(),
 
 ];

@@ -13,7 +13,16 @@ use App\Http\Controllers\Auth\LoginController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('qr-code/examples/v-card', function () 
+{
+  $t = url('/i/everest');
+$a = \QRCode::url('http://google.com')
+                    ->setSize(2)
+                    ///->setOutfile(public_path() . '/media/qr_2/10/test.png')
+                    ->setMargin(6)
+                    ->png();
+    return response($a)->header('Content-type','image/png');;
+});
 Route::get('/', function () {
     return view('welcome');
 });
@@ -31,7 +40,7 @@ Route::get('users', [UserController::class, 'index'])->name('users.index');
  * Frontend Routes
  * Namespaces indicate folder structure
  */
-Route::group(['namespace' => 'Frontend', 'as' => 'frontend.'], function () {
+Route::group(['as' => 'frontend.'], function () {
     includeRouteFiles(__DIR__ . '/Frontend/');
 });
 
