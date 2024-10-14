@@ -1,5 +1,10 @@
 <?php
 
+use App\Models\Main\Main;
+use App\Models\IpoAssignments\IpoAssignments;
+use App\Models\Fees\Fees;
+use App\Models\Loss\Loss;
+
 /**
  * Global helpers file with misc functions.
  */
@@ -282,3 +287,200 @@ if (!function_exists('camel_case')) {
         return \Str::camel($value);
     }
 }
+
+if (!function_exists('mainBalance')) {
+
+    function mainBalance()
+    {
+        return Main::first()->balance;
+    }
+}
+
+if (!function_exists('blockBalance')) {
+
+    function blockBalance()
+    {
+        $ipoAssigned = IpoAssignments::where('status', 1)->with('ipo')->get();
+        $blockedAmount = 0;
+        foreach($ipoAssigned as $ipo)
+        {
+            $blockedAmount = $blockedAmount + $ipo->ipo->block_amt;
+        }
+
+        return $blockedAmount;
+    }
+}
+
+
+if (!function_exists('profitOrLoss')) {
+
+    function profitOrLoss()
+    {
+        return IpoAssignments::sum('profit_loss');
+    }
+}
+
+
+
+function getTableHtml($ipos, $clients = [])
+{
+    $html = '<table class="table table-border">
+        <tr>
+            <td>Applied</td>
+            <td>Assign</td>
+            <td>Name</td>
+            <td>GMP</td>
+            <td>Shares</td>
+            <td>Total Block</td>
+            <td>Required</td>
+            <td>Closing Date</td>
+            <td>Type</td>
+        </tr>';
+    $total          = 0;
+    $totalblock     = 0;
+    foreach($ipos as $ipo)
+    {
+        $assingedCount  = 0;
+        $blockedAmount  = 0;
+        if(count($ipo->assignments))
+        {
+            $assignedIpos = IpoAssignments::where([
+                'ipo_id'    => $ipo->id,
+                'status'    => 1
+            ])->get();
+
+            $assingedCount = $assignedIpos->count();
+            $blockedAmount = $assingedCount * $ipo->block_amt;
+        }
+        $requiredAmount = (count($clients) - $assingedCount )* $ipo->block_amt;
+        $total += $requiredAmount;
+        $totalblock += $blockedAmount; 
+        $externalLink = '';
+        if($ipo->external_link)
+        {
+            $externalLink = '<a target="_blank" class="btn btn-xs" href="'.$ipo->external_link.'"><i class="fa fa-eye"></i></a>';
+        }
+        $html .= '
+        <tr>
+            <td> '. $assingedCount . ' / ' .  count($clients) .'</td>
+            <td> <a target="_blank" href="'. route('admin.ipoassignments.create', ['id'=>$ipo->id]) .'" class="btn btn-xs btn-primary">Assign</a></td>
+            <td><a target="_blank" href="'. route('admin.ipodetails.show', $ipo->id) .'">'. $ipo->ipo_name . '</a>'.$externalLink.'
+            </td>
+            <td>'. $ipo->gmp_latest . '</td>
+            <td>'. $ipo->lot_size . '</td>
+            <td>'. $blockedAmount . '</td>
+            <td>'. $requiredAmount . '</td>
+            <td>'. $ipo->closing_date . '</td>
+            <td>'. getIpotype($ipo->ipo_type) . '</td>
+        </tr>';
+    }
+    $html .= '<tr><td colspan="5"></td><td>'.$totalblock.'</td><td>'. $total .'</td><td colspan="2"></td></tr>';
+    $html .= '</table>';
+
+    return $html;
+}
+
+
+
+if (!function_exists('getIpotype')) {
+
+    function getIpotype($type)
+    {
+        switch($type)
+        {
+            case 1:
+                return 'NSE';
+                break;
+
+            case 2:
+                return 'SME';
+                break;
+
+            default:
+                return 'N/A';
+                break;
+        }
+    }
+}
+
+if (!function_exists('getIpoAllotedStatusInt')) {
+
+    function getIpoAllotedStatusInt()
+    {
+        return 3;
+    }
+}
+
+if (!function_exists('getAssignmentLiveStatus')) {
+
+    function getAssignmentLiveStatus($status = 0)
+    {
+        $status = (int)$status;
+        switch($status)
+        {
+            case 1:
+                return 'Assigned';
+                break;
+
+            case 2:
+                return 'Revoked';
+                break;
+
+            case 3:
+                return 'Alloted';
+                break;
+                
+            case 5:
+                return 'Settled';
+                break;
+                
+            default:
+                return 'N/A';
+            break;
+        }
+    }
+}
+
+if (!function_exists('getTaxRate')) {
+
+    function getTaxRate()
+    {
+        return 20;
+    }
+}
+
+
+if (!function_exists('showDateTime')) {
+
+    function showDateTime($dateTime = null)
+    {
+        return date('d M Y', strtotime($dateTime));
+    }
+}
+
+if (!function_exists('totalPaidFees')) {
+
+    function totalPaidFees($clientId = null)
+    {
+        if($clientId)
+        {
+            return Fees::where('client_id', $clientId)->sum('fee_amount');
+        }
+
+        return Fees::sum('fee_amount');
+    }
+}
+
+if (!function_exists('totalLoss')) {
+
+    function totalLoss($clientId = null)
+    {
+        if($clientId)
+        {
+            return Loss::where('client_id', $clientId)->sum('loss_amount');
+        }
+
+        return Loss::sum('loss_amount');
+    }
+}
+

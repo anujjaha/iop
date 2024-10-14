@@ -24,7 +24,7 @@ abstract class DbRepository
     public function findOrThrowException($id, $relations = [])
     {
         if (is_int($id) && ! is_null($this->model->find($id))) {
-            $this->model->find($id);
+            $this->model->find($id)->with($relations);
         }
 
         try {
