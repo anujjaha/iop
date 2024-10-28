@@ -28,6 +28,9 @@ class IpoDetails extends BaseModel
     protected $fillable = [
         "block_amt", "closing_date", "created_at", "gmp_latest", "id", "ipo_name", "ipo_type", "listed_price", "listing_date", "lot_size", "notes", "opening_date", "refund_date", "updated_at", 
         "external_link",
+        "min_lot_size",
+        "max_lot_size",
+        "price_band",
     ];
 
     /**

@@ -368,6 +368,7 @@ class EloquentIpoAssignmentsRepository extends DbRepository
             $input = array_merge($input, ['user_id' => access()->user()->id]);
         }
 
+        $input['share_qty'] = $input['lotSize'];
         return $input;
     }
 
@@ -419,10 +420,31 @@ class EloquentIpoAssignmentsRepository extends DbRepository
         return IpoDetails::whereDate('closing_date', '>=', date('Y-m-d'))->get();
     }
 
-    public function getEligibleClientList($ipoId = null)
+    public function getEligibleClientList($ipoId = null, $isAll = 0)
     {
         $clientIds = $this->model::select('client_id')->where('ipo_id', $ipoId)->get()->toArray();
 
+        if($isAll == 1)
+        {
+            return ClientDetail::whereNotIn('id', $clientIds)
+            ->get();    
+        }
+
+        return ClientDetail::whereNotIn('id', $clientIds)
+            ->where('balance', '>', 15000)
+            ->get();
+    }
+
+    public function getAssignedClientList($ipoId = null)
+    {
+        $clientIds = $this->model::select('client_id')->where('ipo_id', $ipoId)->get()->toArray();
+
+        if($isAll == 1)
+        {
+            return ClientDetail::whereIn('id', $clientIds)
+            ->get();    
+        }
+        
         return ClientDetail::whereNotIn('id', $clientIds)
             ->where('balance', '>', 15000)
             ->get();
@@ -435,14 +457,15 @@ class EloquentIpoAssignmentsRepository extends DbRepository
      */
     public function updateCustomerBalance($ipoAssignment)
     {
-        $client = ClientDetail::where('id', $ipoAssignment->client_id)->first();
-        $ipo    = IpoDetails::where('id', $ipoAssignment->ipo_id)->first();
+        $client         = ClientDetail::where('id', $ipoAssignment->client_id)->first();
+        $ipo            = IpoDetails::where('id', $ipoAssignment->ipo_id)->first();
+        $blockAmount    = $ipoAssignment->share_qty * $ipo->price_band;
 
-        $client->balance = $client->balance - $ipo->block_amt;
+        $client->balance = $client->balance - $blockAmount;
         $client->save();
 
         $main = Main::where('id', 1)->first();
-        $main->balance = $main->balance - $ipo->block_amt;
+        $main->balance = $main->balance - $blockAmount;
         $main->save();
 
         $lastTransaction = Transactions::orderBy('id','desc')->first();
@@ -458,9 +481,9 @@ class EloquentIpoAssignmentsRepository extends DbRepository
             'ipo_id'            => $ipo->id,
             'client_id'         => $ipoAssignment->client_id,
             'debit'             => 1,
-            'amount'            => $ipo->block_amt,
-            'balance'           => ($lastBalance - $ipo->block_amt),
-            'notes'             => 'Applied for IPO ' . $ipo->ipo_name,
+            'amount'            => $blockAmount,
+            'balance'           => ($lastBalance - $blockAmount),
+            'notes'             => 'Applied for IPO ' . $ipo->ipo_name . ' QTY: '. $ipoAssignment->share_qty,
             'transaction_date'  => date('Y-m-d'),
             'created_by'        => auth()->user()->id,
         ]);
@@ -472,6 +495,7 @@ class EloquentIpoAssignmentsRepository extends DbRepository
     {
         $ipoAssignment = $this->model->where('id', $assignmentId)->with(['client', 'ipo'])->first();
 
+        $amount                     = $ipoAssignment->share_qty * $ipoAssignment->ipo->price_band;
         $ipoAssignment->status      = 2;
         $ipoAssignment->profit_loss = 0;
         $ipoAssignment->revoked_date = date('Y-m-d');
@@ -481,12 +505,12 @@ class EloquentIpoAssignmentsRepository extends DbRepository
 
         
         ClientDetail::where('id', $ipoAssignment->client_id)->update([
-            'balance' => $ipoAssignment->client->balance + $ipoAssignment->ipo->block_amt
+            'balance' => $ipoAssignment->client->balance + $amount
         ]);
 
         
         $main = Main::where('id', 1)->first();
-        $main->balance = $main->balance + $ipoAssignment->ipo->block_amt;
+        $main->balance = $main->balance + $amount;
         $main->save();
 
         $lastTransaction = Transactions::orderBy('id','desc')->where([
@@ -498,8 +522,8 @@ class EloquentIpoAssignmentsRepository extends DbRepository
             'ipo_id'            => $ipoAssignment->ipo->id,
             'client_id'         => $ipoAssignment->client_id,
             'credit'             => 1,
-            'amount'            => $ipoAssignment->ipo->block_amt,
-            'balance'           => $lastTransaction->balance + $ipoAssignment->ipo->block_amt,
+            'amount'            => $amount,
+            'balance'           => $lastTransaction->balance + $amount,
             'notes'             => 'Revoke for IPO ' . $ipoAssignment->ipo->ipo_name,
             'transaction_date'  => date('Y-m-d'),
             'created_by'        => auth()->user()->id,
@@ -517,9 +541,10 @@ class EloquentIpoAssignmentsRepository extends DbRepository
     public function allotedAssignment($assignmentId)
     {
         $ipoAssignment = $this->model->where('id', $assignmentId)->with(['client', 'ipo'])->first();
-
+        
+        $amount                         = $ipoAssignment->share_qty * $ipoAssignment->ipo->price_band;
         $ipoAssignment->status          = 3;
-        $ipoAssignment->profit_loss     = $ipoAssignment->ipo->block_amt * -1;
+        $ipoAssignment->profit_loss     = $amount * -1;
 
         return $ipoAssignment->save();
     }
@@ -545,15 +570,12 @@ class EloquentIpoAssignmentsRepository extends DbRepository
             return true;
         }
         $profit         = 0;
-        $qty            = $ipoAssignment->ipo->lot_size;
+        $qty            = $ipoAssignment->share_qty;
         $amount         = $input['amount'];
-        $shareCost      = $ipoAssignment->ipo->block_amt / $ipoAssignment->ipo->lot_size;
-        $investedAmount = $ipoAssignment->ipo->block_amt;
+        $shareCost      = $ipoAssignment->ipo->price_band;
+        $investedAmount = $ipoAssignment->ipo->price_band * $ipoAssignment->share_qty;
         $tax            = 0;
-
-        
-
-        $total = $qty * $amount;
+        $total          = $qty * $amount;
 
         if($total > $investedAmount)
         {
@@ -561,15 +583,13 @@ class EloquentIpoAssignmentsRepository extends DbRepository
             $tax    = ($profit * getTaxRate()) / 100;
         }
 
-        $ipoAssignment->status          = 5;
-        $ipoAssignment->share_qty       = $ipoAssignment->ipo->lot_size;
-        $ipoAssignment->sell_price      = $amount;
-        $ipoAssignment->share_profit_loss = $amount - $shareCost;
-        $ipoAssignment->opening_rate    = $shareCost;
-        $ipoAssignment->profit_loss     = $total - $ipoAssignment->ipo->block_amt;
-        $ipoAssignment->profit_loss     = $total - $ipoAssignment->ipo->block_amt;
-        $ipoAssignment->profit_loss_aftertax     = $profit - $tax;
-        $ipoAssignment->tax_amount      = $tax;
+        $ipoAssignment->status              = 5;
+        $ipoAssignment->sell_price          = $amount;
+        $ipoAssignment->share_profit_loss   = $amount - $shareCost;
+        $ipoAssignment->opening_rate        = $shareCost;
+        $ipoAssignment->profit_loss         = $total - $investedAmount;
+        $ipoAssignment->profit_loss_aftertax = $profit - $tax;
+        $ipoAssignment->tax_amount          = $tax;
         $ipoAssignment->save();
 
         $clientInfo = ClientDetail::where('id', $ipoAssignment->client_id)->first();

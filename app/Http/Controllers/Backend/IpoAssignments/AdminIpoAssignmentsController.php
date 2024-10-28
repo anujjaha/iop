@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Datatables;
 use App\Repositories\IpoAssignments\EloquentIpoAssignmentsRepository;
+use App\Models\IpoDetails\IpoDetails;
 
 /**
  * Class AdminIpoAssignmentsController
@@ -173,7 +174,7 @@ class AdminIpoAssignmentsController extends Controller
             ->addColumn('ipo_amt', function ($item) {
                 if($item->status == '1')
                 {
-                    return $item->ipo->block_amt . '<br /><a href="javascript:void(0);" onclick="revokeIpo('.$item->id.')" class="btn btn-xs btn-primary"><i class="fa fa-trash"></i></a>'
+                    return $item->share_qty * $item->ipo->price_band . '<br /><a href="javascript:void(0);" onclick="revokeIpo('.$item->id.')" class="btn btn-xs btn-primary"><i class="fa fa-trash"></i></a>'
                         . '&nbsp;&nbsp;<a href="javascript:void(0);" onclick="allotedIpo('.$item->id.')" class="btn btn-xs btn-primary"><i class="fa fa-check"></i></a>';    
                 }
 
@@ -182,7 +183,7 @@ class AdminIpoAssignmentsController extends Controller
                     return 0;
                 }
 
-                return $item->ipo->block_amt;
+                return $item->share_qty * $item->ipo->price_band;
             })
             ->addColumn('actions', function ($item) {
                 return $item->admin_action_buttons;
@@ -193,11 +194,27 @@ class AdminIpoAssignmentsController extends Controller
     public function getEligibleClients(Request $request)
     {
         $ipoId      = $request->get('ipoId');
-        $clientList = $this->repository->getEligibleClientList($ipoId);
+        $isAll      = $request->get('all') ?? 0;
+        $clientList = $this->repository->getEligibleClientList($ipoId, $isAll);
+        $ipoDetails = IpoDetails::where('id', $ipoId)->first();
 
         return response()->json([
             'status'        => true,
-            'clientList'    => $clientList
+            'clientList'    => $clientList,
+            'ipoDetails'    => $ipoDetails
+        ]);
+    }
+
+    public function getAssignedClientList(Request $request)
+    {
+        $ipoId      = $request->get('ipoId');
+        $clientList = $this->repository->getAssignedClientList($ipoId);
+        $ipoDetails = IpoDetails::where('id', $ipoId)->first();
+
+        return response()->json([
+            'status'        => true,
+            'clientList'    => $clientList,
+            'ipoDetails'    => $ipoDetails
         ]);
     }
 

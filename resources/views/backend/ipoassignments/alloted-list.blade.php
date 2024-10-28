@@ -27,12 +27,12 @@
                     </tr>
 
                     @foreach($records as $record)
-                    	<tr>
+                    	<tr>	
 	                    	<td>{!! $record->client->name !!}</td>
 	                    	<td>{!! $record->ipo->ipo_name !!}</td>
-	                    	<td>{!! $record->ipo->block_amt / $record->ipo->lot_size !!}</td>
-	                    	<td>{!! $record->ipo->lot_size !!}</td>
-	                    	<td>{!! $record->ipo->block_amt !!}</td>
+	                    	<td>{!! $record->ipo->price_band !!}</td>
+	                    	<td>{!! $record->share_qty !!}</td>
+	                    	<td>{!! $record->share_qty * $record->ipo->price_band !!}</td>
 	                    	<td>
 	                    		<a  onclick="settleAllotment({!! $record->id !!}, `{!! $record->ipo->ipo_name  !!} | {!! $record->client->name!!} `)" href="javascript:void(0);" class="btn btn-xs btn-primary">Settle</a>
 	                    	</td>

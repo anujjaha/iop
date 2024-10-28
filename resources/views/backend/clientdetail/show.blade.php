@@ -190,8 +190,8 @@
                     <tr>
                         <td>{!! $ipo->ipo->ipo_name !!}</td>
                         <td>{!! getAssignmentLiveStatus($ipo->status) !!}</td>
-                        <td>{!! $ipo->status == 1 ? $ipo->ipo->block_amt : 'N/A' !!}</td>
-                        <td>{!! $ipo->ipo->block_amt !!}</td>
+                        <td>{!! $ipo->status == 1 ? $ipo->share_qty * $ipo->ipo->price_band : 'N/A' !!}</td>
+                        <td>{!! $ipo->share_qty * $ipo->ipo->price_band !!}</td>
                         <td>{!! $ipo->profit_loss !!}</td>
                     </tr>
                 @endforeach
@@ -364,13 +364,26 @@
             <div class="form-group row">
                 <label class="col-lg-2 control-label">Select: </label>
                 <div class="col-md-10">
-                    <select class="form-control" name="ipoId" id="ipoId">
+                    <select onchange="setLotSize()" class="form-control" name="ipoId" id="ipoId">
                         <option value="">Select IPO</option>
                         @foreach($eligibleIpos as $eligibleIpo)
-                            <option value="{!! $eligibleIpo->id !!}">
+                            <option 
+                            data-min-lot="{!! $eligibleIpo->min_lot_size !!}"
+                            data-max-lot="{!! $eligibleIpo->max_lot_size !!}"
+                            data-price-band="{!! $eligibleIpo->price_band !!}"
+                            value="{!! $eligibleIpo->id !!}">
                                 {!! $eligibleIpo->ipo_name !!}
                             </option>
                         @endforeach
+                    </select>
+                </div>
+            </div>
+
+             <div class="form-group row">
+                <label class="col-lg-2 control-label">Size: </label>
+                <div class="col-md-10">
+                    <select class="form-control" name="ipoLotSize" id="ipoLotSize">
+                        <option value="">Select SIZE</option>
                     </select>
                 </div>
             </div>
@@ -508,6 +521,7 @@ function applyIpo()
     var client_id    = {!! $item->id !!};
     var ipo_id       = jQuery("#ipoId").val();
     var applied_date = "{!! date('Y-m-d') !!}";
+    var lotSize      = jQuery("#ipoLotSize").val();
 
     if(ipo_id.trim() == '')
     {
@@ -526,6 +540,7 @@ function applyIpo()
         data : {
            client_id,
            ipo_id,
+           lotSize,
            applied_date,
            status: 1,
            notes: jQuery("#ipo_notes").val(),
@@ -549,6 +564,34 @@ function applyIpo()
             jQuery("#assignIpoModal").modal('hide');
         }
     });
+}
+
+/**
+ * Set Lot Size
+ * 
+ */
+function setLotSize()
+{
+    jQuery("#ipoLotSize").empty();
+    jQuery('#ipoLotSize')
+        .append($("<option></option>")
+        .attr("value", '')
+        .text('Select Lot')); 
+
+    var minLot      = $("#ipoId").find(':selected').attr('data-min-lot');
+    var maxLot      = $("#ipoId").find(':selected').attr('data-max-lot')
+    var priceBand   = $("#ipoId").find(':selected').attr('data-price-band');
+
+    jQuery('#ipoLotSize')
+        .append($("<option></option>")
+        .attr("value", minLot)
+        .text('Min Lot ( '+ minLot * priceBand+' )')); 
+
+    jQuery('#ipoLotSize')
+        .append($("<option></option>")
+        .attr("value", maxLot)
+        .text('Max Lot ( '+ maxLot * priceBand+' )' )); 
+
 }
 </script>
 @endsection

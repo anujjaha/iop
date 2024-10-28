@@ -304,7 +304,7 @@ if (!function_exists('blockBalance')) {
         $blockedAmount = 0;
         foreach($ipoAssigned as $ipo)
         {
-            $blockedAmount = $blockedAmount + $ipo->ipo->block_amt;
+            $blockedAmount = $blockedAmount + $ipo->share_qty * $ipo->ipo->price_band;
         }
 
         return $blockedAmount;
@@ -332,12 +332,14 @@ function getTableHtml($ipos, $clients = [])
             <td>GMP</td>
             <td>Shares</td>
             <td>Total Block</td>
-            <td>Required</td>
+            <td>Retails Required</td>
+            <td>SHIN Required</td>
             <td>Closing Date</td>
             <td>Type</td>
         </tr>';
     $total          = 0;
     $totalblock     = 0;
+    $totalHni       = 0;
     foreach($ipos as $ipo)
     {
         $assingedCount  = 0;
@@ -349,20 +351,27 @@ function getTableHtml($ipos, $clients = [])
                 'status'    => 1
             ])->get();
 
+            foreach($assignedIpos as $assignedIpo)
+            {
+                $blockedAmount += $assignedIpo->share_qty * $ipo->price_band;
+            }
+
             $assingedCount = $assignedIpos->count();
-            $blockedAmount = $assingedCount * $ipo->block_amt;
         }
-        $requiredAmount = (count($clients) - $assingedCount )* $ipo->block_amt;
+        $requiredAmount = (count($clients) - $assingedCount )* ($ipo->price_band * $ipo->min_lot_size);
+        $requiredHNIAmount = (count($clients) - $assingedCount )* ($ipo->price_band * $ipo->max_lot_size);
         $total += $requiredAmount;
         $totalblock += $blockedAmount; 
+        $totalHni += $requiredHNIAmount;
         $externalLink = '';
         if($ipo->external_link)
         {
             $externalLink = '<a target="_blank" class="btn btn-xs" href="'.$ipo->external_link.'"><i class="fa fa-eye"></i></a>';
         }
+
         $html .= '
         <tr>
-            <td> '. $assingedCount . ' / ' .  count($clients) .'</td>
+            <td> <a onclick="showAppliedClientList('.$ipo->id.');" href="javascript:void(0);" class="btn btn-xs btn-warning">'. $assingedCount . '</a> / <a onclick="showEligibleClientList('.$ipo->id.');" href="javascript:void(0);" class="btn btn-xs btn-success">' .  count($clients) .'</a></td>
             <td> <a target="_blank" href="'. route('admin.ipoassignments.create', ['id'=>$ipo->id]) .'" class="btn btn-xs btn-primary">Assign</a></td>
             <td><a target="_blank" href="'. route('admin.ipodetails.show', $ipo->id) .'">'. $ipo->ipo_name . '</a>'.$externalLink.'
             </td>
@@ -370,11 +379,12 @@ function getTableHtml($ipos, $clients = [])
             <td>'. $ipo->lot_size . '</td>
             <td>'. $blockedAmount . '</td>
             <td>'. $requiredAmount . '</td>
+            <td>'. $requiredHNIAmount . '</td>
             <td>'. $ipo->closing_date . '</td>
             <td>'. getIpotype($ipo->ipo_type) . '</td>
         </tr>';
     }
-    $html .= '<tr><td colspan="5"></td><td>'.$totalblock.'</td><td>'. $total .'</td><td colspan="2"></td></tr>';
+    $html .= '<tr><td colspan="5"></td><td>'.$totalblock.'</td><td>'.$total.'</td><td>'. $totalHni .'</td><td colspan="2"></td></tr>';
     $html .= '</table>';
 
     return $html;

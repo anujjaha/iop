@@ -15,8 +15,6 @@ Route::group([], function () {
 
     Route::post("ipoassignments/get-clients", [AdminIpoAssignmentsController::class, 'getEligibleClients'])->name("ipoassignments.get-clients");
 
-    Route::post("ipoassignments/get-clients", [AdminIpoAssignmentsController::class, 'getEligibleClients'])->name("ipoassignments.get-clients");
-
     Route::post("ipoassignments/revoke", [AdminIpoAssignmentsController::class, 'revokeIpo'])->name("ipoassignments.revoke-ipo");
 
     Route::post("ipoassignments/alloted", [AdminIpoAssignmentsController::class, 'allotedIpo'])->name("ipoassignments.alloted-ipo");
@@ -26,6 +24,8 @@ Route::group([], function () {
     Route::post("ipoassignments/assign-client", [AdminIpoAssignmentsController::class, 'assignClient'])->name("ipoassignments.assign-client");
 
     Route::post("ipoassignments/settle-ipo", [AdminIpoAssignmentsController::class, 'settleIpo'])->name("ipoassignments.settle-ipo");
+
+    Route::post("ipoassignments/assigned-client-list", [AdminIpoAssignmentsController::class, 'getAssignedClientList'])->name("ipoassignments.assigned-client-list");
 
 
     Route::resource("ipoassignments", AdminIpoAssignmentsController::class);

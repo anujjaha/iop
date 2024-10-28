@@ -46,6 +46,28 @@
         {{ Form::text('lot_size', null, ['class' => 'form-control', 'placeholder' => 'Lot Size', 'required' => 'required']) }}
     </div>
 </div> 
+
+<div class="form-group row">
+    {{ Form::label('min_lot_size', 'Min Lot Size :', ['class' => 'col-lg-2 control-label']) }}
+    <div class="col-lg-10">
+        {{ Form::text('min_lot_size', null, ['class' => 'form-control', 'placeholder' => 'Min Lot Size', 'required' => 'required']) }}
+    </div>
+</div> 
+
+<div class="form-group row">
+    {{ Form::label('max_lot_size', 'MAX Lot Size :', ['class' => 'col-lg-2 control-label']) }}
+    <div class="col-lg-10">
+        {{ Form::text('max_lot_size', null, ['class' => 'form-control', 'placeholder' => 'Max Lot Size', 'required' => 'required']) }}
+    </div>
+</div> 
+
+<div class="form-group row">
+    {{ Form::label('price_band', 'Price Band:', ['class' => 'col-lg-2 control-label']) }}
+    <div class="col-lg-10">
+        {{ Form::text('price_band', null, ['class' => 'form-control', 'placeholder' => 'Price Band', 'required' => 'required']) }}
+    </div>
+</div> 
+
 <div class="form-group row">
     {{ Form::label('block_amt', 'Block Amt :', ['class' => 'col-lg-2 control-label']) }}
     <div class="col-lg-10">
