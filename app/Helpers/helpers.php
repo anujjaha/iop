@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Main\Main;
+use App\Models\IpoAssignments\IpoAssignments;
+
 /**
  * Global helpers file with misc functions.
  */
@@ -281,4 +284,68 @@ if (!function_exists('camel_case')) {
     {
         return \Str::camel($value);
     }
+}
+
+if (!function_exists('mainBalance')) {
+
+    function mainBalance()
+    {
+        return Main::first()->balance;
+    }
+}
+
+if (!function_exists('blockBalance')) {
+
+    function blockBalance()
+    {
+        $ipoAssigned = IpoAssignments::where('status', 1)->with('ipo')->get();
+        $blockedAmount = 0;
+        foreach($ipoAssigned as $ipo)
+        {
+            $blockedAmount = $blockedAmount + $ipo->ipo->block_amt;
+        }
+
+        return $blockedAmount;
+    }
+}
+
+
+if (!function_exists('profitOrLoss')) {
+
+    function profitOrLoss()
+    {
+        return IpoAssignments::sum('profit_loss');
+    }
+}
+
+
+
+function getTableHtml($ipos, $clients = [])
+{
+    $html = '<table class="table table-border">
+        <tr>
+            <td>Applied</td>
+            <td>Name</td>
+            <td>GMP</td>
+            <td>Shares</td>
+            <td>Block</td>
+            <td>Closing Date</td>
+            <td>Type</td>
+        </tr>';
+    foreach($ipos as $ipo)
+    {
+        $html .= '
+        <tr>
+            <td> '. count($ipo->assignments) . ' / ' .  count($clients) .'</td>
+            <td>'. $ipo->ipo_name . '</td>
+            <td>'. $ipo->gmp_latest . '</td>
+            <td>'. $ipo->lot_size . '</td>
+            <td>'. $ipo->block_amt . '</td>
+            <td>'. $ipo->closing_date . '</td>
+            <td>'. $ipo->ipo_type . '</td>
+        </tr>';
+    }
+    $html .= '</table>';
+
+    return $html;
 }

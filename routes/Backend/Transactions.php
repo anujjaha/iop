@@ -1,0 +1,15 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Backend\Transactions\AdminTransactionsController;
+
+Route::group([], function () {
+    /*
+     * Admin Transactions Controller
+     */
+
+    // Route for Ajax DataTable
+    Route::get("transactions/get", [AdminTransactionsController::class, 'getTableData'])->name("transactions.get-list-data");
+
+    Route::resource("transactions", AdminTransactionsController::class);
+});
