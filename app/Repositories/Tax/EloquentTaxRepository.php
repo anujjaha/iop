@@ -1,35 +1,32 @@
 <?php 
 
-namespace App\Repositories\ClientDetail;
+namespace App\Repositories\Tax;
 
 /**
- * Class EloquentClientDetailRepository
+ * Class EloquentTaxRepository
  *
  * @author Anuj Jaha ( er.anujjaha@gmail.com)
  */
 
-use App\Models\ClientDetail\ClientDetail;
+use App\Models\Tax\Tax;
 use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
-use App\Models\IpoDetails\IpoDetails;
-use App\Models\IpoAssignments\IpoAssignments;
-use App\Models\Fees\Fees;
 
-class EloquentClientDetailRepository extends DbRepository
+class EloquentTaxRepository extends DbRepository
 {
     /**
-     * ClientDetail Model
+     * Tax Model
      *
      * @var Object
      */
     public $model;
 
     /**
-     * ClientDetail Title
+     * Tax Title
      *
      * @var string
      */
-    public $moduleTitle = 'ClientDetail';
+    public $moduleTitle = 'Tax';
 
     /**
      * Table Headers
@@ -37,15 +34,15 @@ class EloquentClientDetailRepository extends DbRepository
      * @var array
      */
     public $tableHeaders = [
-        'id'              => 'Id',
-		'name'            => 'Name',
-		'balance'         => 'Balance',
-		'mobile'          => 'Mobile',
-		'email'           => 'Email',
-		'aadhar_no'       => 'Aadhar_no',
-		'pan_no'          => 'Pan_no',
-		'profit_loss'        => 'Profit_loss',
-		"actions"         => "Actions"
+        		'id'        => 'Id',
+		'client_id'        => 'Client_id',
+		'ipo_id'        => 'Ipo_id',
+		'total_amount'        => 'Total_amount',
+		'profit_amount'        => 'Profit_amount',
+		'tax_amount'        => 'Tax_amount',
+        'net_profit'        => 'Net Profit',
+		'notes'        => 'Notes',
+        "actions"         => "Actions"
     ];
 
     /**
@@ -60,45 +57,45 @@ class EloquentClientDetailRepository extends DbRepository
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'name' =>   [
-                    'data'          => 'name',
-                    'name'          => 'name',
+		'client_id' =>   [
+                    'data'          => 'client_id',
+                    'name'          => 'client_id',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-        'balance' =>   [
-                    'data'          => 'balance',
-                    'name'          => 'balance',
+		'ipo_id' =>   [
+                    'data'          => 'ipo_id',
+                    'name'          => 'ipo_id',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'mobile' =>   [
-                    'data'          => 'mobile',
-                    'name'          => 'mobile',
+		'total_amount' =>   [
+                    'data'          => 'total_amount',
+                    'name'          => 'total_amount',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'email' =>   [
-                    'data'          => 'email',
-                    'name'          => 'email',
+        'profit_amount' =>   [
+                    'data'          => 'profit_amount',
+                    'name'          => 'profit_amount',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'aadhar_no' =>   [
-                    'data'          => 'aadhar_no',
-                    'name'          => 'aadhar_no',
+		'tax_amount' =>   [
+                    'data'          => 'tax_amount',
+                    'name'          => 'tax_amount',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'pan_no' =>   [
-                    'data'          => 'pan_no',
-                    'name'          => 'pan_no',
+		'net_profit' =>   [
+                    'data'          => 'net_profit',
+                    'name'          => 'net_profit',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'profit_loss' =>   [
-                    'data'          => 'profit_loss',
-                    'name'          => 'profit_loss',
+		'notes' =>   [
+                    'data'          => 'notes',
+                    'name'          => 'notes',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
@@ -151,14 +148,13 @@ class EloquentClientDetailRepository extends DbRepository
      * @var array
      */
     public $moduleRoutes = [
-        'listRoute'     => 'clientdetail.index',
-        'createRoute'   => 'clientdetail.create',
-        'storeRoute'    => 'clientdetail.store',
-        'editRoute'     => 'clientdetail.edit',
-        'showRoute'     => 'clientdetail.show',
-        'updateRoute'   => 'clientdetail.update',
-        'deleteRoute'   => 'clientdetail.destroy',
-        'dataRoute'     => 'clientdetail.get-list-data'
+        'listRoute'     => 'tax.index',
+        'createRoute'   => 'tax.create',
+        'storeRoute'    => 'tax.store',
+        'editRoute'     => 'tax.edit',
+        'updateRoute'   => 'tax.update',
+        'deleteRoute'   => 'tax.destroy',
+        'dataRoute'     => 'tax.get-list-data'
     ];
 
     /**
@@ -167,11 +163,10 @@ class EloquentClientDetailRepository extends DbRepository
      * @var array
      */
     public $moduleViews = [
-        'listView'      => 'clientdetail.index',
-        'createView'    => 'clientdetail.create',
-        'editView'      => 'clientdetail.edit',
-        'showView'      => 'clientdetail.show',
-        'deleteView'    => 'clientdetail.destroy',
+        'listView'      => 'tax.index',
+        'createView'    => 'tax.create',
+        'editView'      => 'tax.edit',
+        'deleteView'    => 'tax.destroy',
     ];
 
     /**
@@ -180,11 +175,11 @@ class EloquentClientDetailRepository extends DbRepository
      */
     public function __construct()
     {
-        $this->model = new ClientDetail;
+        $this->model = new Tax;
     }
 
     /**
-     * Create ClientDetail
+     * Create Tax
      *
      * @param array $input
      * @return mixed
@@ -203,7 +198,7 @@ class EloquentClientDetailRepository extends DbRepository
     }
 
     /**
-     * Update ClientDetail
+     * Update Tax
      *
      * @param int $id
      * @param array $input
@@ -224,7 +219,7 @@ class EloquentClientDetailRepository extends DbRepository
     }
 
     /**
-     * Destroy ClientDetail
+     * Destroy Tax
      *
      * @param int $id
      * @return mixed
@@ -251,7 +246,9 @@ class EloquentClientDetailRepository extends DbRepository
      */
     public function getAll($orderBy = 'id', $sort = 'asc')
     {
-        return $this->model->orderBy($orderBy, $sort)->get();
+        return $this->model->orderBy($orderBy, $sort)
+            ->with(['ipo', 'client'])
+            ->get();
     }
 
     /**
@@ -316,6 +313,9 @@ class EloquentClientDetailRepository extends DbRepository
             $input = array_merge($input, ['user_id' => access()->user()->id]);
         }
 
+        $input['tax_amount'] = ($input['total_amount'] / 100 ) * get20TaxRate();
+        $input['net_profit'] = $input['profit_amount'] - $input['tax_amount'];
+
         return $input;
     }
 
@@ -355,32 +355,5 @@ class EloquentClientDetailRepository extends DbRepository
         unset($clientColumns['username']);
 
         return json_encode($this->setTableStructure($clientColumns));
-    }
-
-    public function getPendingIpos($clientId = null)
-    {
-        $assignedIpoIds = IpoAssignments::where('client_id', $clientId)->pluck('ipo_id');
-        
-        return IpoDetails::whereDate('closing_date', '>= ', date('Y-m-d'))
-            ->whereNotIn('id', $assignedIpoIds)
-            ->get();
-    }
-
-    public function getFeeTransactions($id)
-    {
-        return Fees::where('client_id', $id)->get();
-    }
-
-    public function getArrayList()
-    {
-        $clients = $this->model->get();
-        $options = [];
-        foreach($clients as $client)
-        {
-            $options[$client->id] = $client->name;
-        }
-
-        return $options;
-
     }
 }

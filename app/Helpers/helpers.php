@@ -4,6 +4,9 @@ use App\Models\Main\Main;
 use App\Models\IpoAssignments\IpoAssignments;
 use App\Models\Fees\Fees;
 use App\Models\Loss\Loss;
+use App\Models\Stock\Stock;
+use App\Models\StockTransaction\StockTransaction;
+use App\Models\Tax\Tax;
 
 /**
  * Global helpers file with misc functions.
@@ -142,7 +145,7 @@ if (!function_exists('getBrokerPercentage')) {
 
     function getBrokerPercentage()
     {
-        return env('BROKERAGE_PERCENT') ?? 0;
+        return env('BROKERAGE_PERCENT') ?? 0.2;
     }
 }
 
@@ -459,6 +462,14 @@ if (!function_exists('getTaxRate')) {
     }
 }
 
+if (!function_exists('get20TaxRate')) {
+
+    function get20TaxRate()
+    {
+        return 20;
+    }
+}
+
 
 if (!function_exists('showDateTime')) {
 
@@ -491,6 +502,60 @@ if (!function_exists('totalLoss')) {
         }
 
         return Loss::sum('loss_amount');
+    }
+}
+
+if (!function_exists('totalHoldings')) {
+
+    function totalHoldings($clientId = null)
+    {
+        if($clientId)
+        {
+            $stockList = Stock::where('client_id', $clientId)->get();
+        }
+        else
+        {
+            $stockList = Stock::all();
+        }
+
+        $total = 0;
+        if($stockList)
+        {
+            foreach($stockList as $stock)
+            {
+                $total = $total + ($stock->cmp * $stock->qty);
+            }
+        }
+
+        return $total;
+    }
+}
+
+
+if (!function_exists('totalStockProfit')) {
+
+    function totalStockProfit($clientId = null)
+    {
+        if($clientId)
+        {
+            return StockTransaction::where('client_id', $clientId)->sum('net_profit');
+        }
+
+        return StockTransaction::sum('net_profit');
+    }
+}
+
+
+if (!function_exists('formProfit')) {
+
+    function formProfit($clientId = null)
+    {
+        if($clientId)
+        {
+            return Tax::where('client_id', $clientId)->sum('net_profit');
+        }
+
+        return Tax::sum('net_profit');
     }
 }
 

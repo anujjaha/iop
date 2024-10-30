@@ -1,35 +1,32 @@
 <?php 
 
-namespace App\Repositories\ClientDetail;
+namespace App\Repositories\Profit;
 
 /**
- * Class EloquentClientDetailRepository
+ * Class EloquentProfitRepository
  *
  * @author Anuj Jaha ( er.anujjaha@gmail.com)
  */
 
-use App\Models\ClientDetail\ClientDetail;
+use App\Models\Profit\Profit;
 use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
-use App\Models\IpoDetails\IpoDetails;
-use App\Models\IpoAssignments\IpoAssignments;
-use App\Models\Fees\Fees;
 
-class EloquentClientDetailRepository extends DbRepository
+class EloquentProfitRepository extends DbRepository
 {
     /**
-     * ClientDetail Model
+     * Profit Model
      *
      * @var Object
      */
     public $model;
 
     /**
-     * ClientDetail Title
+     * Profit Title
      *
      * @var string
      */
-    public $moduleTitle = 'ClientDetail';
+    public $moduleTitle = 'Profit';
 
     /**
      * Table Headers
@@ -37,15 +34,12 @@ class EloquentClientDetailRepository extends DbRepository
      * @var array
      */
     public $tableHeaders = [
-        'id'              => 'Id',
-		'name'            => 'Name',
-		'balance'         => 'Balance',
-		'mobile'          => 'Mobile',
-		'email'           => 'Email',
-		'aadhar_no'       => 'Aadhar_no',
-		'pan_no'          => 'Pan_no',
-		'profit_loss'        => 'Profit_loss',
-		"actions"         => "Actions"
+        		'id'        => 'Id',
+		'client_id'        => 'Client_id',
+		'profit_amount'        => 'Profit_amount',
+		'notes'        => 'Notes',
+		'executed_on'        => 'Executed_on',
+"actions"         => "Actions"
     ];
 
     /**
@@ -60,45 +54,27 @@ class EloquentClientDetailRepository extends DbRepository
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'name' =>   [
-                    'data'          => 'name',
-                    'name'          => 'name',
+		'client_id' =>   [
+                    'data'          => 'client_id',
+                    'name'          => 'client_id',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-        'balance' =>   [
-                    'data'          => 'balance',
-                    'name'          => 'balance',
+		'profit_amount' =>   [
+                    'data'          => 'profit_amount',
+                    'name'          => 'profit_amount',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'mobile' =>   [
-                    'data'          => 'mobile',
-                    'name'          => 'mobile',
+		'notes' =>   [
+                    'data'          => 'notes',
+                    'name'          => 'notes',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'email' =>   [
-                    'data'          => 'email',
-                    'name'          => 'email',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],
-		'aadhar_no' =>   [
-                    'data'          => 'aadhar_no',
-                    'name'          => 'aadhar_no',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],
-		'pan_no' =>   [
-                    'data'          => 'pan_no',
-                    'name'          => 'pan_no',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],
-		'profit_loss' =>   [
-                    'data'          => 'profit_loss',
-                    'name'          => 'profit_loss',
+		'executed_on' =>   [
+                    'data'          => 'executed_on',
+                    'name'          => 'executed_on',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
@@ -151,14 +127,13 @@ class EloquentClientDetailRepository extends DbRepository
      * @var array
      */
     public $moduleRoutes = [
-        'listRoute'     => 'clientdetail.index',
-        'createRoute'   => 'clientdetail.create',
-        'storeRoute'    => 'clientdetail.store',
-        'editRoute'     => 'clientdetail.edit',
-        'showRoute'     => 'clientdetail.show',
-        'updateRoute'   => 'clientdetail.update',
-        'deleteRoute'   => 'clientdetail.destroy',
-        'dataRoute'     => 'clientdetail.get-list-data'
+        'listRoute'     => 'profit.index',
+        'createRoute'   => 'profit.create',
+        'storeRoute'    => 'profit.store',
+        'editRoute'     => 'profit.edit',
+        'updateRoute'   => 'profit.update',
+        'deleteRoute'   => 'profit.destroy',
+        'dataRoute'     => 'profit.get-list-data'
     ];
 
     /**
@@ -167,11 +142,10 @@ class EloquentClientDetailRepository extends DbRepository
      * @var array
      */
     public $moduleViews = [
-        'listView'      => 'clientdetail.index',
-        'createView'    => 'clientdetail.create',
-        'editView'      => 'clientdetail.edit',
-        'showView'      => 'clientdetail.show',
-        'deleteView'    => 'clientdetail.destroy',
+        'listView'      => 'profit.index',
+        'createView'    => 'profit.create',
+        'editView'      => 'profit.edit',
+        'deleteView'    => 'profit.destroy',
     ];
 
     /**
@@ -180,11 +154,11 @@ class EloquentClientDetailRepository extends DbRepository
      */
     public function __construct()
     {
-        $this->model = new ClientDetail;
+        $this->model = new Profit;
     }
 
     /**
-     * Create ClientDetail
+     * Create Profit
      *
      * @param array $input
      * @return mixed
@@ -203,7 +177,7 @@ class EloquentClientDetailRepository extends DbRepository
     }
 
     /**
-     * Update ClientDetail
+     * Update Profit
      *
      * @param int $id
      * @param array $input
@@ -224,7 +198,7 @@ class EloquentClientDetailRepository extends DbRepository
     }
 
     /**
-     * Destroy ClientDetail
+     * Destroy Profit
      *
      * @param int $id
      * @return mixed
@@ -287,7 +261,9 @@ class EloquentClientDetailRepository extends DbRepository
      */
     public function getForDataTable()
     {
-        return $this->model->select($this->getTableFields())->get();
+        return $this->model->select($this->getTableFields())
+            ->with(['client'])
+            ->get();
     }
 
     /**
@@ -355,32 +331,5 @@ class EloquentClientDetailRepository extends DbRepository
         unset($clientColumns['username']);
 
         return json_encode($this->setTableStructure($clientColumns));
-    }
-
-    public function getPendingIpos($clientId = null)
-    {
-        $assignedIpoIds = IpoAssignments::where('client_id', $clientId)->pluck('ipo_id');
-        
-        return IpoDetails::whereDate('closing_date', '>= ', date('Y-m-d'))
-            ->whereNotIn('id', $assignedIpoIds)
-            ->get();
-    }
-
-    public function getFeeTransactions($id)
-    {
-        return Fees::where('client_id', $id)->get();
-    }
-
-    public function getArrayList()
-    {
-        $clients = $this->model->get();
-        $options = [];
-        foreach($clients as $client)
-        {
-            $options[$client->id] = $client->name;
-        }
-
-        return $options;
-
     }
 }

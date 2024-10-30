@@ -386,4 +386,16 @@ class EloquentIpoDetailsRepository extends DbRepository
 
         return json_encode($this->setTableStructure($clientColumns));
     }
+
+    public function getArrayList()
+    {
+        $ipos = $this->model->orderBy('closing_date','desc')->get();
+        $options = [];
+        foreach($ipos as $ipo)
+        {
+            $options[$ipo->id] = $ipo->ipo_name;
+        }
+
+        return $options;
+    }
 }

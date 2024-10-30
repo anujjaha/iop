@@ -121,6 +121,44 @@
                 <!-- /.info-box -->
               </div>
 
+              <div class="col-md-2 col-sm-4 col-12">
+                <div class="info-box">
+                  <span class=""><i class="far fa-star"></i></span>
+
+                  <div class="info-box-content">
+                    <span class="info-box-text">Total Holding</span>
+                    <span class="info-box-number">{!! totalHoldings() !!}</span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+              </div>
+
+              <div class="col-md-2 col-sm-4 col-12">
+                <div class="info-box">
+                  <span class=""><i class="far fa-star"></i></span>
+
+                  <div class="info-box-content">
+                    <span class="info-box-text">Stock Profit</span>
+                    <span class="info-box-number">{!! totalStockProfit() !!}</span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+              </div>
+
+                <div class="col-md-2 col-sm-4 col-12">
+                <div class="info-box">
+                  <span class=""><i class="far fa-star"></i></span>
+
+                  <div class="info-box-content">
+                    <span class="info-box-text">Other Profit</span>
+                    <span class="info-box-number">{!! formProfit() !!}</span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+              </div>
              
 
 

@@ -25,14 +25,13 @@
     </div>
 </div>
 
-
 <!-- Modal -->
-<div class="modal fade " id="addBalanceModal" tabindex="-1" role="dialog" aria-labelledby="addBalanceModal" aria-hidden="true">
+<div class="modal fade " id="sellStockModal" tabindex="-1" role="dialog" aria-labelledby="sellStockModal" aria-hidden="true">
     <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="addBalanceModalTitle">
-                Add Balance: <span id="clientTitleContainer"></span>
+                Sell Stock: <span id="stockTitleContainer"></span>
             </h5>
             <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -40,22 +39,29 @@
         </div>
         <div class="modal-body">
             <div class="form-group row">
-                <label class="col-lg-2 control-label">Amount: </label>
+                <label class="col-lg-2 control-label">Qty: </label>
                 <div class="col-md-10">
-                    <input type="number" step="0.1" style="width: 150px;" id="amount" name="amount" class="form-control" value="0" />
+                    <input type="number" step="1" style="width: 150px;" id="qty" name="qty" class="form-control" value="0" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-lg-2 control-label">Price: </label>
+                <div class="col-md-10">
+                    <input type="number" step="1" style="width: 150px;" id="price" name="price" class="form-control" value="0" />
                 </div>
             </div>
 
             <div class="form-group row">
                 <label class="col-lg-2 control-label">Notes: </label>
                 <div class="col-md-10">
-                    <input type="text" id="notes" name="notes" class="form-control" value="Adding Balance" />
+                    <input type="text" id="notes" name="notes" class="form-control" value="Sell Stock" />
                 </div>
             </div>
         </div>
         <div class="modal-footer">
-            <input type="hidden" name="clientId" id="clientId" value="">
-            <button type="button" onclick="storeBalance()"  class="btn btn-success">Add</button>
+            <input type="hidden" name="stockId" id="stockId" value="">
+            <button type="button" onclick="sellFinalStock()"  class="btn btn-success">Sell Now</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"  data-dismiss="modal">Close</button>
         </div>
     </div>
@@ -77,68 +83,48 @@ jQuery(document).ready(function() {
         'GET', columns);
 });
 
-function revokeIpo(assignmentId)
+function sellStock(stockId, title, max)
 {
-    swal({
-    title: "Sure, allotment not received",
-    text: "You will not be able to recover operation",
-    type: "warning",
-    showCancelButton: true,
-    confirmButtonColor: '#DD6B55',
-    confirmButtonText: 'Yes, I am sure!',
-    cancelButtonText: "No, cancel it!",
-    closeOnConfirm: false,
-    closeOnCancel: false
-    },
-    function(isConfirm)
-    {
-        if (isConfirm)
-        {
-            revokeSuccess(assignmentId);
-        } else 
-        {
-            swal.close();
-        }
-    });
+    jQuery("#sellStockModal").modal('show');
+    jQuery("#stockTitleContainer").html(title);
+    jQuery("#qty").val(max);
+    jQuery("#stockId").val(stockId);
+    jQuery("#qty").attr('max', max);
 }
 
-function allotedIpo(assignmentId)
-{
-    swal({
-    title: "Sure, successfully alloted",
-    text: "You will not be able to recover operation",
-    type: "warning",
-    showCancelButton: true,
-    confirmButtonColor: '#DD6B55',
-    confirmButtonText: 'Yes, I am sure!',
-    cancelButtonText: "No, cancel it!",
-    closeOnConfirm: false,
-    closeOnCancel: false
-    },
-    function(isConfirm)
-    {
-        if (isConfirm)
-        {
-            allottedSuccess(assignmentId);
-        } else 
-        {
-            swal.close();
-        }
-    });
-};
 
-function revokeSuccess(assignmentId)
+function sellFinalStock()
 {
+    var qty = jQuery("#qty").val();
+    var rate = jQuery("#price").val();
+    var stockId = jQuery("#stockId").val();
+    var notes = jQuery("#notes").val();
+
+    if(qty < 1)
+    {
+        swal('Oh', 'Please enter valid Qty','error');
+        return;
+    }
+
+    if(rate < 1)
+    {
+        swal('Oh', 'Please enter valid amount','error');
+        return;
+    }
+
     jQuery.ajax(
     {
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url : "{{ url(route('admin.ipoassignments.revoke-ipo')) }}",
+        url : "{{ url(route('admin.stock.sell')) }}",
         dataType : 'json',
         type : 'POST',
         data : {
-           assignmentId
+           qty,
+           rate,
+           stockId,
+           notes
         },
         success : function(data) {
             swal.close();
@@ -149,30 +135,5 @@ function revokeSuccess(assignmentId)
         }
     });
 }
-
-function allottedSuccess(assignmentId)
-{
-    jQuery.ajax(
-    {
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url : "{{ url(route('admin.ipoassignments.alloted-ipo')) }}",
-        dataType : 'json',
-        type : 'POST',
-        data : {
-           assignmentId
-        },
-        success : function(data) {
-            swal.close();
-            window.location.reload();
-        },
-        complete: function() {
-            
-        }
-    });
-}
-
 </script>
 @endsection
-
