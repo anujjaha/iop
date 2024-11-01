@@ -7,6 +7,8 @@ use App\Models\Loss\Loss;
 use App\Models\Stock\Stock;
 use App\Models\StockTransaction\StockTransaction;
 use App\Models\Tax\Tax;
+use App\Models\User\User;
+use App\Models\ClientDetail\ClientDetail;
 
 /**
  * Global helpers file with misc functions.
@@ -559,3 +561,46 @@ if (!function_exists('formProfit')) {
     }
 }
 
+
+if (!function_exists('getClientOptions')) {
+
+    function getClientOptions()
+    {
+        $clients = ClientDetail::all();
+        $options = [];
+
+        foreach($clients as $client)
+        {
+            $options[$client->id] = $client->getFullName();
+        }
+        return $options;
+    }
+}
+
+
+
+function getExpenseCategories()
+{
+    return [
+        'salary'    => 'Salary',
+        'misc'      => 'Misc',
+        'tea'       => 'Tea / Coffee',
+        'fun'       => 'Fun Friday',
+        'festival'  => 'Festival',
+        'cleaning'  => "Office Clean",
+        "lightbill" => "Light Bill",
+        'rent'      => "Office Rent"
+    ];
+}
+
+function getUserOptions()
+{
+    $users = User::all();
+    $options = [];
+    foreach($users as $user)
+    {
+        $options[$user->id] = $user->name;
+    }
+
+    return $options;
+}

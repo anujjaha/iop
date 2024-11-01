@@ -1,35 +1,32 @@
 <?php 
 
-namespace App\Repositories\ClientDetail;
+namespace App\Repositories\Expense;
 
 /**
- * Class EloquentClientDetailRepository
+ * Class EloquentExpenseRepository
  *
  * @author Anuj Jaha ( er.anujjaha@gmail.com)
  */
 
-use App\Models\ClientDetail\ClientDetail;
+use App\Models\Expense\Expense;
 use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
-use App\Models\IpoDetails\IpoDetails;
-use App\Models\IpoAssignments\IpoAssignments;
-use App\Models\Fees\Fees;
 
-class EloquentClientDetailRepository extends DbRepository
+class EloquentExpenseRepository extends DbRepository
 {
     /**
-     * ClientDetail Model
+     * Expense Model
      *
      * @var Object
      */
     public $model;
 
     /**
-     * ClientDetail Title
+     * Expense Title
      *
      * @var string
      */
-    public $moduleTitle = 'ClientDetail';
+    public $moduleTitle = 'Expense';
 
     /**
      * Table Headers
@@ -38,15 +35,13 @@ class EloquentClientDetailRepository extends DbRepository
      */
     public $tableHeaders = [
         'id'              => 'Id',
-		'name'            => 'Name',
-		'balance'         => 'Balance',
-		'mobile'          => 'Mobile',
-		'email'           => 'Email',
-		'aadhar_no'       => 'Aadhar_no',
-		'pan_no'          => 'Pan_no',
-        'bank_account'    => 'Bank Account',
-		'profit_loss'     => 'Profit_loss',
-		"actions"         => "Actions"
+		'user_id'         => 'Employee',
+		'category'        => 'Category',
+		'title'           => 'Title',
+		'amount'          => 'Amount',
+		'notes'           => 'Notes',
+		'created_by'      => 'Created_by',
+        "actions"         => "Actions"
     ];
 
     /**
@@ -61,51 +56,39 @@ class EloquentClientDetailRepository extends DbRepository
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'name' =>   [
-                    'data'          => 'name',
-                    'name'          => 'name',
+		'user_id' =>   [
+                    'data'          => 'user_id',
+                    'name'          => 'user_id',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-        'balance' =>   [
-                    'data'          => 'balance',
-                    'name'          => 'balance',
+		'category' =>   [
+                    'data'          => 'category',
+                    'name'          => 'category',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'mobile' =>   [
-                    'data'          => 'mobile',
-                    'name'          => 'mobile',
+		'title' =>   [
+                    'data'          => 'title',
+                    'name'          => 'title',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'email' =>   [
-                    'data'          => 'email',
-                    'name'          => 'email',
+		'amount' =>   [
+                    'data'          => 'amount',
+                    'name'          => 'amount',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'aadhar_no' =>   [
-                    'data'          => 'aadhar_no',
-                    'name'          => 'aadhar_no',
+		'notes' =>   [
+                    'data'          => 'notes',
+                    'name'          => 'notes',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'pan_no' =>   [
-                    'data'          => 'pan_no',
-                    'name'          => 'pan_no',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],
-        'bank_account' =>   [
-                    'data'          => 'bank_account',
-                    'name'          => 'bank_account',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],                
-		'profit_loss' =>   [
-                    'data'          => 'profit_loss',
-                    'name'          => 'profit_loss',
+		'created_by' =>   [
+                    'data'          => 'created_by',
+                    'name'          => 'created_by',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
@@ -158,14 +141,13 @@ class EloquentClientDetailRepository extends DbRepository
      * @var array
      */
     public $moduleRoutes = [
-        'listRoute'     => 'clientdetail.index',
-        'createRoute'   => 'clientdetail.create',
-        'storeRoute'    => 'clientdetail.store',
-        'editRoute'     => 'clientdetail.edit',
-        'showRoute'     => 'clientdetail.show',
-        'updateRoute'   => 'clientdetail.update',
-        'deleteRoute'   => 'clientdetail.destroy',
-        'dataRoute'     => 'clientdetail.get-list-data'
+        'listRoute'     => 'expense.index',
+        'createRoute'   => 'expense.create',
+        'storeRoute'    => 'expense.store',
+        'editRoute'     => 'expense.edit',
+        'updateRoute'   => 'expense.update',
+        'deleteRoute'   => 'expense.destroy',
+        'dataRoute'     => 'expense.get-list-data'
     ];
 
     /**
@@ -174,11 +156,10 @@ class EloquentClientDetailRepository extends DbRepository
      * @var array
      */
     public $moduleViews = [
-        'listView'      => 'clientdetail.index',
-        'createView'    => 'clientdetail.create',
-        'editView'      => 'clientdetail.edit',
-        'showView'      => 'clientdetail.show',
-        'deleteView'    => 'clientdetail.destroy',
+        'listView'      => 'expense.index',
+        'createView'    => 'expense.create',
+        'editView'      => 'expense.edit',
+        'deleteView'    => 'expense.destroy',
     ];
 
     /**
@@ -187,11 +168,11 @@ class EloquentClientDetailRepository extends DbRepository
      */
     public function __construct()
     {
-        $this->model = new ClientDetail;
+        $this->model = new Expense;
     }
 
     /**
-     * Create ClientDetail
+     * Create Expense
      *
      * @param array $input
      * @return mixed
@@ -210,7 +191,7 @@ class EloquentClientDetailRepository extends DbRepository
     }
 
     /**
-     * Update ClientDetail
+     * Update Expense
      *
      * @param int $id
      * @param array $input
@@ -231,7 +212,7 @@ class EloquentClientDetailRepository extends DbRepository
     }
 
     /**
-     * Destroy ClientDetail
+     * Destroy Expense
      *
      * @param int $id
      * @return mixed
@@ -294,7 +275,9 @@ class EloquentClientDetailRepository extends DbRepository
      */
     public function getForDataTable()
     {
-        return $this->model->select($this->getTableFields())->get();
+        return $this->model->select($this->getTableFields())
+            ->with(['createdBy', 'user'])
+            ->get();
     }
 
     /**
@@ -320,7 +303,7 @@ class EloquentClientDetailRepository extends DbRepository
     {
         if($isCreate)
         {
-            $input = array_merge($input, ['user_id' => access()->user()->id]);
+            $input = array_merge($input, ['created_by' => access()->user()->id]);
         }
 
         return $input;
@@ -362,32 +345,5 @@ class EloquentClientDetailRepository extends DbRepository
         unset($clientColumns['username']);
 
         return json_encode($this->setTableStructure($clientColumns));
-    }
-
-    public function getPendingIpos($clientId = null)
-    {
-        $assignedIpoIds = IpoAssignments::where('client_id', $clientId)->pluck('ipo_id');
-        
-        return IpoDetails::whereDate('closing_date', '>= ', date('Y-m-d'))
-            ->whereNotIn('id', $assignedIpoIds)
-            ->get();
-    }
-
-    public function getFeeTransactions($id)
-    {
-        return Fees::where('client_id', $id)->get();
-    }
-
-    public function getArrayList()
-    {
-        $clients = $this->model->get();
-        $options = [];
-        foreach($clients as $client)
-        {
-            $options[$client->id] = $client->name;
-        }
-
-        return $options;
-
     }
 }

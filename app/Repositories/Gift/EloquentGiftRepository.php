@@ -1,35 +1,32 @@
 <?php 
 
-namespace App\Repositories\ClientDetail;
+namespace App\Repositories\Gift;
 
 /**
- * Class EloquentClientDetailRepository
+ * Class EloquentGiftRepository
  *
  * @author Anuj Jaha ( er.anujjaha@gmail.com)
  */
 
-use App\Models\ClientDetail\ClientDetail;
+use App\Models\Gift\Gift;
 use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
-use App\Models\IpoDetails\IpoDetails;
-use App\Models\IpoAssignments\IpoAssignments;
-use App\Models\Fees\Fees;
 
-class EloquentClientDetailRepository extends DbRepository
+class EloquentGiftRepository extends DbRepository
 {
     /**
-     * ClientDetail Model
+     * Gift Model
      *
      * @var Object
      */
     public $model;
 
     /**
-     * ClientDetail Title
+     * Gift Title
      *
      * @var string
      */
-    public $moduleTitle = 'ClientDetail';
+    public $moduleTitle = 'Gift';
 
     /**
      * Table Headers
@@ -37,16 +34,12 @@ class EloquentClientDetailRepository extends DbRepository
      * @var array
      */
     public $tableHeaders = [
-        'id'              => 'Id',
-		'name'            => 'Name',
-		'balance'         => 'Balance',
-		'mobile'          => 'Mobile',
-		'email'           => 'Email',
-		'aadhar_no'       => 'Aadhar_no',
-		'pan_no'          => 'Pan_no',
-        'bank_account'    => 'Bank Account',
-		'profit_loss'     => 'Profit_loss',
-		"actions"         => "Actions"
+        'id'            => 'Id',
+		'client_id'     => 'Client',
+		'amount'        => 'Amount',
+		'notes'         => 'Notes',
+		'user_id'       => 'Created By',
+        "actions"       => "Actions"
     ];
 
     /**
@@ -61,51 +54,27 @@ class EloquentClientDetailRepository extends DbRepository
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'name' =>   [
-                    'data'          => 'name',
-                    'name'          => 'name',
+		'client_id' =>   [
+                    'data'          => 'client_id',
+                    'name'          => 'client_id',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-        'balance' =>   [
-                    'data'          => 'balance',
-                    'name'          => 'balance',
+		'amount' =>   [
+                    'data'          => 'amount',
+                    'name'          => 'amount',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'mobile' =>   [
-                    'data'          => 'mobile',
-                    'name'          => 'mobile',
+		'notes' =>   [
+                    'data'          => 'notes',
+                    'name'          => 'notes',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'email' =>   [
-                    'data'          => 'email',
-                    'name'          => 'email',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],
-		'aadhar_no' =>   [
-                    'data'          => 'aadhar_no',
-                    'name'          => 'aadhar_no',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],
-		'pan_no' =>   [
-                    'data'          => 'pan_no',
-                    'name'          => 'pan_no',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],
-        'bank_account' =>   [
-                    'data'          => 'bank_account',
-                    'name'          => 'bank_account',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],                
-		'profit_loss' =>   [
-                    'data'          => 'profit_loss',
-                    'name'          => 'profit_loss',
+		'user_id' =>   [
+                    'data'          => 'user_id',
+                    'name'          => 'user_id',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
@@ -158,14 +127,13 @@ class EloquentClientDetailRepository extends DbRepository
      * @var array
      */
     public $moduleRoutes = [
-        'listRoute'     => 'clientdetail.index',
-        'createRoute'   => 'clientdetail.create',
-        'storeRoute'    => 'clientdetail.store',
-        'editRoute'     => 'clientdetail.edit',
-        'showRoute'     => 'clientdetail.show',
-        'updateRoute'   => 'clientdetail.update',
-        'deleteRoute'   => 'clientdetail.destroy',
-        'dataRoute'     => 'clientdetail.get-list-data'
+        'listRoute'     => 'gift.index',
+        'createRoute'   => 'gift.create',
+        'storeRoute'    => 'gift.store',
+        'editRoute'     => 'gift.edit',
+        'updateRoute'   => 'gift.update',
+        'deleteRoute'   => 'gift.destroy',
+        'dataRoute'     => 'gift.get-list-data'
     ];
 
     /**
@@ -174,11 +142,10 @@ class EloquentClientDetailRepository extends DbRepository
      * @var array
      */
     public $moduleViews = [
-        'listView'      => 'clientdetail.index',
-        'createView'    => 'clientdetail.create',
-        'editView'      => 'clientdetail.edit',
-        'showView'      => 'clientdetail.show',
-        'deleteView'    => 'clientdetail.destroy',
+        'listView'      => 'gift.index',
+        'createView'    => 'gift.create',
+        'editView'      => 'gift.edit',
+        'deleteView'    => 'gift.destroy',
     ];
 
     /**
@@ -187,11 +154,11 @@ class EloquentClientDetailRepository extends DbRepository
      */
     public function __construct()
     {
-        $this->model = new ClientDetail;
+        $this->model = new Gift;
     }
 
     /**
-     * Create ClientDetail
+     * Create Gift
      *
      * @param array $input
      * @return mixed
@@ -210,7 +177,7 @@ class EloquentClientDetailRepository extends DbRepository
     }
 
     /**
-     * Update ClientDetail
+     * Update Gift
      *
      * @param int $id
      * @param array $input
@@ -231,7 +198,7 @@ class EloquentClientDetailRepository extends DbRepository
     }
 
     /**
-     * Destroy ClientDetail
+     * Destroy Gift
      *
      * @param int $id
      * @return mixed
@@ -294,7 +261,9 @@ class EloquentClientDetailRepository extends DbRepository
      */
     public function getForDataTable()
     {
-        return $this->model->select($this->getTableFields())->get();
+        return $this->model->select($this->getTableFields())
+            ->with(['client', 'user'])
+            ->get();
     }
 
     /**
@@ -362,32 +331,5 @@ class EloquentClientDetailRepository extends DbRepository
         unset($clientColumns['username']);
 
         return json_encode($this->setTableStructure($clientColumns));
-    }
-
-    public function getPendingIpos($clientId = null)
-    {
-        $assignedIpoIds = IpoAssignments::where('client_id', $clientId)->pluck('ipo_id');
-        
-        return IpoDetails::whereDate('closing_date', '>= ', date('Y-m-d'))
-            ->whereNotIn('id', $assignedIpoIds)
-            ->get();
-    }
-
-    public function getFeeTransactions($id)
-    {
-        return Fees::where('client_id', $id)->get();
-    }
-
-    public function getArrayList()
-    {
-        $clients = $this->model->get();
-        $options = [];
-        foreach($clients as $client)
-        {
-            $options[$client->id] = $client->name;
-        }
-
-        return $options;
-
     }
 }

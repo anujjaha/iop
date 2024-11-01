@@ -48,7 +48,7 @@
                                 <div class="form-group row row">
                                     <label for="name" class="col-lg-5 control-label">Lot Size:</label>
                                     <div class="col-lg-7">
-                                        {!! $item->lot_size !!}
+                                        {!! $item->min_lot_size !!} / {!! $item->max_lot_size !!}
                                     </div>
                                 </div>
                             </div>
@@ -57,7 +57,7 @@
                                 <div class="form-group row row">
                                     <label for="name" class="col-lg-5 control-label">Amount:</label>
                                     <div class="col-lg-7">
-                                        {!! $item->block_amt !!}
+                                        {!! $item->min_lot_size * $item->price_band  !!} / {!! $item->max_lot_size * $item->price_band  !!}
                                     </div>
                                 </div>
                             </div>
@@ -75,9 +75,7 @@
                                 <div class="form-group row row">
                                     <label for="name" class="col-lg-5 control-label">Blocked:</label>
                                     <div class="col-lg-7">
-                                        {!! $item->assignments->
-
-                                        whereNull('profit_loss')->pluck('profit_loss')->sum()  !!}
+                                        {!! $item->assignments->whereNull('profit_loss')->pluck('profit_loss')->sum()  !!}
                                     </div>
                                 </div>
                             </div>
@@ -125,13 +123,13 @@
                 <tr>
                     <td>{!! $sr !!}</td>
                     <td>{!! $assignment->client->name !!}</td>
-                    <td>{!! $assignment->status !!}</td>
+                    <td>{!! getAssignmentLiveStatus($assignment->status) !!}</td>
                     <td>{!! $assignment->profit_loss !!}</td>
-                    <td class="text-right">{!! $item->block_amt !!}</td>
+                    <td class="text-right">{!! $assignment->share_qty * $item->price_band !!}</td>
                 </tr>
                 @php
                     $sr++;
-                    $totalBlock = $totalBlock + $item->block_amt;
+                    $totalBlock = $totalBlock + ($assignment->share_qty * $item->price_band);
                 @endphp
             @endforeach
              <tr>
@@ -161,8 +159,21 @@
         </div>
         <div class="modal-body">
             <div class="form-group row">
-                <label class="col-lg-2 control-label">Select: </label>
-                <div class="col-md-10">
+                <label class="col-lg-3 control-label">Select Lot: </label>
+                <div class="col-md-9">
+                    <select class="form-control" name="ipoLotSize" id="ipoLotSize">
+                        <option value="">Select Size</option>
+                            <option value="{!! $item->min_lot_size !!}">{!! $item->min_lot_size !!}
+                            </option>
+                            <option value="{!! $item->max_lot_size !!}">{!! $item->max_lot_size !!}
+                            </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-lg-3 control-label">Select: </label>
+                <div class="col-md-9">
                     <select class="form-control" name="client_id" id="client_id">
                         <option value="">Select Client</option>
                         @foreach($clientList as $client)
@@ -175,8 +186,8 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-lg-2 control-label">Notes: </label>
-                <div class="col-md-10">
+                <label class="col-lg-3 control-label">Notes: </label>
+                <div class="col-md-9">
                     <input type="text" id="ipo_notes" name="ipo_notes" class="form-control" value="Apply IPO" />
                 </div>
             </div>
@@ -206,6 +217,7 @@ function applyIpo()
     var client_id    = jQuery("#client_id").val();
     var ipo_id       = {!! $item->id !!};
     var applied_date = "{!! date('Y-m-d') !!}";
+    var lotSize      = jQuery("#ipoLotSize").val();
 
     if(client_id.trim() == '')
     {
@@ -227,6 +239,7 @@ function applyIpo()
            applied_date,
            status: 1,
            notes: jQuery("#ipo_notes").val(),
+           lotSize
         },
         success : function(data) 
         {

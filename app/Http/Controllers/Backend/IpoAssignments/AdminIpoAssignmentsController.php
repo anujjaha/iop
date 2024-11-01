@@ -63,6 +63,22 @@ class AdminIpoAssignmentsController extends Controller
     }
 
     /**
+     * IpoAssignments Listing
+     *
+     * @return \Illuminate\View\View
+     */
+    public function filter(Request $request, $id)
+    {
+        $list = $this->repository->getFilterData($id);
+        $item = IpoDetails::where('id', $id)->with(['assignments'])->first();
+        return view('backend.ipoassignments.filter')->with([
+            'repository'    => $this->repository,
+            'item'          => $item,
+            'list'          => $list
+        ]);
+    }
+
+    /**
      * IpoAssignments View
      *
      * @return \Illuminate\View\View
@@ -169,7 +185,7 @@ class AdminIpoAssignmentsController extends Controller
                 return getAssignmentLiveStatus($item->status);
             })
             ->addColumn('ipo_id', function ($item) {
-                return $item->ipo->ipo_name;
+                return '<a target="_blank" href="'. route('admin.ipoassignments.filter', $item->ipo->id) .'">'. $item->ipo->ipo_name . '</a>';
             })
             ->addColumn('ipo_amt', function ($item) {
                 if($item->status == '1')

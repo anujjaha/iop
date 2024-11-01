@@ -620,4 +620,15 @@ class EloquentIpoAssignmentsRepository extends DbRepository
 
         return true;
     }
+
+    /**
+     * Get Filter data
+     * 
+     * @param int $id
+     * @return object
+     */
+    public function getFilterData($id = null)
+    {
+        return $this->model->where('ipo_id', $id)->get();
+    }
 }
