@@ -159,6 +159,19 @@
                 </div>
                 <!-- /.info-box -->
               </div>
+
+              <div class="col-md-2 col-sm-4 col-12">
+                <div class="info-box">
+                  <span class=""><i class="far fa-star"></i></span>
+
+                  <div class="info-box-content">
+                    <span class="info-box-text">Expense</span>
+                    <span class="info-box-number">{!! totalExpense() !!}</span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+              </div>
              
 
 

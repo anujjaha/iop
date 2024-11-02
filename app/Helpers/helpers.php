@@ -9,6 +9,7 @@ use App\Models\StockTransaction\StockTransaction;
 use App\Models\Tax\Tax;
 use App\Models\User\User;
 use App\Models\ClientDetail\ClientDetail;
+use App\Models\Expense\Expense;
 
 /**
  * Global helpers file with misc functions.
@@ -574,6 +575,19 @@ if (!function_exists('getClientOptions')) {
             $options[$client->id] = $client->getFullName();
         }
         return $options;
+    }
+}
+
+if (!function_exists('totalExpense')) {
+
+    function totalExpense($userId = null)
+    {
+        if($userId)
+        {
+            return Expense::where('user_id', $userId)->sum('amount');
+        }
+
+        return Expense::sum('amount');
     }
 }
 
