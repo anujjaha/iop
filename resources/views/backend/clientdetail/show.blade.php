@@ -106,25 +106,25 @@
                     <div class="form-group row row">
                         <label for="name" class="col-lg-3 control-label">Name :</label>
                         <div class="col-lg-9">
-                            Anuj
+                            {!! $item->name !!}
                         </div>
                     </div>
                     <div class="form-group row row">
                         <label for="mobile" class="col-lg-3 control-label">Mobile :</label>
                         <div class="col-lg-9">
-                            8000060541
+                            {!! $item->mobile !!}
                         </div>
                     </div>
                     <div class="form-group row row">
                         <label for="email" class="col-lg-3 control-label">Email :</label>
                         <div class="col-lg-9">
-                            anuj@yopmail.com
+                            {!! $item->email !!}
                         </div>
                     </div>
                     <div class="form-group row row">
                         <label for="aadhar_no" class="col-lg-3 control-label">Aadhar No. :</label>
                         <div class="col-lg-9">
-                            7011200253
+                            {!! $item->aadhar_no !!}
                         </div>
                     </div>
                 </div>
@@ -133,19 +133,19 @@
                     <div class="form-group row row">
                     <label for="pan" class="col-lg-3 control-label">PAN:</label>
                         <div class="col-lg-9">
-                            ASDF862N
+                            {!! $item->pan_no !!}
                         </div>
                     </div>
                     <div class="form-group row row">
                         <label for="dmat_co_name" class="col-lg-3 control-label">DMAT Co. Name:</label>
                         <div class="col-lg-9">
-                           Zerodha
+                           {!! $item->dmat_co_name !!}
                         </div>
                     </div>
                     <div class="form-group row row">
                         <label for="dmat_account" class="col-lg-3 control-label">Dmat Account:</label>
                         <div class="col-lg-9">
-                            608787647376
+                            {!! $item->dmat_account !!}
                         </div>
                     </div>
                 </div>
@@ -153,13 +153,13 @@
                     <div class="form-group row row">
                         <label for="bank_name" class="col-lg-3 control-label">Bank Name:</label>
                         <div class="col-lg-9">
-                            Kotak Mahindra Bank
+                            {!! $item->bank_name !!}
                         </div>
                     </div>
                     <div class="form-group row row">
                         <label for="otTotalPay" class="col-lg-3 control-label">Bank Account:</label>
                         <div class="col-lg-9">
-                            1293084857
+                            {!! $item->bank_account !!}
                         </div>
                     </div>
                 </div>
