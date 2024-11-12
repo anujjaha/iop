@@ -4,6 +4,7 @@ namespace App\Models\ClientDetail\Traits\Relationship;
 
 use App\Models\IpoAssignments\IpoAssignments;
 use App\Models\Transactions\Transactions;
+use App\Models\Stock\Stock;
 
 trait Relationship
 {
@@ -35,5 +36,16 @@ trait Relationship
     public function monthlyFees()
     {
         return $this->hasMany(Transactions::class, 'client_id')->whereNotNull('monthly_fee');
+    }
+
+
+    /**
+     * belongsTo
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function stockList()
+    {
+        return $this->hasMany(Stock::class, 'client_id');
     }
 }

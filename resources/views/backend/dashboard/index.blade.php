@@ -262,20 +262,24 @@
                                 <thead>
                                     <tr>
                                         <td>Client</td>
-                                        <td>IPO</td>
                                         <td>Buy At</td>
                                         <td>QTY</td>
                                         <td>Invested</td>
+                                        <td>Listing Date</td>
                                         <td>Action</td>
                                     </tr>
 
                                      @foreach($filter as $record)
                                         <tr>
                                             <td>{!! $record->client->name !!}</td>
-                                            <td>{!! $record->ipo->ipo_name !!}</td>
                                             <td>{!! $record->ipo->block_amt / $record->ipo->lot_size !!}</td>
                                             <td>{!! $record->ipo->lot_size !!}</td>
                                             <td>{!! $record->ipo->block_amt !!}</td>
+                                            <td>
+                                                <a href="{!! $record->ipo->external_link !!}" target="_blank" class="btn-xs btn btn-success">
+                                                {!! $record->ipo->listing_date !!}
+                                                </a>
+                                            </td>
                                             <td>
                                                 <a  onclick="settleAllotment({!! $record->id !!}, `{!! $record->ipo->ipo_name  !!} | {!! $record->client->name!!} `)" href="javascript:void(0);" class="btn btn-xs btn-primary">Settle</a>
                                             </td>
@@ -285,6 +289,52 @@
                             </table>
                         </div>
                 @endforeach
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            Listings <span class="text-right float-right">
+            </span>
+        </div>
+
+        <div class="card-body">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="ipo-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
+                        ACTIVE
+                        </a>
+                    </li>
+            </ul>
+            <div class="tab-content" id="myIpoTabContent">
+                <div class="tab-pane fade show active" id="ipo-tab" role="tabpanel" aria-labelledby="ipo-tab">
+                    <table id="items-table" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <td>SR</td>
+                                <td>IPO</td>
+                                <td>Listing Date</td>
+                                <td>Action</td>
+                            </tr>
+
+                            @php
+                                $sr = 1;
+                            @endphp
+                            @foreach($completedIpos as $ipo)
+                                <tr>
+                                    <td>{!! $sr++; !!}</td>
+                                    <td>{!! $ipo->ipo_name !!}</td>
+                                    <td>{!! $ipo->listing_date !!}</td>
+                                    <td>
+                                        <a href="{!! route('admin.ipoassignments.filter', $ipo->id) !!}" class="btn btn-xs btn-warning" target="_blank">Allotment</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

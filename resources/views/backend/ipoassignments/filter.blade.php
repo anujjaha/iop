@@ -115,6 +115,8 @@
                         $sr = 1;
                     @endphp
                     @foreach($list as $item)
+
+                        @if($item->status == 1)
                         <tr>
                             <td>{!! $sr++ !!}</td>
                             <td>{!! $item->client->getFullName() !!}</td>
@@ -125,6 +127,7 @@
                                 <a href="javascript:void(0);" onclick="allotedIpo({!! $item->id !!})" class="btn btn-xs btn-primary"><i class="fa fa-check"></i></a>
                             </td>
                         </tr>
+                        @endif
                     @endforeach
                 </tbody>
             </table>
@@ -202,7 +205,7 @@ function revokeSuccess(assignmentId)
         },
         success : function(data) {
             swal.close();
-            window.location.reload();
+            //window.location.reload();
         },
         complete: function() {
             

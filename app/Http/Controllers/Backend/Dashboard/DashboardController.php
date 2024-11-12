@@ -49,6 +49,10 @@ class DashboardController extends Controller
             $filterList[$alloted->ipo->ipo_name][] = $alloted;
         }
 
+        $completedIpos = IpoDetails::with(['assignments', 'assignments.client'])
+            ->whereDate('listing_date', '<= ', date('Y-m-d'))
+            ->get();
+        // dd($completedIpos);
         return view('backend.dashboard.index')->with([
             'todayIpos'     => $todayIpos,
             'tomorrowIpos'  => $tomorrowIpos,
@@ -58,6 +62,7 @@ class DashboardController extends Controller
             'filterList'    => $filterList,
             'thirdDay'      => $thirdDay,
             'fourDay'       => $fourDay,
+            'completedIpos' => $completedIpos
         ]);
     }
 }

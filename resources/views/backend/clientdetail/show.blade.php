@@ -200,6 +200,48 @@
     </div>
 
 </div>
+
+<div class="col-md-12">
+<div class="card card-primary">
+        <div class="card-header">
+            <div class="card-title">
+                Stock List
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tr>
+                    <td>Sr</td>
+                    <td>Title</td>
+                    <td>Code</td>
+                    <td>QTY</td>
+                    <td>CMP</td>
+                    <td>INFO</td>
+                    <td>Notes</td>
+                </tr>
+                @php
+                    $sr = 0;
+                @endphp
+                @foreach($item->stockList as $stock)
+                    <tr>
+                        <td>{!! $sr++; !!}</td>
+                        <td>{!! $stock->title !!}</td>
+                        <td>{!! $stock->code !!}</td>
+                        <td>{!! $stock->qty !!}</td>
+                        <td>{!! $stock->cmp !!}</td>
+                        <td>
+                            <a href="{!! $stock->external_link !!}" target="_blank" class="btn btn-xs btn-warning">
+                                {!! $stock->qty * $stock->cmp !!}
+                            </a>
+                        </td>
+                        <td>{!! $stock->notes !!}</td>
+                    </tr>
+                @endforeach
+            </table>
+        </div>
+    </div>
+
+</div>
 <div class="col-md-12">
     <div class="card card-primary">
         <div class="card-header">

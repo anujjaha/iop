@@ -70,7 +70,9 @@ class AdminIpoAssignmentsController extends Controller
     public function filter(Request $request, $id)
     {
         $list = $this->repository->getFilterData($id);
-        $item = IpoDetails::where('id', $id)->with(['assignments'])->first();
+        $item = IpoDetails::where('id', $id)->with(['assignments'])
+            ->first();
+        // dd($item);
         return view('backend.ipoassignments.filter')->with([
             'repository'    => $this->repository,
             'item'          => $item,

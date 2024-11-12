@@ -107,11 +107,11 @@ class AdminClientDetailController extends Controller
      */
     public function show($id, Request $request)
     {
-        $item           = $this->repository->model->with(['assignedIpos', 'assignedIpos.ipo', 'transactions', 'monthlyFees'])->where('id',$id)->first();
+        $item           = $this->repository->model->with(['assignedIpos', 'assignedIpos.ipo', 'transactions', 'monthlyFees', 'stockList'])->where('id',$id)->first();
         $eligibleIpos   = $this->repository->getPendingIpos($item->id);
         $fees           = $this->repository->getFeeTransactions($item->id);
 
-        // dd($item);
+        // dd($item->stockList);
         return view($this->repository->setAdmin(true)->getModuleView('showView'))->with([
             'item'          => $item,
             'eligibleIpos'  => $eligibleIpos,
