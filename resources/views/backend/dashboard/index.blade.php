@@ -238,56 +238,67 @@
         </div>
     </div>
 
-    <div class="card">
+     <div class="card">
         <div class="card-header">
             Allocations <span class="text-right float-right">
             </span>
         </div>
 
         <div class="card-body">
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <ul class="nav nav-tabs" id="alocationTab" role="tablist">
+                @php
+                    $ipoSr = 1;
+                @endphp
                 @foreach($filterList as $key => $filter)
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
+                        <a class="nav-link {!! $loop->first ? 'active' : '' !!}" id="home{!! $ipoSr !!}-tab" data-bs-toggle="tab" data-bs-target="#home{!! $ipoSr !!}" type="button" role="tab" aria-controls="home{!! $ipoSr !!}" aria-selected="true">
                         {!! $key !!}
                         </a>
                     </li>
+                    @php
+                        $ipoSr++;
+                    @endphp
                 @endforeach
             </ul>
-            <div class="tab-content" id="myTabContent">
-             @foreach($filterList as $key => $filter)
-                   
-                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                            <table id="items-table" class="table table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <td>Client</td>
-                                        <td>Buy At</td>
-                                        <td>QTY</td>
-                                        <td>Invested</td>
-                                        <td>Listing Date</td>
-                                        <td>Action</td>
-                                    </tr>
+            <div class="tab-content" id="alocationTabContent">
+                @php
+                    $ipoSr = 1;
+                @endphp
+                @foreach($filterList as $key => $filter)
+                    <div class="tab-pane fade {!! $loop->first ? 'show active' : '' !!}" id="home{!! $ipoSr !!}" role="tabpanel" aria-labelledby="home{!! $ipoSr !!}-tab">
+                        <table id="items-table-{!! $ipoSr !!}" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <td>Client</td>
+                                <td>Buy At</td>
+                                <td>QTY</td>
+                                <td>Invested</td>
+                                <td>Listing Date</td>
+                                <td>Action</td>
+                            </tr>
 
-                                     @foreach($filter as $record)
-                                        <tr>
-                                            <td>{!! $record->client->name !!}</td>
-                                            <td>{!! $record->ipo->block_amt / $record->ipo->lot_size !!}</td>
-                                            <td>{!! $record->ipo->lot_size !!}</td>
-                                            <td>{!! $record->ipo->block_amt !!}</td>
-                                            <td>
-                                                <a href="{!! $record->ipo->external_link !!}" target="_blank" class="btn-xs btn btn-success">
-                                                {!! $record->ipo->listing_date !!}
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <a  onclick="settleAllotment({!! $record->id !!}, `{!! $record->ipo->ipo_name  !!} | {!! $record->client->name!!} `)" href="javascript:void(0);" class="btn btn-xs btn-primary">Settle</a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </thead>
-                            </table>
-                        </div>
+                             @foreach($filter as $record)
+                                <tr>
+                                    <td>{!! $record->client->name !!}</td>
+                                    <td>{!! $record->ipo->block_amt / $record->ipo->lot_size !!}</td>
+                                    <td>{!! $record->ipo->lot_size !!}</td>
+                                    <td>{!! $record->ipo->block_amt !!}</td>
+                                    <td>
+                                        <a href="{!! $record->ipo->external_link !!}" target="_blank" class="btn-xs btn btn-success">
+                                        {!! $record->ipo->listing_date !!}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a  onclick="settleAllotment({!! $record->id !!}, `{!! $record->ipo->ipo_name  !!} | {!! $record->client->name!!} `)" href="javascript:void(0);" class="btn btn-xs btn-primary">Settle</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </thead>
+                    </table>
+                    </div>
+                    @php
+                        $ipoSr++;
+                    @endphp
                 @endforeach
             </div>
         </div>

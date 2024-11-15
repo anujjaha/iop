@@ -50,7 +50,7 @@ class DashboardController extends Controller
         }
 
         $completedIpos = IpoDetails::with(['assignments', 'assignments.client'])
-            ->whereDate('listing_date', '<= ', date('Y-m-d'))
+            ->whereDate('listing_date', '>= ', date('Y-m-d',strtotime('-4 days')))
             ->get();
         // dd($completedIpos);
         return view('backend.dashboard.index')->with([
