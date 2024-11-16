@@ -11,6 +11,8 @@ Route::group([], function () {
     // Route for Ajax DataTable
     Route::get("ipoassignments/get", [AdminIpoAssignmentsController::class, 'getTableData'])->name("ipoassignments.get-list-data");
 
+    Route::get("ipoassignments/list", [AdminIpoAssignmentsController::class, 'list'])->name("ipoassignments.get-list");
+
     Route::get("ipoassignments/filter/{id}", [AdminIpoAssignmentsController::class, 'filter'])->name("ipoassignments.filter");
 
 

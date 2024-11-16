@@ -339,7 +339,9 @@ class EloquentIpoAssignmentsRepository extends DbRepository
     public function getForDataTable()
     {
         return $this->model->select($this->getTableFields())
-            ->with(['client', 'ipo'])->get();
+            ->with(['client', 'ipo'])
+
+            ->get();
     }
 
     /**
@@ -629,6 +631,11 @@ class EloquentIpoAssignmentsRepository extends DbRepository
      */
     public function getFilterData($id = null)
     {
-        return $this->model->where('ipo_id', $id)->get();
+        if($id)
+        {
+            return $this->model->where('ipo_id', $id)->get();    
+        }
+
+        return $this->model->orderBy('listing_date','desc')->get();
     }
 }

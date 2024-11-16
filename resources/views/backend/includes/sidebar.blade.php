@@ -45,7 +45,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('admin.ipoassignments.index') }}" class="nav-link">
+                    <a href="{{ route('admin.ipoassignments.get-list') }}" class="nav-link">
                         <i class="nav-icon fas fa-table"></i>
                         <p>
                             IPO Assignments

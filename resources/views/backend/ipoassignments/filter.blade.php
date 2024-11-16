@@ -9,7 +9,7 @@
 <div class="col-md-12">
     <div class="card card-primary">
         <div class="card-header">
-            Basic Details
+            <h3>{!! $item->ipo_name !!}</h3>
         </div>
         <div class="card-body">
             <div class="row">
@@ -115,19 +115,21 @@
                         $sr = 1;
                     @endphp
                     @foreach($list as $item)
-
-                        @if($item->status == 1)
                         <tr>
                             <td>{!! $sr++ !!}</td>
                             <td>{!! $item->client->getFullName() !!}</td>
                             <td>{!! $item->share_qty * $item->ipo->price_band !!}</td>
                             <td>
+                                @if($item->status == 1)
                                 <a href="javascript:void(0);" onclick="revokeIpo({!! $item->id !!})" class="btn btn-xs btn-primary"><i class="fa fa-trash"></i>
                                 </a>
                                 <a href="javascript:void(0);" onclick="allotedIpo({!! $item->id !!})" class="btn btn-xs btn-primary"><i class="fa fa-check"></i></a>
+                                @else
+                                    {!! getAssignmentLiveStatus($item->status) !!}
+                                @endif
                             </td>
                         </tr>
-                        @endif
+                        
                     @endforeach
                 </tbody>
             </table>
