@@ -71,7 +71,7 @@
                     <div class="form-group row row">
                         <label for="name" class="col-lg-5 control-label">Alloted:</label>
                         <div class="col-lg-7">
-                            {!! $item->assignments->whereNotNull('profit_loss')->count()  !!}
+                            {!! $item->assignments->where('status', '!=', 2)->count()  !!}
                         </div>
                     </div>
                 </div>

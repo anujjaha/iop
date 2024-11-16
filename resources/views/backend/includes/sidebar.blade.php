@@ -57,6 +57,9 @@
                         <i class="nav-icon fas fa-table"></i>
                         <p>
                             Allotment
+                            @if($allotmentCount = getCurrentAllotmentCount())
+                                ({!! $allotmentCount !!})
+                            @endif
                         </p>
                     </a>
                 </li>

@@ -618,3 +618,8 @@ function getUserOptions()
 
     return $options;
 }
+
+function getCurrentAllotmentCount()
+{
+    return IpoAssignments::where('status', getIpoAllotedStatusInt())->count();
+}

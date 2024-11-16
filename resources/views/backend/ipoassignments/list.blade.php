@@ -35,19 +35,45 @@
                     @endphp
                     @foreach($list as $ipo)
                     	@php
+                    		if(count($ipo->assignments) == 0)
+                    		{
+                    			continue;
+                    		}
+                    		$retailSettle 	= 0;
+                    		$hniSettle 		= 0;
+                    		if(count($ipo->assignments))
+                    		{
+                    			
+                    			foreach($ipo->assignments as $assignment)
+                    			{
+                    				if($assignment->share_qty == $ipo->min_lot_size && $assignment->status == 3)
+	                    			{
+	                    				$retailSettle++;
+	                    			}
+
+	                    			if($assignment->share_qty == $ipo->max_lot_size && $assignment->status == 3)
+	                    			{
+	                    				$hniSettle++;
+	                    			}
+                    			}
+
+                    			
+                    		}
                     		$retail = $ipo->assignments->where('share_qty', $ipo->min_lot_size)->count();
+                    		
                     		$shni   = $ipo->assignments->where('share_qty', $ipo->max_lot_size)->count();
                     		$profit = $ipo->assignments->sum('profit_loss');
                     	@endphp
                         <tr>
                              <td>{!! $sr++; !!}</td>
                             <td>
-                            	{!! $ipo->ipo_name !!}
+                            	<a href="{!! route('admin.ipodetails.show', $ipo->id) !!}">{!! $ipo->ipo_name !!}
                             	<br />
                             	{!! $ipo->min_lot_size !!} / {!! $ipo->max_lot_size !!} @ {!! $ipo->price_band !!}
+                            	</a>
                             </td>
-                            <td>{!! $retail !!}</td>
-                            <td>{!! $shni !!}</td>
+                            <td>{!! $retailSettle !!} / {!! $retail !!}</td>
+                            <td>{!! $hniSettle !!} / {!! $shni !!}</td>
                             <td>{!! ( ($retail * $ipo->min_lot_size) * $ipo->price_band ) + ( ($shni * $ipo->max_lot_size) * $ipo->price_band ) !!}</td>
                             
                             <td>{!! $profit !!}</td>
