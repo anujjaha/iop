@@ -98,6 +98,24 @@
                         </p>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.reminder.index') }}" class="nav-link">
+                        <i class="nav-icon fas fa-table"></i>
+                        <p>
+                            Reminder
+                        </p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.digidocuments.index') }}" class="nav-link">
+                        <i class="nav-icon fas fa-table"></i>
+                        <p>
+                            Digital Documents
+                        </p>
+                    </a>
+                </li>
                 <!-- <li class="nav-item">
                     <a href="{{ route('admin.profit.index') }}" class="nav-link">
                         <i class="nav-icon fas fa-table"></i>
