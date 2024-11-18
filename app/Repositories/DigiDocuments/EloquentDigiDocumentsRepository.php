@@ -301,7 +301,7 @@ class EloquentDigiDocumentsRepository extends DbRepository
     {
         if($isCreate)
         {
-            $input = array_merge($input, ['user_id' => access()->user()->id]);
+           // $input = array_merge($input, ['user_id' => access()->user()->id]);
         }
 
         return $input;
