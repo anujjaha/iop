@@ -212,7 +212,10 @@ class EloquentTransactionsRepository extends DbRepository
             $client->save();
 
             $main = Main::first();
-            $main->balance = $main->balance - $input['amount'];
+            if($input['credit'] == 1)
+            {
+                $main->balance = $main->balance - $input['amount'];
+            }
             $main->save();
 
             return $model;
@@ -336,7 +339,17 @@ class EloquentTransactionsRepository extends DbRepository
         }
 
         $input['master_account_id'] = 1;
-        $input['credit'] = 1;
+        if($input > 0)
+        {
+            $input['credit']    = 1;
+            $input['debit']     = null;
+        }
+        else
+        {
+            $input['debit']      = 1;
+            $input['credit']     = null;
+            $input['amount']     = abs($input['amount']);
+        }
         $input['transaction_date'] = date('Y-m-d');
         $input['created_by'] = 1;
 

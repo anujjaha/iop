@@ -122,7 +122,11 @@
             @foreach($item->assignments as $assignment)
                 <tr>
                     <td>{!! $sr !!}</td>
-                    <td>{!! $assignment->client->name !!}</td>
+                    <td>
+                        <a target="_blank" href="{!! route('admin.clientdetail.show', $assignment->client->id) !!}"> 
+                        {!! $assignment->client->name !!} ({!! $assignment->client->balance !!})
+                        </a>
+                    </td>
                     <td>{!! getAssignmentLiveStatus($assignment->status) !!}</td>
                     <td>{!! $assignment->profit_loss !!}</td>
                     <td class="text-right">{!! $assignment->share_qty * $item->price_band !!}</td>

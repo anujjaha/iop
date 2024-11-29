@@ -312,7 +312,9 @@ class EloquentIpoDetailsRepository extends DbRepository
      */
     public function getForDataTable()
     {
-        return $this->model->select($this->getTableFields())->get();
+        return $this->model->select($this->getTableFields())
+            ->orderBy('listing_date', 'asc')
+            ->get();
     }
 
     /**

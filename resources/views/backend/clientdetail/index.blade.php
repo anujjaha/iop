@@ -90,12 +90,6 @@ function storeBalance()
     var clientId = jQuery("#clientId").val();
     var amount = jQuery("#amount").val();
 
-    if(parseFloat(amount) < 0)
-    {
-        swal('Oh', 'Please enter valid amount','error');
-        return;
-    }
-
     jQuery.ajax(
     {
         headers: {
