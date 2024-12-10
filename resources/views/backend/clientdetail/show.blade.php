@@ -3,7 +3,7 @@
 @section ('title', isset($repository->moduleTitle) ? 'Edit - '. $repository->moduleTitle : 'Edit')
 
 @section('page-header')
-<h1>CLIENT INFO</h1>
+<h1>CLIENT INFO: {!! $item->getFullName() !!}</h1>
 @endsection
 
 @section('content')
@@ -96,8 +96,14 @@
     <div class="col-md-12">
         <div class="card card-primary">
             <div class="card-header">
-                <div class="card-title">
-                    Basic Details
+                <div class="row">
+                    <div class="col-lg-10">
+                        Basic Details
+                    </div>
+                    <div class="col-lg-2 text-right pull-right">
+                        <a target="_blank" href="{!! getAadharCardLink($item->id) !!}" class="btn btn-xs btn-success">Aadhar</a>
+                        <a  target="_blank" href="{!! getPanCardLink($item->id) !!}" class="btn btn-xs btn-warning">PAN</a>
+                    </div>
                 </div>
             </div>
             <div class="card-body">

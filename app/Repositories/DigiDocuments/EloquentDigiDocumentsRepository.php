@@ -35,10 +35,10 @@ class EloquentDigiDocumentsRepository extends DbRepository
      */
     public $tableHeaders = [
         		'id'        => 'Id',
-		'user_id'        => 'User_id',
+		'user_id'         => 'Client',
 		'category'        => 'Category',
 		'title'        => 'Title',
-		'attachment'        => 'Attachment',
+		'attachment'        => 'View',
 		'is_aadhar_pan_link'        => 'Is_aadhar_pan_link',
 		'notes'        => 'Notes',
 "actions"         => "Actions"

@@ -3,7 +3,10 @@
 @section ('title', isset($repository->moduleTitle) ? 'Edit - '. $repository->moduleTitle : 'Edit')
 
 @section('page-header')
-<h1>IPO: {!! $item->ipo_name !!}</h1>
+<h1>IPO: 
+    <a target="_blank" href="{!! $item->external_link !!}">
+        {!! $item->ipo_name !!}</h1>
+    </a>
 @endsection
 
 @section('content')
@@ -15,7 +18,6 @@
             <div class="col-md-12">
                 <div class="card card-primary">
                     <div class="card-header">
-                        
                                 Basic Details
                             <div class="card-tools pull-right float-right">
                                 @if($clientList && count($clientList))
@@ -110,6 +112,7 @@
             <tr>
                 <td>SR</td>
                 <td>Name</td>
+                <td>PAN</td>
                 <td>Allotment</td>
                 <td>P/L</td>
                 <td>Blocked Amount</td>
@@ -127,6 +130,7 @@
                         {!! $assignment->client->name !!} ({!! $assignment->client->balance !!})
                         </a>
                     </td>
+                    <td>{!! $assignment->client->pan_no !!}</td>
                     <td>{!! getAssignmentLiveStatus($assignment->status) !!}</td>
                     <td>{!! $assignment->profit_loss !!}</td>
                     <td class="text-right">{!! $assignment->share_qty * $item->price_band !!}</td>
@@ -137,7 +141,7 @@
                 @endphp
             @endforeach
              <tr>
-                <td colspan="4">-</td>
+                <td colspan="5">-</td>
                 <td class="text-right text-strong"><strong>{!! $totalBlock !!}</strong></td>
             </tr>
         </table>

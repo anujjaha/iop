@@ -162,8 +162,13 @@ class AdminDigiDocumentsController extends Controller
             ->addColumn('actions', function ($item) {
                 return $item->admin_action_buttons;
             })
-             ->addColumn('user_id', function ($item) {
-                return $item->client->getFullName() ?? 'N/A';
+            ->addColumn('user_id', function ($item) {
+                return '<a target="_blank" href="'.route('admin.clientdetail.show', $item->user_id).'">'.$item->client->getFullName() .'</a>';
+            })
+            ->addColumn('attachment', function ($item) {
+
+                return '<a target="_blank" href="'.$item->attachment.'"><i class="fa fa-eye"></i></a>';
+                return $item->admin_action_buttons;
             })
             ->make(true);
     }

@@ -10,6 +10,7 @@ use App\Models\Tax\Tax;
 use App\Models\User\User;
 use App\Models\ClientDetail\ClientDetail;
 use App\Models\Expense\Expense;
+use App\Models\DigiDocuments\DigiDocuments;
 
 /**
  * Global helpers file with misc functions.
@@ -622,4 +623,20 @@ function getUserOptions()
 function getCurrentAllotmentCount()
 {
     return IpoAssignments::where('status', getIpoAllotedStatusInt())->count();
+}
+
+function getPanCardLink($clientId = null)
+{
+    return DigiDocuments::where('user_id', $clientId)
+        ->where('category', 'PAN')
+        ->first()
+        ->attachment ?? '';
+}
+
+function getAadharCardLink($clientId = null)
+{
+    return DigiDocuments::where('user_id', $clientId)
+        ->where('category', 'Aadhar')
+        ->first()
+        ->attachment ?? '';
 }
