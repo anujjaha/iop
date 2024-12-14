@@ -493,6 +493,16 @@ class EloquentIpoAssignmentsRepository extends DbRepository
         return $client;
     }
 
+    public function revokeBulkAssignment($input)
+    {
+        foreach($input['bulkIds'] as $assignmentId)
+        {
+            $status = $this->revokeAssignment($assignmentId);
+        }
+
+        return $status;
+    }
+
     public function revokeAssignment($assignmentId = null)
     {
         $ipoAssignment = $this->model->where('id', $assignmentId)->with(['client', 'ipo'])->first();
@@ -532,6 +542,16 @@ class EloquentIpoAssignmentsRepository extends DbRepository
         ]);
 
         return true;
+    }
+
+    public function allotedBulkAssignment($input = [])
+    {
+        foreach($input['bulkIds'] as $assignmentId)
+        {
+            $status = $this->allotedAssignment($assignmentId);
+        }
+
+        return $status;
     }
 
     /**

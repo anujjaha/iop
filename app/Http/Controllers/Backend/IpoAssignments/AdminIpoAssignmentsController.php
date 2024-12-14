@@ -255,7 +255,14 @@ class AdminIpoAssignmentsController extends Controller
 
     public function revokeIpo(Request $request)
     {
-        $status = $this->repository->revokeAssignment($request->get('assignmentId'));
+        if($request->has('isBlukOpt') && $request->get('isBlukOpt') == 1)
+        {
+            $status = $this->repository->revokeBulkAssignment($request->all());
+        }
+        else
+        {
+            $status = $this->repository->revokeAssignment($request->get('assignmentId'));
+        }
 
         return response()->json([
             'status' => true,
@@ -264,7 +271,14 @@ class AdminIpoAssignmentsController extends Controller
 
     public function allotedIpo(Request $request)
     {
-        $status = $this->repository->allotedAssignment($request->get('assignmentId'));
+        if($request->has('isBlukOpt') && $request->get('isBlukOpt') == 1)
+        {
+            $status = $this->repository->allotedBulkAssignment($request->all());
+        }
+        else
+        {
+            $status = $this->repository->allotedAssignment($request->get('assignmentId'));
+        }
 
         return response()->json([
             'status' => true,

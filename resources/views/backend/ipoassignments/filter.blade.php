@@ -96,7 +96,8 @@
         <h3 class="card-title">{{ isset($repository->moduleTitle) ? str_plural($repository->moduleTitle) : '' }} Listing
         </h3>
         <div class="card-tools">
-            
+            <a href="javascript:void(0);" onclick="bulkIpoAction(0)" class="btn btn-xs btn-warning">Non Allotment</a>
+            <a href="javascript:void(0);"  onclick="bulkIpoAction(1)" class="btn btn-xs btn-primary">Allotment</a>
         </div>
     </div>
     <div class="card-body">
@@ -106,6 +107,7 @@
                     <tr>
                         <td>Sr</td>
                         <td>Client</td>
+                        <td>PAN</td>
                         <td>Amount</td>
                         <td>Assignment</td>
                     </tr>
@@ -116,8 +118,19 @@
                     @endphp
                     @foreach($list as $item)
                         <tr>
-                            <td>{!! $sr++ !!}</td>
-                            <td>{!! $item->client->getFullName() !!}</td>
+                            <td>
+                                @if($item->status == 1)
+                                    <input class="form-control bulk-action" type="checkbox"  name="actionid_{!! $item->id !!}" name="actionid_{!! $item->id !!}" class="bulk_action" value="{!! $item->id !!}">
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{!! route('admin.clientdetail.show', $item->client_id) !!}" target="_blank">
+                                {!! $item->client->getFullName() !!}
+                                </a>
+                        </td>
+                            <td>{!! $item->client->pan_no !!}</td>
                             <td>{!! $item->share_qty * $item->ipo->price_band !!}</td>
                             <td>
                                 @if($item->status == 1)
@@ -141,6 +154,39 @@
 
 @section('after-scripts')
 <script type="text/javascript">
+
+function bulkIpoAction(isAlloted = 0)
+{
+    swal({
+    title: "Sure, allotment not received",
+    text: "You will not be able to recover operation",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonColor: '#DD6B55',
+    confirmButtonText: 'Yes, I am sure!',
+    cancelButtonText: "No, cancel it!",
+    closeOnConfirm: false,
+    closeOnCancel: false
+    },
+    function(isConfirm)
+    {
+        if (isConfirm)
+        {
+            if(isAlloted == 0)
+            {
+                revokeSuccess(0, true);
+            }
+            else
+            {
+                allottedSuccess(0, true);
+            }
+        } else 
+        {
+            swal.close();
+        }
+    });
+}
+
 
 function revokeIpo(assignmentId)
 {
@@ -192,8 +238,18 @@ function allotedIpo(assignmentId)
     });
 };
 
-function revokeSuccess(assignmentId)
+function revokeSuccess(assignmentId = 0, isbulk = false)
 {
+    var isBlukOpt = 0;
+    var bulkIds = [];
+    if(isbulk == true)
+    {
+        isBlukOpt = 1;
+
+        jQuery('.bulk-action:checkbox:checked').each(function(i,j) {
+            bulkIds.push(jQuery(j).val());
+        });
+    }
     jQuery.ajax(
     {
         headers: {
@@ -203,11 +259,15 @@ function revokeSuccess(assignmentId)
         dataType : 'json',
         type : 'POST',
         data : {
-           assignmentId
+           assignmentId,
+           isBlukOpt,
+           bulkIds,
         },
         success : function(data) {
             swal.close();
-            //window.location.reload();
+            setTimeout(function() {
+                window.location.reload();
+            }, 100);
         },
         complete: function() {
             
@@ -215,8 +275,19 @@ function revokeSuccess(assignmentId)
     });
 }
 
-function allottedSuccess(assignmentId)
+function allottedSuccess(assignmentId =0, isbulk = false)
 {
+    var isBlukOpt = 0;
+    var bulkIds = [];
+    if(isbulk == true)
+    {
+        isBlukOpt = 1;
+
+        jQuery('.bulk-action:checkbox:checked').each(function(i,j) {
+            bulkIds.push(jQuery(j).val());
+        });
+    }
+
     jQuery.ajax(
     {
         headers: {
@@ -226,11 +297,17 @@ function allottedSuccess(assignmentId)
         dataType : 'json',
         type : 'POST',
         data : {
-           assignmentId
+            assignmentId,
+            isBlukOpt,
+            bulkIds,
         },
-        success : function(data) {
+        success : function(data) 
+        {
             swal.close();
-            window.location.reload();
+            if(data.status)
+            {
+                window.location.reload();
+            }
         },
         complete: function() {
             
