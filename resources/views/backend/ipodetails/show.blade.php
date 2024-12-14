@@ -2,12 +2,15 @@
 
 @section ('title', isset($repository->moduleTitle) ? 'Edit - '. $repository->moduleTitle : 'Edit')
 
+
 @section('page-header')
 <h1>IPO: 
     <a target="_blank" href="{!! $item->external_link !!}">
         {!! $item->ipo_name !!}</h1>
     </a>
 @endsection
+
+@include('backend.includes.datatable-asset')
 
 @section('content')
 {{ Form::model($item, ['route' => [$repository->getActionRoute('updateRoute'), $item], 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'PATCH']) }}
@@ -108,20 +111,22 @@
         </div>
 
 
-        <table class="table table-bordered">
-            <tr>
-                <td>SR</td>
-                <td>Name</td>
-                <td>PAN</td>
-                <td>Allotment</td>
-                <td>P/L</td>
-                <td>Blocked Amount</td>
-            </tr>
-
+        <table class="table table-bordered data-table">
+            <thead>
+                <tr>
+                    <td>SR</td>
+                    <td>Name</td>
+                    <td>PAN</td>
+                    <td>Allotment</td>
+                    <td>P/L</td>
+                    <td>Blocked Amount</td>
+                </tr>
+            </thead>
             @php
                 $sr = 1;
                 $totalBlock = 0;
             @endphp
+            <tbody>
             @foreach($item->assignments as $assignment)
                 <tr>
                     <td>{!! $sr !!}</td>
@@ -140,10 +145,14 @@
                     $totalBlock = $totalBlock + ($assignment->share_qty * $item->price_band);
                 @endphp
             @endforeach
-             <tr>
+             
+            </tbody>
+            <tfoot>
+            <tr>
                 <td colspan="5">-</td>
                 <td class="text-right text-strong"><strong>{!! $totalBlock !!}</strong></td>
             </tr>
+            </tfoot>
         </table>
     </div>
 
@@ -214,6 +223,10 @@
 
 @section('after-scripts')
 <script type="text/javascript">
+
+jQuery(document).ready(function() {
+    jQuery(".data-table").dataTable();
+})
 
 function assignIpo(clientId)
 {
