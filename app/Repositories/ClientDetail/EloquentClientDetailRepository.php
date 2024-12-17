@@ -14,6 +14,7 @@ use App\Exceptions\GeneralException;
 use App\Models\IpoDetails\IpoDetails;
 use App\Models\IpoAssignments\IpoAssignments;
 use App\Models\Fees\Fees;
+use App\Models\DigiDocuments\DigiDocuments;
 
 class EloquentClientDetailRepository extends DbRepository
 {
@@ -390,4 +391,10 @@ class EloquentClientDetailRepository extends DbRepository
         return $options;
 
     }
+
+    public function getMyDocuments($clientId)
+    {
+        return DigiDocuments::where('user_id', $clientId)->get();
+    }
+
 }

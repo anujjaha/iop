@@ -194,11 +194,47 @@
                 </tr>
                 @foreach($item->assignedIpos as $ipo)
                     <tr>
-                        <td>{!! $ipo->ipo->ipo_name !!}</td>
+                        <td>
+                            @php
+                                $txtClass = '';
+                                if($ipo->status == 2)
+                                {
+                                    $txtClass = 'text-warning';
+                                }
+
+                                if($ipo->status == 1)
+                                {
+                                    $txtClass = 'text-primary';
+                                }
+
+                                if(!in_array($ipo->status, [1,2]))
+                                {
+                                    $txtClass = 'text-success';
+                                }
+
+                            @endphp
+                            <span class="font-weight-bold {!! $txtClass  !!}">
+                                {!! $ipo->ipo->ipo_name !!}
+                            </span>
+                        </td>
                         <td>{!! getAssignmentLiveStatus($ipo->status) !!}</td>
                         <td>{!! $ipo->status == 1 ? $ipo->share_qty * $ipo->ipo->price_band : 'N/A' !!}</td>
                         <td>{!! $ipo->share_qty * $ipo->ipo->price_band !!}</td>
-                        <td>{!! $ipo->profit_loss !!}</td>
+                        <td>    
+                            @if($ipo->profit_loss > 0)
+                                <span class="font-weight-bold text-success">
+                                    {!! $ipo->profit_loss !!}
+                                </span>
+                            @elseif($ipo->profit_loss < 0)
+                                <span class="text-danger">
+                                    {!! $ipo->profit_loss !!}
+                                </span>
+                            @else
+                                <span class="text-warning">
+                                    {!! $ipo->profit_loss !!}
+                                </span>
+                            @endif
+                            </td>
                     </tr>
                 @endforeach
             </table>
@@ -226,7 +262,7 @@
                     <td>Notes</td>
                 </tr>
                 @php
-                    $sr = 0;
+                    $sr = 1;
                 @endphp
                 @foreach($item->stockList as $stock)
                     <tr>
@@ -311,6 +347,37 @@
     </div>
 </div>
 
+
+<div class="col-md-12">
+    <div class="card card-primary">
+        <div class="card-header">
+            <div class="card-title">
+                My Documents
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tr>
+                    <td>Sr</td>
+                    <td>Category</td>
+                    <td>Title</td>
+                    <td>View</td>
+                </tr>
+                @php
+                    $sr = 1;
+                @endphp
+                @foreach($documents as $document)
+                    <tr>
+                        <td>{!! $sr++ !!}</td>
+                        <td>{!! strtoupper($document->category) !!}</td>
+                        <td>{!! strtoupper($document->title) !!}</td>
+                        <td><a target="_blank" href="{!! $document->attachment !!}"><i class="fa fa-eye"></i></a></td>
+                    </tr>
+                @endforeach
+            </table>         
+        </div>
+    </div>
+</div>
 
 </div>
     </div>
