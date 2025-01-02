@@ -75,6 +75,12 @@ class AdminFeesController extends Controller
             'oct-2024' => 'Oct-2024',
             'nov-2024' => 'Nov-2024',
             'dec-2024' => 'Dec-2024',
+            'jan-2025' => 'Jan-2025',
+            'feb-2025' => 'Feb-2025',
+            'mar-2025' => 'Mar-2025',
+            'apr-2025' => 'Apr-2025',
+            'may-2025' => 'May-2025',
+            'june-2025' => 'Jun-2025',
         ];
 
         return view($this->repository->setAdmin(true)->getModuleView('createView'))->with([

@@ -66,6 +66,7 @@
                 if(data.status == true)
                 {
                     var clientList = data.clientList;
+                    var fee = 500;
                     jQuery('#client_id')
                         .append($("<option></option>")
                         .attr("value", '')
@@ -73,11 +74,15 @@
 
                     for(var i = 0; i < clientList.length; i++)
                     {
+                        if(clientList[i].monthly_fee != null )
+                        {
+                            fee = clientList[i].monthly_fee;
+                        }
                         jQuery('#client_id')
                         .append($("<option></option>")
                         .attr("value", clientList[i].id)
-                        .attr("monthly-fees", clientList[i].monthly_fee)
-                        .text(clientList[i].name + ' ('+ clientList[i].monthly_fee +')')); 
+                        .attr("monthly-fees", fee)
+                        .text(clientList[i].name + ' ('+ fee +')')); 
                     }
                 }
             },
