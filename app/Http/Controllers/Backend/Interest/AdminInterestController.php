@@ -1,21 +1,19 @@
 <?php 
 
-namespace App\Http\Controllers\Backend\DigiDocuments;
+namespace App\Http\Controllers\Backend\Interest;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Datatables;
-use App\Repositories\DigiDocuments\EloquentDigiDocumentsRepository;
-use App\Models\ClientDetail\ClientDetail;
-
+use App\Repositories\Interest\EloquentInterestRepository;
 
 /**
- * Class AdminDigiDocumentsController
+ * Class AdminInterestController
  */
-class AdminDigiDocumentsController extends Controller
+class AdminInterestController extends Controller
 {
     /**
-     * DigiDocuments Repository
+     * Interest Repository
      *
      * @var object
      */
@@ -26,21 +24,21 @@ class AdminDigiDocumentsController extends Controller
      *
      * @var string
      */
-    protected $createSuccessMessage = "DigiDocuments Created Successfully!";
+    protected $createSuccessMessage = "Interest Created Successfully!";
 
     /**
      * Edit Success Message
      *
      * @var string
      */
-    protected $editSuccessMessage = "DigiDocuments Edited Successfully!";
+    protected $editSuccessMessage = "Interest Edited Successfully!";
 
     /**
      * Delete Success Message
      *
      * @var string
      */
-    protected $deleteSuccessMessage = "DigiDocuments Deleted Successfully";
+    protected $deleteSuccessMessage = "Interest Deleted Successfully";
 
     /**
      * __construct
@@ -48,11 +46,11 @@ class AdminDigiDocumentsController extends Controller
      */
     public function __construct()
     {
-        $this->repository = new EloquentDigiDocumentsRepository;
+        $this->repository = new EloquentInterestRepository;
     }
 
     /**
-     * DigiDocuments Listing
+     * Interest Listing
      *
      * @return \Illuminate\View\View
      */
@@ -64,27 +62,19 @@ class AdminDigiDocumentsController extends Controller
     }
 
     /**
-     * DigiDocuments View
+     * Interest View
      *
      * @return \Illuminate\View\View
      */
     public function create(Request $request)
     {
-        $clients        = ClientDetail::get();
-        $clientOptions  = [];
-        foreach($clients as $client)
-        {
-            $clientOptions[$client->id] = $client->getFullName();
-        }
-
         return view($this->repository->setAdmin(true)->getModuleView('createView'))->with([
-            'repository'    => $this->repository,
-            'clientOptions' => $clientOptions
+            'repository' => $this->repository
         ]);
     }
 
     /**
-     * DigiDocuments Store
+     * Interest Store
      *
      * @return \Illuminate\View\View
      */
@@ -96,7 +86,7 @@ class AdminDigiDocumentsController extends Controller
     }
 
     /**
-     * DigiDocuments Edit
+     * Interest Edit
      *
      * @return \Illuminate\View\View
      */
@@ -111,7 +101,7 @@ class AdminDigiDocumentsController extends Controller
     }
 
     /**
-     * DigiDocuments Show
+     * Interest Show
      *
      * @return \Illuminate\View\View
      */
@@ -127,7 +117,7 @@ class AdminDigiDocumentsController extends Controller
 
 
     /**
-     * DigiDocuments Update
+     * Interest Update
      *
      * @return \Illuminate\View\View
      */
@@ -139,7 +129,7 @@ class AdminDigiDocumentsController extends Controller
     }
 
     /**
-     * DigiDocuments Destroy
+     * Interest Destroy
      *
      * @return \Illuminate\View\View
      */
@@ -159,15 +149,10 @@ class AdminDigiDocumentsController extends Controller
     {
         return Datatables::of($this->repository->getForDataTable())
             ->escapeColumns(['id', 'sort'])
+            ->addColumn('client_id', function ($item) {
+                return $item->client->getFullName() ?? 'N/A';
+            })
             ->addColumn('actions', function ($item) {
-                return $item->admin_action_buttons;
-            })
-            ->addColumn('user_id', function ($item) {
-                return '<a target="_blank" href="'.route('admin.clientdetail.show', $item->user_id).'">'.$item->client->getFullName() .'</a>';
-            })
-            ->addColumn('attachment', function ($item) {
-
-                return '<a target="_blank" href="'.$item->attachment.'"><i class="fa fa-eye"></i></a>';
                 return $item->admin_action_buttons;
             })
             ->make(true);

@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\Models\Reminder\Traits\Attribute;
+namespace App\Models\Interest\Traits\Attribute;
 
 /**
  * Trait Attribute
@@ -8,7 +8,7 @@ namespace App\Models\Reminder\Traits\Attribute;
  * @author Anuj Jaha ( er.anujjaha@gmail.com )
  */
 
-use App\Repositories\Reminder\EloquentReminderRepository;
+use App\Repositories\Interest\EloquentInterestRepository;
 
 trait Attribute
 {
@@ -40,7 +40,7 @@ trait Attribute
      */
     public function getActionButtonsAttribute()
     {
-        $repository = new EloquentReminderRepository;
+        $repository = new EloquentInterestRepository;
         $routes     = $repository->getModuleRoutes();
 
         return $this->getEditButtonAttribute($routes, $repository->clientRoutePrefix) . $this->getDeleteButtonAttribute($routes, $repository->clientRoutePrefix);
@@ -51,7 +51,7 @@ trait Attribute
      */
     public function getAdminActionButtonsAttribute()
     {
-        $repository = new EloquentReminderRepository;
+        $repository = new EloquentInterestRepository;
         $routes     = $repository->getModuleRoutes();
 
         return $this->getEditButtonAttribute($routes, $repository->adminRoutePrefix, true) . $this->getDeleteButtonAttribute($routes, $repository->adminRoutePrefix);

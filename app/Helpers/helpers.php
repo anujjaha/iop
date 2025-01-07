@@ -11,6 +11,7 @@ use App\Models\User\User;
 use App\Models\ClientDetail\ClientDetail;
 use App\Models\Expense\Expense;
 use App\Models\DigiDocuments\DigiDocuments;
+use App\Models\Interest\Interest;
 
 /**
  * Global helpers file with misc functions.
@@ -639,4 +640,15 @@ function getAadharCardLink($clientId = null)
         ->where('category', 'Aadhar')
         ->first()
         ->attachment ?? '';
+}
+
+function getTotalInterest($clientId = null)
+{
+    if($clientId)
+    {
+        return Interest::where('client_id', $clientId)
+            ->sum('amount') ?? 0;
+    }
+
+    return Interest::sum('amount') ?? 0;
 }

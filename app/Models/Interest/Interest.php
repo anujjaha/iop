@@ -1,32 +1,32 @@
 <?php 
 
-namespace App\Models\Reminder;
+namespace App\Models\Interest;
 
 /**
- * Class Reminder
+ * Class Interest
  *
  * @author Anuj Jaha ( er.anujjaha@gmail.com)
  */
 
 use App\Models\BaseModel;
-use App\Models\Reminder\Traits\Attribute\Attribute;
-use App\Models\Reminder\Traits\Relationship\Relationship;
+use App\Models\Interest\Traits\Attribute\Attribute;
+use App\Models\Interest\Traits\Relationship\Relationship;
 
-class Reminder extends BaseModel
+class Interest extends BaseModel
 {
     use Attribute, Relationship;
     /**
      * Database Table
      *
      */
-    protected $table = "data_reminder";
+    protected $table = "data_interest";
 
     /**
      * Fillable Database Fields
      *
      */
     protected $fillable = [
-        "id", "actual_time", "title", "notes", "frequency", "new_time", "reminder_tone", "user_id", "created_at", "updated_at", 
+        "client_id", "created_at", "credit_date", "id", "title", "updated_at", "amount"
     ];
 
     /**

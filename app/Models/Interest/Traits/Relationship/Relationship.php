@@ -1,16 +1,18 @@
-<?php namespace App\Models\DigiDocuments\Traits\Relationship;
+<?php 
+
+namespace App\Models\Interest\Traits\Relationship;
 
 use App\Models\ClientDetail\ClientDetail;
 
 trait Relationship
 {
-/**
-     * belongsTo
+	/**
+     * BelongsTO
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function client()
     {
-        return $this->belongsTo(ClientDetail::class, 'user_id');
+        return $this->belongsTo(ClientDetail::class, 'client_id');
     }
 }

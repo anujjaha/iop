@@ -1,32 +1,32 @@
 <?php 
 
-namespace App\Repositories\DigiDocuments;
+namespace App\Repositories\Interest;
 
 /**
- * Class EloquentDigiDocumentsRepository
+ * Class EloquentInterestRepository
  *
  * @author Anuj Jaha ( er.anujjaha@gmail.com)
  */
 
-use App\Models\DigiDocuments\DigiDocuments;
+use App\Models\Interest\Interest;
 use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
 
-class EloquentDigiDocumentsRepository extends DbRepository
+class EloquentInterestRepository extends DbRepository
 {
     /**
-     * DigiDocuments Model
+     * Interest Model
      *
      * @var Object
      */
     public $model;
 
     /**
-     * DigiDocuments Title
+     * Interest Title
      *
      * @var string
      */
-    public $moduleTitle = 'DigiDocuments';
+    public $moduleTitle = 'Interest';
 
     /**
      * Table Headers
@@ -34,14 +34,12 @@ class EloquentDigiDocumentsRepository extends DbRepository
      * @var array
      */
     public $tableHeaders = [
-        		'id'        => 'Id',
-		'user_id'         => 'Client',
-		'category'        => 'Category',
-		'title'        => 'Title',
-		'attachment'        => 'View',
-		'is_aadhar_pan_link'        => 'Is_aadhar_pan_link',
-		'notes'        => 'Notes',
-"actions"         => "Actions"
+        'id'            => 'Id',
+		'client_id'     => 'Client_id',
+		'title'         => 'Title',
+        'amount'        => 'Amount',
+		'credit_date'   => 'Credit_date',
+        "actions"       => "Actions"
     ];
 
     /**
@@ -56,15 +54,9 @@ class EloquentDigiDocumentsRepository extends DbRepository
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'user_id' =>   [
-                    'data'          => 'user_id',
-                    'name'          => 'user_id',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],
-		'category' =>   [
-                    'data'          => 'category',
-                    'name'          => 'category',
+		'client_id' =>   [
+                    'data'          => 'client_id',
+                    'name'          => 'client_id',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
@@ -74,21 +66,15 @@ class EloquentDigiDocumentsRepository extends DbRepository
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'attachment' =>   [
-                    'data'          => 'attachment',
-                    'name'          => 'attachment',
+        'amount' =>   [
+                    'data'          => 'amount',
+                    'name'          => 'amount',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'is_aadhar_pan_link' =>   [
-                    'data'          => 'is_aadhar_pan_link',
-                    'name'          => 'is_aadhar_pan_link',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],
-		'notes' =>   [
-                    'data'          => 'notes',
-                    'name'          => 'notes',
+		'credit_date' =>   [
+                    'data'          => 'credit_date',
+                    'name'          => 'credit_date',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
@@ -141,13 +127,13 @@ class EloquentDigiDocumentsRepository extends DbRepository
      * @var array
      */
     public $moduleRoutes = [
-        'listRoute'     => 'digidocuments.index',
-        'createRoute'   => 'digidocuments.create',
-        'storeRoute'    => 'digidocuments.store',
-        'editRoute'     => 'digidocuments.edit',
-        'updateRoute'   => 'digidocuments.update',
-        'deleteRoute'   => 'digidocuments.destroy',
-        'dataRoute'     => 'digidocuments.get-list-data'
+        'listRoute'     => 'interest.index',
+        'createRoute'   => 'interest.create',
+        'storeRoute'    => 'interest.store',
+        'editRoute'     => 'interest.edit',
+        'updateRoute'   => 'interest.update',
+        'deleteRoute'   => 'interest.destroy',
+        'dataRoute'     => 'interest.get-list-data'
     ];
 
     /**
@@ -156,10 +142,10 @@ class EloquentDigiDocumentsRepository extends DbRepository
      * @var array
      */
     public $moduleViews = [
-        'listView'      => 'digidocuments.index',
-        'createView'    => 'digidocuments.create',
-        'editView'      => 'digidocuments.edit',
-        'deleteView'    => 'digidocuments.destroy',
+        'listView'      => 'interest.index',
+        'createView'    => 'interest.create',
+        'editView'      => 'interest.edit',
+        'deleteView'    => 'interest.destroy',
     ];
 
     /**
@@ -168,11 +154,11 @@ class EloquentDigiDocumentsRepository extends DbRepository
      */
     public function __construct()
     {
-        $this->model = new DigiDocuments;
+        $this->model = new Interest;
     }
 
     /**
-     * Create DigiDocuments
+     * Create Interest
      *
      * @param array $input
      * @return mixed
@@ -191,7 +177,7 @@ class EloquentDigiDocumentsRepository extends DbRepository
     }
 
     /**
-     * Update DigiDocuments
+     * Update Interest
      *
      * @param int $id
      * @param array $input
@@ -212,7 +198,7 @@ class EloquentDigiDocumentsRepository extends DbRepository
     }
 
     /**
-     * Destroy DigiDocuments
+     * Destroy Interest
      *
      * @param int $id
      * @return mixed
@@ -275,7 +261,9 @@ class EloquentDigiDocumentsRepository extends DbRepository
      */
     public function getForDataTable()
     {
-        return $this->model->select($this->getTableFields())->with(['client'])->get();
+        return $this->model->select($this->getTableFields())
+            ->with(['client'])
+            ->get();
     }
 
     /**
@@ -301,8 +289,10 @@ class EloquentDigiDocumentsRepository extends DbRepository
     {
         if($isCreate)
         {
-           // $input = array_merge($input, ['user_id' => access()->user()->id]);
+            $input = array_merge($input, ['user_id' => access()->user()->id]);
         }
+
+        $input['credit_date'] = date('Y-m-d', strtotime($input['credit_date']));
 
         return $input;
     }
