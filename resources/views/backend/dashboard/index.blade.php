@@ -378,7 +378,7 @@
             </div>
         </div>
         <div class="card-body">
-            Hi My Self Anuj Jaha, Fullstack developer with 8+ years of Experience.
+            <iframe height="740px" width="100%" src="https://www.investorgain.com/report/live-ipo-gmp/331/"></iframe>
         </div>
         <div class="card-footer">
             Email: <a href="mailto:er.anujjaha@gmail.com">er.anujjaha@gmail.com</a>
