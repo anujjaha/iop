@@ -380,7 +380,7 @@ class EloquentReminderRepository extends DbRepository
 
     private function getCalendarInfo($record, $i = null)
     {
-        $date = isset($i) ? date('Y-'.$i.'-d') : date('Y-m-d', strtotime($record->actual_time));
+        $date = isset($i) ? date('Y-'.$i.'-d', strtotime($record->actual_time)) : date('Y-m-d', strtotime($record->actual_time));
 
         return  [
             'title' => $record->title . "<br/>".$record->notes,
