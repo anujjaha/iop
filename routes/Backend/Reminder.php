@@ -11,5 +11,7 @@ Route::group([], function () {
     // Route for Ajax DataTable
     Route::get("reminder/get", [AdminReminderController::class, 'getTableData'])->name("reminder.get-list-data");
 
+    Route::get("reminder/calendar", [AdminReminderController::class, 'calendar'])->name("reminder.calendar");
+
     Route::resource("reminder", AdminReminderController::class);
 });

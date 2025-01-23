@@ -54,6 +54,16 @@ class AdminReminderController extends Controller
      *
      * @return \Illuminate\View\View
      */
+    public function calendar()
+    {
+        $events = $this->repository->getReminderEvents();
+
+        return view('backend.reminder.calendar')->with([
+            'repository' => $this->repository,
+            'events'     => json_encode($events),
+        ]);
+    }
+
     public function index()
     {
         return view($this->repository->setAdmin(true)->getModuleView('listView'))->with([

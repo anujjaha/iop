@@ -351,4 +351,40 @@ class EloquentReminderRepository extends DbRepository
 
         return json_encode($this->setTableStructure($clientColumns));
     }
+
+    public function getReminderEvents()
+    {
+        $records    = $this->model->all();
+        $output     = [];
+
+        foreach($records as $record)
+        {
+            if($record->frequency == 'MONTHLY')
+            {
+                for($i = 1; $i <= 12; $i++)
+                {
+                    if($i < 10)
+                    {
+                        $i = '0' .$i;
+                    }
+                    $output[] = $this->getCalendarInfo($record, $i);
+                }
+            }
+            else
+            {
+                $output[] = $this->getCalendarInfo($record);
+            }
+        }
+        return $output;
+    }
+
+    private function getCalendarInfo($record, $i = null)
+    {
+        $date = isset($i) ? date('Y-'.$i.'-d') : date('Y-m-d', strtotime($record->actual_time));
+
+        return  [
+            'title' => $record->title . "<br/>".$record->notes,
+            'start' => $date
+        ];
+    }
 }

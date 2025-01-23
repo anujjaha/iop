@@ -150,6 +150,15 @@
                         </p>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.reminder.calendar') }}" class="nav-link">
+                        <i class="nav-icon fas fa-table"></i>
+                        <p>
+                            Reminder
+                        </p>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>

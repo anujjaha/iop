@@ -10,6 +10,9 @@
 @endsection
 
 @section('content')
+<link rel="stylesheet" href="{!! asset('js/plugins/daterangepicker/daterangepicker.css') !!}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" />
+
 {{ Form::open([
         'route'     => $repository->getActionRoute('storeRoute'),
         'class'     => 'form-horizontal',
@@ -43,4 +46,26 @@
     </div>
 </div>
 {{ Form::close() }}
+@endsection
+
+
+@section('after-scripts')
+<script type="text/javascript" src="{!! asset('js/plugins/moment/moment.min.js') !!}"></script>
+<script type="text/javascript" src="{!! asset('js/plugins/fullcalendar/main.js') !!}"></script>
+<script type="text/javascript" src="{!! asset('js/plugins/daterangepicker/daterangepicker.js') !!}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        bindDatePicker();
+    });
+
+    function bindDatePicker()
+    {
+        $('.date-picker').datetimepicker(
+        {
+            format: 'YYYY-MM-DD'
+        });
+    }
+</script>
 @endsection
