@@ -370,6 +370,13 @@ class EloquentReminderRepository extends DbRepository
                     $output[] = $this->getCalendarInfo($record, $i);
                 }
             }
+            else if($record->frequency == 'YEARLY')
+            {
+                for($j = -1; $j < 3; $j++)
+                {
+                    $output[] = $this->getCalendarInfo($record, null, $j);
+                }
+            }
             else
             {
                 $output[] = $this->getCalendarInfo($record);
@@ -378,11 +385,20 @@ class EloquentReminderRepository extends DbRepository
         return $output;
     }
 
-    private function getCalendarInfo($record, $i = null)
+    private function getCalendarInfo($record, $i = null, $yearly = null)
     {
         $date = isset($i) ? date('Y-'.$i.'-d', strtotime($record->actual_time)) : date('Y-m-d', strtotime($record->actual_time));
 
-        return  [
+        if(isset($yearly))
+        {
+            for($j = -1; $j < 3; $j++)
+            {
+                $d = date('d', strtotime($record->actual_time));
+                $date = date('Y-m-'.$d, strtotime($yearly . ' year'));
+            }
+        }
+
+        return [
             'title' => $record->title . "<br/>".$record->notes,
             'start' => $date
         ];

@@ -18,7 +18,8 @@
         {{ Form::select('frequency', [
             'MONTHLY' => 'MONTHLY',
             'ONCE' => 'ONCE',
-            'DAILY' => 'DAILY'
+            'DAILY' => 'DAILY',
+            'YEARLY' => 'YEARLY'
         ], 
         null, ['class' => 'form-control', 'placeholder' => 'Select Frequency', 'required' => 'required']) }}
     </div>
