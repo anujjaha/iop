@@ -394,7 +394,7 @@ class EloquentReminderRepository extends DbRepository
         }
 
         return [
-            'title' =>  $record->client->getFullName()."|".$record->title . "<br/>".$record->notes,
+            'title' =>  $record->client->getFullName()." | ".$record->title . "<br/>".$record->notes,
             'start' => $date
         ];
     }
