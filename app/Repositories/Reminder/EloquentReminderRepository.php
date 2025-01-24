@@ -306,11 +306,6 @@ class EloquentReminderRepository extends DbRepository
      */
     public function prepareInputData($input = array(), $isCreate = false)
     {
-        if($isCreate)
-        {
-            $input = array_merge($input, ['user_id' => access()->user()->id]);
-        }
-
         return $input;
     }
 
@@ -354,7 +349,7 @@ class EloquentReminderRepository extends DbRepository
 
     public function getReminderEvents()
     {
-        $records    = $this->model->all();
+        $records    = $this->model->with('client')->get();
         $output     = [];
 
         foreach($records as $record)
@@ -399,7 +394,7 @@ class EloquentReminderRepository extends DbRepository
         }
 
         return [
-            'title' => $record->title . "<br/>".$record->notes,
+            'title' =>  $record->client->getFullName()."|".$record->title . "<br/>".$record->notes,
             'start' => $date
         ];
     }
