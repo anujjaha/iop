@@ -159,6 +159,15 @@
                         </p>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.asset.index') }}" class="nav-link">
+                        <i class="nav-icon fas fa-table"></i>
+                        <p>
+                            Assets
+                        </p>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>
