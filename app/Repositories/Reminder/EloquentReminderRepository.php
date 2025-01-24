@@ -386,11 +386,10 @@ class EloquentReminderRepository extends DbRepository
 
         if(isset($yearly))
         {
-            for($j = -1; $j < 3; $j++)
-            {
-                $d = date('d', strtotime($record->actual_time));
-                $date = date('Y-m-'.$d, strtotime($yearly . ' year'));
-            }
+            $d = date('d', strtotime($record->actual_time));
+            $m = date('m', strtotime($record->actual_time));
+
+            $date = date('Y-', strtotime($yearly . ' year')) . $m.'-'.$d;
         }
 
         return [
