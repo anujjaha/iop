@@ -7,6 +7,11 @@
 @endsection
 
 @section('content')
+
+@php
+    $stockStats = getStockTransactionDetails($item->id);
+    
+@endphp
 {{ Form::model($item, ['route' => [$repository->getActionRoute('updateRoute'), $item], 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'PATCH']) }}
 
 <div class="card">
@@ -86,6 +91,72 @@
                         <span class="info-box-text">Total Fees</span>
                         <span class="info-box-number">
                             {!! $fees->sum('fee_amount') !!}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-2 col-sm-4 col-12">
+                <div class="info-box">
+                    <span class=""><i class="far fa-envelope"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Current Invested</span>
+                        <span class="info-box-number">{!!  getCurrentInvestment($item->id) !!}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2 col-sm-4 col-12">
+                <div class="info-box">
+                    <span class=""><i class="far fa-envelope"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Stock P & L</span>
+                        <span class="info-box-number">{!! $stockStats['netValue'] !!}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2 col-sm-4 col-12">
+                <div class="info-box">
+                    <span class=""><i class="far fa-envelope"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Stock TAX</span>
+                        <span class="info-box-number">{!! $stockStats['tax'] !!}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2 col-sm-4 col-12">
+                <div class="info-box">
+                    <span class=""><i class="far fa-envelope"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Stock Net P & L</span>
+                        <span class="info-box-number">{!! $stockStats['profit'] !!}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2 col-sm-4 col-12">
+                <div class="info-box">
+                    <span class=""><i class="far fa-envelope"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Total Trades</span>
+                        <span class="info-box-number">
+                            {!! $stockStats['trades'] !!}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2 col-sm-4 col-12">
+                <div class="info-box">
+                    <span class=""><i class="far fa-envelope"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">% Profit / Loss</span>
+                        <span class="info-box-number">
+                            {!! $stockStats['percentage'] !!}
                         </span>
                     </div>
                 </div>

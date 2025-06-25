@@ -13,6 +13,8 @@ use App\Models\ClientDetail\ClientDetail;
 use App\Models\Expense\Expense;
 use App\Models\DigiDocuments\DigiDocuments;
 use App\Models\Interest\Interest;
+use App\Models\ClientStock\ClientStock;
+use App\Models\ClientStockTransaction\ClientStockTransaction;
 
 /**
  * Global helpers file with misc functions.
@@ -668,4 +670,58 @@ function getDaysBetweenDates($d1, $d2)
 
     $interval = $date1->diff($date2);
     return $interval->days;
+}
+
+function getCurrentInvestment($clientId)
+{
+    $clientStocks = ClientStock::where('client_id', $clientId)->get();
+    $total = 0;
+
+    foreach($clientStocks as $clientStock)
+    {
+        $total += $clientStock->buy_qty * $clientStock->buy_cost;
+    }
+
+    return $total;
+}
+
+function getStockTransactionDetails($clientId)
+{
+    $clientTransactions   = ClientStockTransaction::where('client_id', $clientId)->get();
+    $totalProfit    = 0;
+    $totalTax       = 0;
+    $totalStocks    = 0;
+    $totalValue     = 0;
+    $brokerage      = 0;
+    $percentage     = 0;
+    $netValue       = 0;
+
+    foreach($clientTransactions as $clientTransaction)
+    {
+        $totalValue += $clientTransaction->total_transaction_value;
+        $totalTax += $clientTransaction->tax;
+        $brokerage += $clientTransaction->brokerage_cost;
+        $netValue += $clientTransaction->net_value;
+
+        if($clientTransaction->is_profit == 1)
+        {
+            $totalProfit += $clientTransaction->net_profit;
+        }
+        else
+        {
+            $totalProfit -= $clientTransaction->net_loss;
+        }
+    }
+
+
+    $percentage = $totalProfit * 100 / $totalValue;
+
+    return [
+        'profit' => number_format($totalProfit,2),
+        'netValue' => number_format($netValue,2),
+        'brokerage' => number_format($brokerage,2),
+        'percentage' => number_format($percentage, 2),
+        'tax' => number_format($totalTax, 2),
+        'trades'    => count($clientTransactions)
+    ];
 }

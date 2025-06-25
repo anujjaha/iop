@@ -168,6 +168,14 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.stockdetails.index') }}" class="nav-link">
+                        <i class="nav-icon fas fa-table"></i>
+                        <p>
+                            Client Stock
+                        </p>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>
