@@ -15,6 +15,8 @@ use App\Models\IpoDetails\IpoDetails;
 use App\Models\IpoAssignments\IpoAssignments;
 use App\Models\Fees\Fees;
 use App\Models\DigiDocuments\DigiDocuments;
+use App\Models\ClientStock\ClientStock;
+use App\Models\ClientStockTransaction\ClientStockTransaction;
 
 class EloquentClientDetailRepository extends DbRepository
 {
@@ -41,11 +43,13 @@ class EloquentClientDetailRepository extends DbRepository
         'id'              => 'Id',
 		'name'            => 'Name',
 		'balance'         => 'Balance',
-		'mobile'          => 'Mobile',
+        'bank_account'    => 'Bank Account',
 		'email'           => 'Email',
+        'crn_no'          => 'CRN',
+        'crn_pwd'         => 'Password',
+		'mobile'          => 'Mobile',
 		'aadhar_no'       => 'Aadhar_no',
 		'pan_no'          => 'Pan_no',
-        'bank_account'    => 'Bank Account',
 		'profit_loss'     => 'Profit_loss',
 		"actions"         => "Actions"
     ];
@@ -74,18 +78,38 @@ class EloquentClientDetailRepository extends DbRepository
                     'searchable'    => true,
                     'sortable'      => true
                 ],
+        'bank_account' =>   [
+                    'data'          => 'bank_account',
+                    'name'          => 'bank_account',
+                    'searchable'    => true,
+                    'sortable'      => true
+                ],
+        'email' =>   [
+                    'data'          => 'email',
+                    'name'          => 'email',
+                    'searchable'    => true,
+                    'sortable'      => true
+                ],
+        'crn_no' =>   [
+                    'data'          => 'crn_no',
+                    'name'          => 'crn_no',
+                    'searchable'    => true,
+                    'sortable'      => true
+                ],
+        'crn_pwd' =>   [
+                    'data'          => 'crn_pwd',
+                    'name'          => 'crn_pwd',
+                    'searchable'    => true,
+                    'sortable'      => true
+                ],   
+        
 		'mobile' =>   [
                     'data'          => 'mobile',
                     'name'          => 'mobile',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'email' =>   [
-                    'data'          => 'email',
-                    'name'          => 'email',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],
+		
 		'aadhar_no' =>   [
                     'data'          => 'aadhar_no',
                     'name'          => 'aadhar_no',
@@ -98,12 +122,7 @@ class EloquentClientDetailRepository extends DbRepository
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-        'bank_account' =>   [
-                    'data'          => 'bank_account',
-                    'name'          => 'bank_account',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],                
+                     
 		'profit_loss' =>   [
                     'data'          => 'profit_loss',
                     'name'          => 'profit_loss',
@@ -397,4 +416,18 @@ class EloquentClientDetailRepository extends DbRepository
         return DigiDocuments::where('user_id', $clientId)->get();
     }
 
+    public function getMyStocks($clientId)
+    {
+        return ClientStock::where('client_id', $clientId)
+            ->with(['stockDetail'])
+            ->get();
+    }
+
+    public function getMyStockTransactions($clientId)
+    {
+        return ClientStockTransaction::where('client_id', $clientId)
+            ->orderBy('created_at', 'desc')
+            ->with(['stockDetail'])
+            ->get();
+    }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use DateTime;
 use App\Models\Main\Main;
 use App\Models\IpoAssignments\IpoAssignments;
 use App\Models\Fees\Fees;
@@ -142,7 +143,7 @@ if (!function_exists('getBrokerAmount')) {
     {
         $brokerageCost = (getBrokerPercentage() * $cost / 100);
 
-        return  $brokerageCost > 20 ? 20 : $brokerageCost;
+        return  $brokerageCost;// > 20 ? 20 : $brokerageCost;
     }
 }
 
@@ -474,6 +475,13 @@ if (!function_exists('get20TaxRate')) {
         return 20;
     }
 }
+if (!function_exists('get15TaxRate')) {
+
+    function get15TaxRate()
+    {
+        return 15;
+    }
+}
 
 
 if (!function_exists('showDateTime')) {
@@ -651,4 +659,13 @@ function getTotalInterest($clientId = null)
     }
 
     return Interest::sum('amount') ?? 0;
+}
+
+function getDaysBetweenDates($d1, $d2)
+{
+    $date1 = new DateTime($d1);
+    $date2 = new DateTime($d2);
+
+    $interval = $date1->diff($date2);
+    return $interval->days;
 }

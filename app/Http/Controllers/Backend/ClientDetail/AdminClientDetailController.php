@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Datatables;
 use App\Repositories\ClientDetail\EloquentClientDetailRepository;
+use App\Repositories\StockDetails\EloquentStockDetailsRepository;
 
 /**
  * Class AdminClientDetailController
@@ -111,14 +112,20 @@ class AdminClientDetailController extends Controller
         $eligibleIpos   = $this->repository->getPendingIpos($item->id);
         $fees           = $this->repository->getFeeTransactions($item->id);
         $documents      = $this->repository->getMyDocuments($item->id);
+        $stockRepo      = new EloquentStockDetailsRepository();
+        $allStocks      = $stockRepo->getAllStocks();
+        $myStocks       = $this->repository->getMyStocks($item->id);
+        $stockTransactions = $this->repository->getMyStockTransactions($item->id);
 
-        // dd($item->stockList);
         return view($this->repository->setAdmin(true)->getModuleView('showView'))->with([
             'item'          => $item,
             'eligibleIpos'  => $eligibleIpos,
             'repository'    => $this->repository,
             'fees'          => $fees,
-            'documents'     => $documents
+            'documents'     => $documents,
+            'allStocks'     => $allStocks,
+            'myStocks'      => $myStocks,
+            'stockTransactions' => $stockTransactions
         ]);
     }
 

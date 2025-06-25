@@ -367,8 +367,9 @@
 
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Welcome To Laravel 9 Quick Panel</h3>
+            <h3 class="card-title">GMP Dashboard</h3>
             <div class="card-tools">
+                <a target="_blank" href="https://www.investorgain.com/report/live-ipo-gmp/331/" class="btn btn-success btn-sm">View</a>
                 <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                     <i class="fas fa-minus"></i>
                 </button>

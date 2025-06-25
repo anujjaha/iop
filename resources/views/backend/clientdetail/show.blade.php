@@ -242,7 +242,7 @@
     </div>
 
 </div>
-
+<!-- 
 <div class="col-md-12">
 <div class="card card-primary">
         <div class="card-header">
@@ -277,6 +277,134 @@
                             </a>
                         </td>
                         <td>{!! $stock->notes !!}</td>
+                    </tr>
+                @endforeach
+            </table>
+        </div>
+    </div>
+
+</div> -->
+
+<div class="col-md-12">
+<div class="card card-primary">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-lg-10">
+                    Stock List
+                </div>
+                
+                <div class="col-lg-2 text-right pull-right">
+                    <a onclick="addNewStock()" href="javascript:void(0)" class="btn btn-xs btn-success">Add New</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tr>
+                    <td>Sr</td>
+                    <td>Date</td>
+                    <td>Title</td>
+                    <td>Code</td>
+                    <td>QTY</td>
+                    <td>Buy Price</td>
+                    <td>CMP</td>
+                    <td>Investment</td>
+                    <td>Current Value</td>
+                    <td>Profit</td>
+                    <td>Notes</td>
+                    <td>Action</td>
+                </tr>
+                @php
+                    $sr = 1;
+                @endphp
+                @foreach($myStocks as $stock)
+                    @php
+                        $invested = $stock->buy_qty * $stock->buy_cost;
+                        $currentValue = $stock->buy_qty * $stock->stockDetail->cmp;
+                        $profit = $currentValue - $invested;
+                    @endphp
+                    <tr>
+                        <td>{!! $sr++; !!}</td>
+                        <td>{!! date('d M Y', strtotime($stock->buy_date)) !!}</td>
+                        <td>{!! $stock->stockDetail->title !!}</td>
+                        <td><a href="{!! $stock->stockDetail->external_link !!}" target="_blank" class="btn btn-xs btn-warning">{!! $stock->stockDetail->code !!}</a></td>
+                        <td>{!! $stock->buy_qty     !!}</td>
+                        <td>{!! $stock->buy_cost !!}</td>
+                        <td>{!! $stock->stockDetail->cmp !!}</td>
+                        <td>{!! $invested !!}</td>
+                        <td>{!! $currentValue !!}</td>
+                        <td><span class="text-strong text-{!! $profit > 0 ? 'success' : 'danger'!!}">{!! $profit !!}</span></td>
+                        <td>{!! $stock->notes !!}</td>
+                        <td>
+                            <a href="javascript:void(0);" class="btn btn-sm" onclick="settleTrade({!! $stock->id !!}, '{!! $stock->stockDetail->title !!}')">Settle</a>
+                        </td>
+                    </tr>
+                @endforeach
+            </table>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="col-md-12">
+<div class="card card-primary">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-lg-10">
+                    Stock Transactions
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tr>
+                    <td>Sr</td>
+                    <td>Buy Date</td>
+                    <td>Sell Date</td>
+                    <td>Days</td>
+                    <td>Title</td>
+                    <td>Code</td>
+                    <td>Buy / Sell Qty</td>
+                    <td>Buy / Sell Price</td>
+                    <td>Investment</td>
+                    <td>Net Profit / Loss</td>
+                    <td>Profit %</td>
+                    <td>Tax</td>
+                </tr>
+                @php
+                    $sr = 1;
+                @endphp
+                @foreach($stockTransactions as $stockTransaction)
+                    @php
+                        $invested = $stockTransaction->buy_qty * $stockTransaction->buy_cost;
+                        $profitP = ($stockTransaction->net_profit * 100 ) /$invested;
+                        $truncated = floor($profitP * 100) / 100;
+                        
+                    @endphp
+                    <tr>
+                        <td>{!! $sr++; !!}</td>
+                        <td>{!! date('d M Y', strtotime($stockTransaction->buy_date))  !!}</td>
+                        <td>{!! date('d M Y', strtotime($stockTransaction->sell_date))  !!}</td>
+                        <td>{!! getDaysBetweenDates($stockTransaction->buy_date, $stockTransaction->sell_date) !!}</td>
+                        <td>{!! $stockTransaction->stockDetail->title !!}</td>
+                        <td><a href="{!! $stockTransaction->stockDetail->external_link !!}" target="_blank" class="btn btn-xs btn-warning">{!! $stockTransaction->stockDetail->code !!}</a></td>
+                        <td>{!! $stockTransaction->buy_qty !!} / {!! $stockTransaction->sell_qty !!}</td>
+                        <td>{!! $stockTransaction->buy_cost !!} / {!! $stockTransaction->sell_cost !!}</td>
+                        <td>{!! $invested !!}</td>
+                        <td>
+                            @if($stockTransaction->is_profit == 1)
+                                <span class="text-bold text-success">
+                                    {!! $stockTransaction->net_profit !!}
+                                </span>
+                            @else
+                                <span class="text-bold text-danger">
+                                    {!! $stockTransaction->net_loss !!}
+                                </span>
+                            @endif
+                        </td>
+                        <td>{!! number_format($truncated, 2) !!} %</td>
+                        <td>{!! $stockTransaction->tax !!}</td>
                     </tr>
                 @endforeach
             </table>
@@ -390,6 +518,142 @@
     </div>
 </div>
 {{ Form::close() }}
+
+<!-- Modal -->
+<div class="modal fade " id="addNewStockModal" tabindex="-1" role="dialog" aria-labelledby="addNewStockModal" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="addNewStockModalTitle">
+                Add New Stock
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="modal-body">
+             <div class="form-group row">
+                <label class="col-lg-2 control-label">Date: </label>
+                <div class="col-md-2">
+                    <input style="width:200px;" type="date" id="selectStockDate" name="selectStockDate" class="form-control" value="" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-lg-2 control-label">Stock: </label>
+                <div class="col-md-10">
+                    <select id="selectStockid" name="selectStockid" class="form-control">
+                        <option value="">Select</option>
+                        @foreach($allStocks as $astock)
+                            <option value="{!! $astock->id !!}">{!! $astock->title !!}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-lg-2 control-label">Cost: </label>
+                <div class="col-md-10">
+                    <input type="number" step="0.1" style="width: 150px;" id="selectStockCost" name="selectStockCost" class="form-control" value="" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-lg-2 control-label">Qty: </label>
+                <div class="col-md-10">
+                    <input type="number" step="1" style="width: 150px;" id="selectStockQty" name="selectStockQty" class="form-control" value="" />
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            
+            <button type="button" onclick="storeClientStock()"  class="btn btn-success">Add</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"  data-dismiss="modal">Close</button>
+        </div>
+    </div>
+  </div>
+</div>
+<!-- Modal END-->
+
+
+<!-- Modal -->
+<div class="modal fade " id="settleStockModal" tabindex="-1" role="dialog" aria-labelledby="settleStockModalLable" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="settleStockModalTitle">
+                Settle Stock
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <div id="formContainer">
+                <div class="form-group row">
+                    <label class="col-lg-2 control-label">Date: </label>
+                    <div class="col-md-10">
+                        <input type="date" id="settleStockDate" name="settleStockDate" class="form-control" value="" style="width:200px;" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-2 control-label">Stock: </label>
+                    <div class="col-md-10" id="settleStockTitle"></div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-2 control-label">Cost: </label>
+                    <div class="col-md-10">
+                        <input type="number" step="0.1" style="width: 150px;" id="settleStockCost" name="settleStockCost" class="form-control" value="" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-2 control-label">Qty: </label>
+                    <div class="col-md-10">
+                        <input type="number" step="1" style="width: 150px;" id="settleStockQty" name="settleStockQty" class="form-control" value="" />
+                    </div>
+                </div>
+            </div>
+
+            <div id="verifyContainer" style="display: none;">
+                <div class="form-group row">
+                    <label class="col-lg-2 control-label">Date: </label>
+                    <div class="col-md-10" id="showsettleStockDate"></div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-2 control-label">Stock: </label>
+                    <div class="col-md-10" id="showsettleStockTitle"></div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-2 control-label">Cost: </label>
+                    <div class="col-md-10" id="showsettleStockCost"></div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-2 control-label">Qty: </label>
+                    <div class="col-md-10" id="showsettleStockQty"></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <input type="hidden" name="clientStockId" id="clientStockId" value="">
+            <input type="hidden" name="isAjax" id="isAjax" value="">
+            <button type="button" id="settleBtn" onclick="settleClientStock()"  class="btn btn-success">Settle</button>
+            <button type="button" id="cancelBtn" onclick="settleClientStockCancel()"  class="btn btn-secondary">Cancel</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"  data-dismiss="modal">Close</button>
+        </div>
+    </div>
+  </div>
+</div>
+<!-- Modal END-->
+
 
 <!-- Modal -->
 <div class="modal fade " id="addFeeModal" tabindex="-1" role="dialog" aria-labelledby="addFeeModal" aria-hidden="true">
@@ -707,6 +971,161 @@ function setLotSize()
         .attr("value", maxLot)
         .text('Max Lot ( '+ maxLot * priceBand+' )' )); 
 
+}
+
+function addNewStock()
+{
+    jQuery("#addNewStockModal").modal('show');
+    jQuery("#selectStockCost").val('');
+    jQuery("#selectStockQty").val('');
+    jQuery("#selectStockid").val('');
+}
+
+function storeClientStock()
+{
+    var clientId = {!! $item->id !!};
+    var date = jQuery("#selectStockDate").val();
+    var stockId = jQuery("#selectStockid").val();
+    var cost = jQuery("#selectStockCost").val();
+    var qty = jQuery("#selectStockQty").val();
+
+    if(parseFloat(cost) < 0 || parseFloat(qty) < 1)
+    {
+        swal('Oh', 'Please enter valid cost or QTY','error');
+        return;
+    }
+    
+    if(stockId == '')
+    {
+        swal('Oh', 'Please Select valid Stock','error');
+        return;
+    }
+
+    jQuery.ajax(
+    {
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url : "{{ url(route('admin.clientstock.add-new')) }}",
+        dataType : 'json',
+        type : 'POST',
+        data : {
+            clientId,
+            date,
+            stockId,
+            cost,
+            qty
+        },
+        success : function(data) 
+        {
+            jQuery("#addNewStockModal").modal('hide');
+            if(data.status == true)
+            {
+                swal('Yeah.', 'Stock added successfully.', 'success');   
+                // setTimeout(function() {
+                //     window.location.reload();
+                // }, 2000);
+
+                return;
+            }
+
+            swal('Oh', 'Something went Wrong','error');
+        }
+    });
+}
+
+function settleClientStock()
+{
+    var clientId = {!! $item->id !!};
+    var date = jQuery("#settleStockDate").val();
+    var stockId = jQuery("#clientStockId").val();
+    var cost = jQuery("#settleStockCost").val();
+    var qty = jQuery("#settleStockQty").val();
+
+    if(parseFloat(cost) < 0 || parseFloat(qty) < 1)
+    {
+        swal('Oh', 'Please enter valid cost or QTY','error');
+        return;
+    }
+    
+    if(stockId == '')
+    {
+        swal('Oh', 'Please Select valid Stock','error');
+        return;
+    }
+
+    if(jQuery("#isAjax").val().toString() == "1")
+    {
+        jQuery.ajax(
+        {
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url : "{{ url(route('admin.clientstock.settle')) }}",
+            dataType : 'json',
+            type : 'POST',
+            data : {
+                clientId,
+                date,
+                stockId,
+                cost,
+                qty
+            },
+            success : function(data) 
+            {
+                jQuery("#settleStockModal").modal('hide');
+                if(data.status == true)
+                {
+                    swal('Yeah.', 'Stock settled successfully.', 'success');
+                    setTimeout(function() 
+                    {
+                        window.location.reload();
+                    }, 1000);
+
+                    return;
+                }
+
+                swal('Oh', 'Something went Wrong','error');
+            }
+        });
+
+        jQuery("#isAjax").val(0);
+    }
+    else
+    {
+        jQuery("#isAjax").val(1);
+        jQuery("#verifyContainer").show();
+        jQuery("#formContainer").hide();
+        jQuery("#settleBtn").html('Settle Now');
+        
+        jQuery("#showsettleStockDate").html(date);
+        jQuery("#showsettleStockCost").html(cost);
+        jQuery("#showsettleStockQty").html(qty);
+        jQuery("#showsettleStockDate").html();
+    }
+}
+
+function settleTrade(clientStockId, title)
+{
+    jQuery("#settleStockTitle").html(title);
+    jQuery("#showsettleStockTitle").html(title);
+    jQuery("#settleStockModal").modal('show');
+    jQuery("#selectStockCost").val('');
+    jQuery("#selectStockQty").val('');
+    jQuery("#selectStockid").val('');
+    jQuery("#clientStockId").val(clientStockId);
+}
+
+function settleClientStockCancel()
+{
+    jQuery("#settleStockCost").val('');
+    jQuery("#settleStockQty").val('');
+    jQuery("#selectStockid").val('');
+    jQuery("#clientStockId").val('');
+    jQuery("#isAjax").val('');
+    jQuery("#verifyContainer").hide();
+    jQuery("#formContainer").show();
+    jQuery("#settleBtn").html('Settle');
 }
 </script>
 @endsection
