@@ -685,9 +685,29 @@ function getCurrentInvestment($clientId)
     return $total;
 }
 
-function getStockTransactionDetails($clientId)
+function getCurrentInvestmentTotal()
 {
-    $clientTransactions   = ClientStockTransaction::where('client_id', $clientId)->get();
+    $clientStocks = ClientStock::all();
+    $total = 0;
+
+    foreach($clientStocks as $clientStock)
+    {
+        $total += $clientStock->buy_qty * $clientStock->buy_cost;
+    }
+
+    return $total;
+}
+
+function getStockTransactionDetails($clientId = null)
+{
+    if(isset($clientId))
+    {
+        $clientTransactions   = ClientStockTransaction::where('client_id', $clientId)->get();
+    }
+    else
+    {
+        $clientTransactions = ClientStockTransaction::all();
+    }
     $totalProfit    = 0;
     $totalTax       = 0;
     $totalStocks    = 0;
@@ -713,8 +733,14 @@ function getStockTransactionDetails($clientId)
         }
     }
 
-
-    $percentage = $totalProfit * 100 / $totalValue;
+    if($totalValue > 0)
+    {
+        $percentage = $totalProfit * 100 / $totalValue;
+    }
+    else
+    {
+        $percentage = 0 ;
+    }
 
     return [
         'profit' => number_format($totalProfit,2),

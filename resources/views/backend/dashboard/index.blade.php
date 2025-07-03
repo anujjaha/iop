@@ -10,6 +10,7 @@
         $mainBal    = mainBalance();
         $blockBal   = blockBalance();
         $masterBal  = $mainBal + $blockBal;
+        $stockStats = getStockTransactionDetails();
     @endphp
     <h3>Dashboard</h3>
 
@@ -194,6 +195,69 @@
             </div>
         </div>
 
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            Client Stock Details <span class="text-right float-right"><a href="{!! route('admin.stockdetails.create') !!}" class="btn btn-sm btn-success">New</a>
+            </span>
+        </div>
+
+        <div class="card-body row">
+            <div class="col-md-2 col-sm-4 col-12">
+              <div class="info-box">
+                <div class="info-box-content">
+                  <span class="info-box-text">Invested</span>
+                  <span class="info-box-number">{!! getCurrentInvestmentTotal() !!}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-2 col-sm-4 col-12">
+                <div class="info-box">
+                    <div class="info-box-content">
+                        <span class="info-box-text">Stock P&L</span>
+                        <span class="info-box-number">{!! $stockStats['netValue'] !!}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2 col-sm-4 col-12">
+                <div class="info-box">
+                    <div class="info-box-content">
+                        <span class="info-box-text">Tax</span>
+                        <span class="info-box-number">{!! $stockStats['tax'] !!}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2 col-sm-4 col-12">
+                <div class="info-box">
+                    <div class="info-box-content">
+                        <span class="info-box-text">NET P&L</span>
+                        <span class="info-box-number">{!! $stockStats['profit'] !!}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2 col-sm-4 col-12">
+                <div class="info-box">
+                    <div class="info-box-content">
+                        <span class="info-box-text">Trades</span>
+                        <span class="info-box-number">{!! $stockStats['trades'] !!}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2 col-sm-4 col-12">
+                <div class="info-box">
+                    <div class="info-box-content">
+                        <span class="info-box-text">% P&L</span>
+                        <span class="info-box-number">{!! $stockStats['percentage'] !!}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="card">
