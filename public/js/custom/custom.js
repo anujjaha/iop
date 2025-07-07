@@ -221,6 +221,7 @@ var BaseCommon =
 			jQuery(element).DataTable({
 			    processing: true,
 			    serverSide: true,
+			    pageLength: 100,
 			    ajax: {
 			        url: fetchurl,
 			    	async: true,

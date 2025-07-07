@@ -36,15 +36,15 @@ class EloquentIpoDetailsRepository extends DbRepository
     public $tableHeaders = [
         'id'        => 'Id',
 		'ipo_name'        => 'Ipo_name',
-		'opening_date'        => 'Opening_date',
-		'closing_date'        => 'Closing_date',
-		'listing_date'        => 'Listing_date',
-		'gmp_latest'        => 'Gmp_latest',
-		'lot_size'        => 'Lot_size',
-		'block_amt'        => 'Block_amt',
+		'opening_date'        => 'P&L',
+		'closing_date'        => 'Dates',
+		'listing_date'        => 'Listing',
+		'gmp_latest'        => 'Gmp',
+		'lot_size'        => 'Lot Size',
+		'block_amt'        => 'Blocked',
 		'refund_date'        => 'Refund_date',
-		'listed_price'        => 'Listed_price',
-		'ipo_type'        => 'Ipo_type',
+		'listed_price'        => 'Listed',
+		'ipo_type'        => 'Ipo Type',
 		'notes'        => 'Notes',
 "actions"         => "Actions"
     ];

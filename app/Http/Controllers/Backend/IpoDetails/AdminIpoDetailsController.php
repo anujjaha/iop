@@ -157,25 +157,28 @@ class AdminIpoDetailsController extends Controller
         return Datatables::of($this->repository->getForDataTable())
             ->escapeColumns(['id', 'sort'])
             ->addColumn('ipo_name', function ($item) {
+                return '<a href="' . route('admin.ipodetails.show', $item->id) . '">'.$item->ipo_name.'</a> <br />';  
+            })
+            ->addColumn('opening_date', function ($item) {
                 $assignments = $item->assignments;
 
                 $pl = $assignments->where('status',5)
                 ->sum('profit_loss');
                 
-                if($pl && $pl != 0)
+                $span = '';
+                if($pl > 0)
                 {
-                    $span = '';
-                    if($pl > 0)
-                    {
-                        $span = '<span class="text-bold text-success">'.$pl.'</span>';
-                    }
-                    else
-                    {
-                        $span = '<span class="text-danger">'.$pl.'</span>';
-                    }
-                    return '<a href="' . route('admin.ipodetails.show', $item->id) . '">'.$item->ipo_name.'</a> <br />'.$span;    
+                    $span = '<span class="text-bold text-success">'.$pl.'</span>';
                 }
-                return '<a href="' . route('admin.ipodetails.show', $item->id) . '">'.$item->ipo_name.'</a> <br />';
+                else
+                {
+                    $span = '<span class="text-danger">'.$pl.'</span>';
+                }
+                return $span;    
+                
+            })
+            ->addColumn('closing_date', function ($item) {
+                return $item->opening_date .'-'. $item->closing_date;
             })
             ->addColumn('actions', function ($item) {
                 return $item->admin_action_buttons;
