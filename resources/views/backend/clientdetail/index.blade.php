@@ -5,6 +5,9 @@
 @include('backend.includes.datatable-asset')
 
 @section('content')
+@php
+    $ipoStats = getIpoStates();
+@endphp
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">{{ isset($repository->moduleTitle) ? str_plural($repository->moduleTitle) : '' }} Listing
@@ -15,6 +18,22 @@
         </div>
     </div>
     <div class="card-body">
+
+        <div class="row">
+            <div class="col-md-3">
+                PL: {!! $ipoStats['pl'] !!}
+            </div>
+            <div class="col-md-3">
+                Tax: {!! $ipoStats['tax'] !!}
+            </div>
+            <div class="col-md-3">
+                Fees: {!! $ipoStats['totalFees'] !!}
+            </div>
+            <div class="col-md-3">
+                Net PL: {!! $ipoStats['netpl'] - $ipoStats['totalFees'] !!}
+            </div>
+        </div>
+        <div class="clearfix"><hr /></div>
         <div class="table-responsive">
             <table id="items-table" class="table table-bordered table-hover">
                 <thead>

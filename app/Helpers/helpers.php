@@ -751,3 +751,15 @@ function getStockTransactionDetails($clientId = null)
         'trades'    => count($clientTransactions)
     ];
 }
+
+function getIpoStates()
+{
+    $assigned = IpoAssignments::where('status', 5)->get();
+
+    return [
+        'pl' => $assigned->sum('profit_loss'),
+        'tax' => $assigned->sum('tax_amount'),
+        'netpl' => $assigned->sum('profit_loss_aftertax'),
+        'totalFees' => Fees::sum('fee_amount')
+    ];
+}
