@@ -752,9 +752,18 @@ function getStockTransactionDetails($clientId = null)
     ];
 }
 
-function getIpoStates()
+function getIpoStates($ipoId = null)
 {
-    $assigned = IpoAssignments::where('status', 5)->get();
+    if($ipoId)
+    {
+        $assigned = IpoAssignments::where('status', 5)
+            ->where('ipo_id', $ipoId)
+            ->get();
+    }
+    else
+    {
+        $assigned = IpoAssignments::where('status', 5)->get();
+    }
 
     return [
         'pl' => $assigned->sum('profit_loss'),
