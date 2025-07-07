@@ -178,6 +178,15 @@ class AdminClientDetailController extends Controller
 
                 return $html;
             })
+            ->addColumn('profit_loss', function ($item) {
+                $assignedIpos = $item->assignedIpos->where('status', 5);
+
+                if($assignedIpos)
+                {
+                    return $assignedIpos->sum('profit_loss');
+                }
+                return 0;
+            })
             ->addColumn('actions', function ($item) {
                 return $item->admin_action_buttons;
             })
