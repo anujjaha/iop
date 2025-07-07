@@ -34,7 +34,7 @@ class EloquentIpoDetailsRepository extends DbRepository
      * @var array
      */
     public $tableHeaders = [
-        		'id'        => 'Id',
+        'id'        => 'Id',
 		'ipo_name'        => 'Ipo_name',
 		'opening_date'        => 'Opening_date',
 		'closing_date'        => 'Closing_date',
