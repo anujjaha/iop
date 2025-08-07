@@ -27,7 +27,11 @@ class ClientDetail extends BaseModel
      */
     protected $fillable = [
         "aadhar_no", "address", "balance", "bank_account", "bank_branch", "bank_name", "birthdate", "created_at", "dmat_account", "dmat_co_name", "dmat_password", "dmat_user_name", "email", "id", "ifsc_code", "is_huf", "mobile", "name", "pan_no", "profit_loss", "start_date", "status", "updated_at", 
-        "monthly_fee"
+        "monthly_fee",
+        'mobile_device',
+        'dmat_device',
+        'mother_name',
+        'notes'
     ];
 
     /**

@@ -133,6 +133,7 @@
                     <td>
                         <a target="_blank" href="{!! route('admin.clientdetail.show', $assignment->client->id) !!}"> 
                         {!! $assignment->client->name !!} ({!! $assignment->client->balance !!})
+                        | {!! $assignment->client->mobile_device !!} | {!! $assignment->client->dmat_device !!}
                         </a>
                     </td>
                     <td>{!! $assignment->client->pan_no !!}</td>
