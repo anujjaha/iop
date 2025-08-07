@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Backend\IpoDetails;
 
+use DateTime;
+use DateInterval;
+use DatePeriod;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Datatables;
@@ -184,5 +187,40 @@ class AdminIpoDetailsController extends Controller
                 return $item->admin_action_buttons;
             })
             ->make(true);
+    }
+
+    /**
+     * IpoDetails Show
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showChart(Request $request)
+    {
+        $start  = new DateTime('2024-10-01');
+        $end    = new DateTime();
+        $end->modify('first day of next month');
+        $interval = new DateInterval('P1M');
+        $period = new DatePeriod($start, $interval, $end);
+        $months = [];
+
+        foreach ($period as $dt) {
+            $months[] = $dt->format("M-Y");
+        }
+        $chartData = $this->repository->getChartData($months);
+        $monthlyExpense = $this->repository->getMonthlyExpenses($months);
+
+        // dd([
+        //     'chartData' => $chartData,
+        //     'monthlyExpense' => $monthlyExpense,
+        //     'months'    => $months
+        // ]);
+        return view($this->repository->setAdmin(true)->getModuleView('chartView'))->with([
+            'chartData'         => $chartData,
+            'monthlyExpense'    => $monthlyExpense,
+            'totalProfit'       => array_sum(array_values($chartData)),
+            'totalExpense'      => array_sum(array_values($monthlyExpense)),
+            'months'            => $months,
+            'totalAccounts'     => 46
+        ]);
     }
 }

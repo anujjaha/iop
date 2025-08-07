@@ -10,6 +10,7 @@ namespace App\Repositories\IpoDetails;
 
 use App\Models\IpoDetails\IpoDetails;
 use App\Repositories\DbRepository;
+use App\Models\Fees\Fees;
 use App\Exceptions\GeneralException;
 
 class EloquentIpoDetailsRepository extends DbRepository
@@ -197,6 +198,7 @@ class EloquentIpoDetailsRepository extends DbRepository
         'editView'      => 'ipodetails.edit',
         'deleteView'    => 'ipodetails.destroy',
         'showView'    => 'ipodetails.show',
+        'chartView'    => 'ipodetails.chart',
     ];
 
     /**
@@ -399,5 +401,64 @@ class EloquentIpoDetailsRepository extends DbRepository
         }
 
         return $options;
+    }
+
+    public function getChartData($months = null)
+    {
+        $ipos = $this->model->with(['assignments'])->get();
+        $output = [];
+        $return = [];
+
+        foreach($ipos as $ipo)
+        {
+            $iDate = date('M-Y', strtotime($ipo->closing_date));
+            $assignments = $ipo->assignments;
+
+            $pl = $assignments->where('status',5)
+                ->sum('profit_loss');
+
+            if(isset($output[$iDate]))
+            {
+                $output[$iDate] = $output[$iDate] + $pl;
+            }
+            else
+            {
+                $output[$iDate] = $pl;
+            }
+        }
+
+        foreach($months as $amonth)
+        {
+            $return[$amonth] = $output[$amonth] ?? 0;
+        }
+
+        return $return;
+    }
+
+    public function getMonthlyExpenses($months = null)
+    {
+        $fees = Fees::all();
+        $output = [];
+        $return = [];
+
+        foreach($fees as $fee)
+        {
+            $monthTitle = ucfirst($fee->month_title);
+            if(isset($output[$monthTitle]))
+            {
+                $output[$monthTitle] = $output[$monthTitle] + $fee->fee_amount;
+            }
+            else
+            {
+                $output[$monthTitle] = $fee->fee_amount;
+            }
+        }
+
+        foreach($months as $amonth)
+        {
+            $return[$amonth] = $output[$amonth] ?? 0;
+        }
+
+        return $return;
     }
 }
