@@ -10,7 +10,32 @@
 
 @php
     $stockStats = getStockTransactionDetails($item->id);
-    
+    $months = [
+            'aug-2024' => 'Aug-2024',
+            'sep-2024' => 'Sep-2024',
+            'oct-2024' => 'Oct-2024',
+            'nov-2024' => 'Nov-2024',
+            'dec-2024' => 'Dec-2024',
+            'jan-2025' => 'Jan-2025',
+            'feb-2025' => 'Feb-2025',
+            'mar-2025' => 'Mar-2025',
+            'apr-2025' => 'Apr-2025',
+            'may-2025' => 'May-2025',
+            'june-2025' => 'Jun-2025',
+            'july-2025' => 'July-2025',
+            'aug-2025' => 'Aug-2025',
+            'sep-2025' => 'Sep-2025',
+            'oct-2025' => 'Oct-2025',
+            'nov-2025' => 'Nov-2025',
+            'dec-2025' => 'Dec-2025',
+            'jan-2026' => 'Jan-2026',
+            'feb-2026' => 'Feb-2026',
+            'mar-2026' => 'Mar-2026',
+            'apr-2026' => 'Apr-2026',
+            'may-2026' => 'May-2026',
+            'june-2026' => 'Jun-2026',
+            'july-2026' => 'Jul-2026',
+        ];
 @endphp
 {{ Form::model($item, ['route' => [$repository->getActionRoute('updateRoute'), $item], 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'PATCH']) }}
 
@@ -740,9 +765,15 @@
         </div>
         <div class="modal-body">
             <div class="form-group row">
+                <label class="col-lg-2 control-label">Select Month: </label>
+                <div class="col-md-10">
+                        {{ Form::select('fee_month', $months, null, ['class' => 'form-control', 'placeholder' => 'Select Month', 'id' => 'fee_month']) }}
+                </div>
+            </div>
+            <div class="form-group row">
                 <label class="col-lg-2 control-label">Amount: </label>
                 <div class="col-md-10">
-                    <input type="number" step="0.1" style="width: 150px;" id="fee" name="fee" class="form-control" value="{!!  $item->monthly_fee !!}" />
+                    <input type="number" step="0.1" style="width: 150px;" id="fee" name="fee" class="form-control" value="{!!  $item->monthly_fee ?? 500 !!}" />
                 </div>
             </div>
 
@@ -943,7 +974,7 @@ function storeFee()
         data : {
            client_id: clientId,
            notes: jQuery("#fee_notes").val(),
-           month_title: '{!! strtolower(date("M-Y")) !!}',
+           month_title: jQuery("#fee_month").val(),
            fee_amount: amount,
         },
         success : function(data) 
