@@ -176,6 +176,23 @@
                         </p>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.mobile.index') }}" class="nav-link">
+                        <i class="nav-icon fas fa-table"></i>
+                        <p>
+                            Mobiles
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.sim.index') }}" class="nav-link">
+                        <i class="nav-icon fas fa-table"></i>
+                        <p>
+                            Sim
+                        </p>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>

@@ -15,6 +15,7 @@ use App\Models\DigiDocuments\DigiDocuments;
 use App\Models\Interest\Interest;
 use App\Models\ClientStock\ClientStock;
 use App\Models\ClientStockTransaction\ClientStockTransaction;
+use App\Models\Mobile\Mobile;
 
 /**
  * Global helpers file with misc functions.
@@ -771,4 +772,19 @@ function getIpoStates($ipoId = null)
         'netpl' => $assigned->sum('profit_loss_aftertax'),
         'totalFees' => Fees::sum('fee_amount')
     ];
+}
+
+if (!function_exists('getDeviceOptions')) {
+
+    function getDeviceOptions()
+    {
+        $mobiles = Mobile::all();
+        $options = [];
+
+        foreach($mobiles as $mobile)
+        {
+            $options[$mobile->id] = $mobile->title;
+        }
+        return $options;
+    }
 }
