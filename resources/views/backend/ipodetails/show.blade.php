@@ -13,6 +13,10 @@
 @include('backend.includes.datatable-asset')
 
 @section('content')
+<!-- Dropzone CSS & JS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
+
 {{ Form::model($item, ['route' => [$repository->getActionRoute('updateRoute'), $item], 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'PATCH']) }}
 
 <div class="card">
@@ -23,6 +27,7 @@
                     <div class="card-header">
                                 Basic Details
                             <div class="card-tools pull-right float-right">
+                                <a href="javascript:void(0)" onclick="bulkUpload({!! $item->id !!})" class="btn btn-xs btn-success">Upload</a>
                                 @if($clientList && count($clientList))
                                     <a href="javascript:void(0)" onclick="assignIpo({!! $item->id !!})" class="btn btn-xs btn-success">Assign</a>
                                 @endif
@@ -218,12 +223,40 @@
     </div>
   </div>
 </div>
+
+<!-- Upload Modal -->
+<div class="modal fade " id="bulkUploadModal" tabindex="-1" role="dialog" aria-labelledby="addBalanceModal" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="">
+                IPO: {!! $item->ipo_name !!} ( {!! $item->block_amt !!} )
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        
+        <div class="modal-body">
+            <div id="dropzoneArea" class="dropzone"></div>
+        </div>
+        <div class="modal-footer">
+        <input type="hidden" name="ipoHiddenId" id="ipoHiddenId" value="">
+        <button type="button" onclick="applyIpo()"  class="btn btn-success">Apply</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"  data-dismiss="modal">Close</button>
+        </div>
+    </div>
+  </div>
+</div>
 {{ Form::close() }}
 @endsection
 
 
 @section('after-scripts')
 <script type="text/javascript">
+Dropzone.autoDiscover = false;
+
+let csvUploader;
 
 jQuery(document).ready(function() {
     jQuery(".data-table").dataTable();
@@ -233,6 +266,49 @@ function assignIpo(clientId)
 {
     jQuery("#assignIpoModal").modal('show');
 }
+
+function bulkUpload(clientId)
+{
+    jQuery("#bulkUploadModal").modal('show');
+    jQuery("#ipoHiddenId").val(clientId);
+
+    // Initialize only once
+    if (!csvUploader) {
+        csvUploader = new Dropzone("#dropzoneArea", {
+            url: "{{ route('admin.ipodetails.upload-csv') }}", // Your Laravel route
+            method: 'post',
+            maxFiles: 1,
+            acceptedFiles: '.csv',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dictDefaultMessage: "Drag & drop CSV here or click to browse",
+            init: function () {
+                this.on("sending", function (file, xhr, formData) {
+                    formData.append("ipoId", clientId);
+                    
+                });
+
+                this.on("success", function (file, response) {
+                    alert("CSV uploaded successfully!");
+                    $('#bulkUploadModal').modal('hide');
+                    this.removeAllFiles();
+                    // location.reload(); // or handle refresh manually
+                });
+                this.on("error", function (file, errorMessage) {
+                    alert("Error uploading file.");
+                });
+            }
+        });
+    }
+}
+
+// Clear Dropzone when modal closes
+$('#bulkUploadModal').on('hidden.bs.modal', function () {
+    if (csvUploader) {
+        csvUploader.removeAllFiles(true);
+    }
+});
 
 function applyIpo()
 {
@@ -283,5 +359,35 @@ function applyIpo()
         }
     });
 }
+
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
+  <script>
+    Dropzone.autoDiscover = false; // Prevent Dropzone from auto-initializing
+
+    var myDropzone;
+     // Dropzone config
+    Dropzone.options.csvDropzone = {
+      paramName: "file", // The name that will be used to transfer the file
+      maxFiles: 1,
+      acceptedFiles: ".csv",
+      dictDefaultMessage: "Drop your CSV here or click to upload",
+
+
+      init: function () {
+         
+
+        this.on("success", function (file, response) {
+          alert("File uploaded successfully.");
+          closeModal();
+        });
+
+        this.on("error", function (file, errorMessage) {
+          alert("Error uploading file: " + errorMessage);
+        });
+      }
+    };
+
 </script>
 @endsection

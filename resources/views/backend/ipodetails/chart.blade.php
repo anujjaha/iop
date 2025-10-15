@@ -100,6 +100,18 @@
                     @endforeach
                 @endif
               </tbody>
+              <tfoot>
+                @php
+                    $totalPl = $totalProfit - $totalExpense
+                @endphp
+                <tr>
+                  <th>-</th>
+                  <th>{!! $totalProfit !!}</th>
+                  <th>{!! $totalExpense !!}</th>
+                  <th>{!! $totalPl !!}</th>
+                  <th>{!! $totalPl > 0 ? '<span class="profit-text PROFIT"/>PROFIT</span>' : '<span class="profit-text LOSS"/>LOSS</span>' !!}</th>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>

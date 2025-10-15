@@ -7,11 +7,13 @@ namespace App\Repositories\IpoDetails;
  *
  * @author Anuj Jaha ( er.anujjaha@gmail.com)
  */
-
+use Carbon\Carbon;
 use App\Models\IpoDetails\IpoDetails;
 use App\Repositories\DbRepository;
 use App\Models\Fees\Fees;
 use App\Exceptions\GeneralException;
+use App\Models\ClientDetail\ClientDetail;
+use App\Models\Simplan\Simplan;
 
 class EloquentIpoDetailsRepository extends DbRepository
 {
@@ -411,9 +413,8 @@ class EloquentIpoDetailsRepository extends DbRepository
 
         foreach($ipos as $ipo)
         {
-            $iDate = date('M-Y', strtotime($ipo->closing_date));
+            $iDate = date('M-Y', strtotime($ipo->listing_date));
             $assignments = $ipo->assignments;
-
             $pl = $assignments->where('status',5)
                 ->sum('profit_loss');
 
@@ -437,10 +438,44 @@ class EloquentIpoDetailsRepository extends DbRepository
 
     public function getMonthlyExpenses($months = null)
     {
+        // $clients = ClientDetail::all();
+        // dd($clients);
+        
+
+        $start = Carbon::create(2024, 10, 1); // October 2024
+            $end = Carbon::now()->startOfMonth(); // Current month (October 2025)
+
+            $months = collect();
+
+            while ($start <= $end) {
+                $months->push(strtoupper($start->format('M-Y')));
+                $start->addMonth();
+            }
+
+        $tFees = 0;
+        $totalClients = 0;
+        $op = [];
+        foreach($months as $month)
+        {
+            $totalClients = $totalClients + ClientDetail::whereRaw("UPPER(DATE_FORMAT(created_at, '%b-%Y')) = ?", [$month])
+                ->where('is_free', 0)
+                ->count();
+
+            $tFees = $tFees + ( $totalClients * 500 );
+            $simCost = Simplan::whereRaw("UPPER(DATE_FORMAT(recharge_date, '%b-%Y')) = ?", [$month])
+                ->sum('cost');
+
+
+
+            $op[ucfirst(strtolower($month))] = ($totalClients * 500) + $simCost;
+
+        }
+        
+        // dd($op);
+        return $op;
         $fees = Fees::all();
         $output = [];
         $return = [];
-
         foreach($fees as $fee)
         {
             $monthTitle = ucfirst($fee->month_title);

@@ -208,6 +208,7 @@ class AdminIpoDetailsController extends Controller
         }
         $chartData = $this->repository->getChartData($months);
         $monthlyExpense = $this->repository->getMonthlyExpenses($months);
+        
 
         // dd([
         //     'chartData' => $chartData,
@@ -222,5 +223,51 @@ class AdminIpoDetailsController extends Controller
             'months'            => $months,
             'totalAccounts'     => 46
         ]);
+    }
+
+    public function uploadCsv(Request $request)
+    {
+        $ipoId = $request->get('ipoId');
+        if (!$request->hasFile('file')) {
+            return response()->json(['error' => 'No file uploaded.'], 400);
+        }
+
+        $file = $request->file('file');
+
+        if ($file->getClientOriginalExtension() !== 'csv') {
+            return response()->json(['error' => 'Invalid file type. Only CSV allowed.'], 422);
+        }
+
+        // Open the uploaded CSV file
+        $handle = fopen($file->getRealPath(), 'r');
+        $data = [];
+
+        $csvH = [
+            'sr',
+            'name',
+            'pan',
+            'current',
+            'remain',
+            'applied'
+        ];
+
+        while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+            $data[] = array_combine($csvH, $row);
+        }
+
+        fclose($handle);
+
+        // Now $data contains all rows as associative arrays
+        // Example: Insert into DB
+        $dataTostore = [];
+        foreach ($data as $record) {
+            $dataTostore[]  = $record;
+        }
+
+        $assignmentRepo = new EloquentIpoAssignmentsRepository();
+        $assignmentRepo->bulkAssignment($ipoId, $dataTostore);
+
+
+        die('Break');
     }
 }

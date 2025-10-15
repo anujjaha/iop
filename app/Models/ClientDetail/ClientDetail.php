@@ -31,7 +31,8 @@ class ClientDetail extends BaseModel
         'mobile_device',
         'dmat_device',
         'mother_name',
-        'notes'
+        'notes',
+        'is_free'
     ];
 
     /**

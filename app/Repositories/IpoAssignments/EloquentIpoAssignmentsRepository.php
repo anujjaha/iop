@@ -658,4 +658,80 @@ class EloquentIpoAssignmentsRepository extends DbRepository
 
         return $this->model->orderBy('listing_date','desc')->get();
     }
+
+    public function bulkAssignment($ipoId, $data)
+    {
+        $ipo = IpoDetails::where('id', $ipoId)->first();
+        foreach ($data as $key => $value) 
+        {
+            $panCard = $value['pan'];
+            $client = ClientDetail::where('pan_no', $panCard)->first();
+            if(isset($client))
+            {
+                $isExist = $this->model->where([
+                    'ipo_id' => $ipo->id,
+                    'client_id' => $client->id
+                ])->first();
+                if($isExist)
+                {
+                    continue;
+                }
+                $client->balance = $value['current'] + $value['remain'];
+                $client->save();
+
+                $shareQty = $ipo->min_lot_size * $ipo->price_band == $value['applied'] ? $ipo->min_lot_size : $ipo->max_lot_size;
+
+                $this->model->create([
+                    'ipo_id' => $ipo->id,
+                    'client_id' => $client->id,
+                    'status'    => 1,
+                    'applied_date' => $ipo->closing_date,
+                    'share_qty'    => $shareQty,
+                    'notes'        => $value['notes'] ?? 'ASBA'
+                ]);
+
+                $lastTransaction = Transactions::orderBy('id','desc')->where(
+                    ['client_id' => $client->id])
+                    ->first();
+                
+                $cBalance = $value['current'] + $value['remain'];
+                if($cBalance == $lastTransaction->amount)
+                {
+                    continue;
+                }
+
+                if($cBalance > $lastTransaction->amount)
+                {
+                    $amount = $cBalance - $lastTransaction->amount;
+                    Transactions::create([
+                        'master_account_id' => 1,
+                        'ipo_id'            => $ipoId,
+                        'client_id'         => $client->id,
+                        'credit'             => 1,
+                        'amount'            => $amount,
+                        'balance'           => $cBalance,
+                        'notes'             => 'Added Balance for IPO ' . $ipo->ipo_name,
+                        'transaction_date'  => date('Y-m-d'),
+                        'created_by'        => auth()->user()->id,
+                    ]);
+                }
+                else
+                {
+                    $amount = $lastTransaction->amount - $cBalance;
+                    Transactions::create([
+                        'master_account_id' => 1,
+                        'ipo_id'            => $ipoId,
+                        'client_id'         => $client->id,
+                        'debit'             => 1,
+                        'amount'            => $amount,
+                        'balance'           => $cBalance,
+                        'notes'             => 'Adjust Balance for IPO ' . $ipo->ipo_name,
+                        'transaction_date'  => date('Y-m-d'),
+                        'created_by'        => auth()->user()->id,
+                    ]);
+                }
+            }
+        }
+        return true;
+    }
 }

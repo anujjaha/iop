@@ -13,5 +13,7 @@ Route::group([], function () {
 
     Route::get("ipodetails/chart", [AdminIpoDetailsController::class, 'showChart'])->name("ipodetails.show-chart");
 
+    Route::post("ipodetails/upload-csv", [AdminIpoDetailsController::class, 'uploadCsv'])->name("ipodetails.upload-csv");
+
     Route::resource("ipodetails", AdminIpoDetailsController::class);
 });
