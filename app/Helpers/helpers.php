@@ -1,6 +1,7 @@
 <?php
 
 // use DateTime;
+use Carbon\Carbon;
 use App\Models\Main\Main;
 use App\Models\IpoAssignments\IpoAssignments;
 use App\Models\Fees\Fees;
@@ -16,6 +17,7 @@ use App\Models\Interest\Interest;
 use App\Models\ClientStock\ClientStock;
 use App\Models\ClientStockTransaction\ClientStockTransaction;
 use App\Models\Mobile\Mobile;
+use App\Models\PaidInterest\PaidInterest;
 
 /**
  * Global helpers file with misc functions.
@@ -312,7 +314,7 @@ if (!function_exists('blockBalance')) {
 
     function blockBalance()
     {
-        $ipoAssigned = IpoAssignments::where('status', 1)->with('ipo')->get();
+        $ipoAssigned = IpoAssignments::whereIn('status', [1,3])->with('ipo')->get();
         $blockedAmount = 0;
         foreach($ipoAssigned as $ipo)
         {
@@ -499,12 +501,41 @@ if (!function_exists('totalPaidFees')) {
 
     function totalPaidFees($clientId = null)
     {
-        if($clientId)
-        {
-            return Fees::where('client_id', $clientId)->sum('fee_amount');
+        $start = Carbon::create(2024, 10, 1); // October 2024
+        $end = Carbon::now()->startOfMonth(); // Current month (October 2025)
+        $months = collect();
+
+        while ($start <= $end) {
+            $months->push(strtoupper($start->format('M-Y')));
+            $start->addMonth();
         }
 
-        return Fees::sum('fee_amount');
+        $tFees = 0;
+        $totalClients = 0;
+        foreach($months as $month)
+        {
+            if($clientId)
+            {
+                $totalClients = $totalClients + ClientDetail::where('id', $clientId)->whereRaw("UPPER(DATE_FORMAT(created_at, '%b-%Y')) = ?", [$month])
+                ->where('is_free', 0)
+                ->count();
+            }
+            else
+            {
+                $totalClients = $totalClients + ClientDetail::whereRaw("UPPER(DATE_FORMAT(created_at, '%b-%Y')) = ?", [$month])
+                ->where('is_free', 0)
+                ->count();
+            }
+            $tFees = $tFees + ( $totalClients * 500 );
+        }
+
+        return $tFees;
+        // if($clientId)
+        // {
+        //     return Fees::where('client_id', $clientId)->sum('fee_amount');
+        // }
+
+        // return Fees::sum('fee_amount');
     }
 }
 
@@ -566,6 +597,7 @@ if (!function_exists('formProfit')) {
 
     function formProfit($clientId = null)
     {
+        return 0;
         if($clientId)
         {
             return Tax::where('client_id', $clientId)->sum('net_profit');
@@ -662,6 +694,17 @@ function getTotalInterest($clientId = null)
     }
 
     return Interest::sum('amount') ?? 0;
+}
+
+function getTotalPaidInterest($clientId = null)
+{
+    if($clientId)
+    {
+        return PaidInterest::where('client_id', $clientId)
+            ->sum('amount') ?? 0;
+    }
+
+    return PaidInterest::sum('amount') ?? 0;
 }
 
 function getDaysBetweenDates($d1, $d2)

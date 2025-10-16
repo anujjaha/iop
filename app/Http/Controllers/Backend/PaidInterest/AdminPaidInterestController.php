@@ -1,19 +1,19 @@
 <?php 
 
-namespace App\Http\Controllers\Backend\Interest;
+namespace App\Http\Controllers\Backend\PaidInterest;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Datatables;
-use App\Repositories\Interest\EloquentInterestRepository;
+use App\Repositories\PaidInterest\EloquentPaidInterestRepository;
 
 /**
- * Class AdminInterestController
+ * Class AdminPaidInterestController
  */
-class AdminInterestController extends Controller
+class AdminPaidInterestController extends Controller
 {
     /**
-     * Interest Repository
+     * PaidInterest Repository
      *
      * @var object
      */
@@ -24,21 +24,21 @@ class AdminInterestController extends Controller
      *
      * @var string
      */
-    protected $createSuccessMessage = "Interest Created Successfully!";
+    protected $createSuccessMessage = "PaidInterest Created Successfully!";
 
     /**
      * Edit Success Message
      *
      * @var string
      */
-    protected $editSuccessMessage = "Interest Edited Successfully!";
+    protected $editSuccessMessage = "PaidInterest Edited Successfully!";
 
     /**
      * Delete Success Message
      *
      * @var string
      */
-    protected $deleteSuccessMessage = "Interest Deleted Successfully";
+    protected $deleteSuccessMessage = "PaidInterest Deleted Successfully";
 
     /**
      * __construct
@@ -46,26 +46,23 @@ class AdminInterestController extends Controller
      */
     public function __construct()
     {
-        $this->repository = new EloquentInterestRepository;
+        $this->repository = new EloquentPaidInterestRepository;
     }
 
     /**
-     * Interest Listing
+     * PaidInterest Listing
      *
      * @return \Illuminate\View\View
      */
     public function index()
     {
-        $totalInterest = $this->repository->model->sum('amount');
-        
         return view($this->repository->setAdmin(true)->getModuleView('listView'))->with([
-            'repository' => $this->repository,
-            'totalInterest' => $totalInterest
+            'repository' => $this->repository
         ]);
     }
 
     /**
-     * Interest View
+     * PaidInterest View
      *
      * @return \Illuminate\View\View
      */
@@ -77,7 +74,7 @@ class AdminInterestController extends Controller
     }
 
     /**
-     * Interest Store
+     * PaidInterest Store
      *
      * @return \Illuminate\View\View
      */
@@ -89,7 +86,7 @@ class AdminInterestController extends Controller
     }
 
     /**
-     * Interest Edit
+     * PaidInterest Edit
      *
      * @return \Illuminate\View\View
      */
@@ -104,7 +101,7 @@ class AdminInterestController extends Controller
     }
 
     /**
-     * Interest Show
+     * PaidInterest Show
      *
      * @return \Illuminate\View\View
      */
@@ -120,7 +117,7 @@ class AdminInterestController extends Controller
 
 
     /**
-     * Interest Update
+     * PaidInterest Update
      *
      * @return \Illuminate\View\View
      */
@@ -132,7 +129,7 @@ class AdminInterestController extends Controller
     }
 
     /**
-     * Interest Destroy
+     * PaidInterest Destroy
      *
      * @return \Illuminate\View\View
      */
@@ -152,9 +149,6 @@ class AdminInterestController extends Controller
     {
         return Datatables::of($this->repository->getForDataTable())
             ->escapeColumns(['id', 'sort'])
-            ->addColumn('client_id', function ($item) {
-                return $item->client->getFullName() ?? 'N/A';
-            })
             ->addColumn('actions', function ($item) {
                 return $item->admin_action_buttons;
             })

@@ -37,7 +37,7 @@ class DashboardController extends Controller
             ->whereDate('closing_date', '>= ', date('Y-m-d', strtotime('+4 day')))
             ->get();
 
-        $clients = ClientDetail::get();
+        $clients = ClientDetail::where('is_free', 0)->get();
 
         $assignedIpos   = IpoAssignments::where('status', 1)->get();
         $repository     = new EloquentIpoAssignmentsRepository();

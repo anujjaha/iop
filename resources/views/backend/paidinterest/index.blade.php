@@ -7,7 +7,7 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Total: {!! $totalInterest !!}
+        <h3 class="card-title">{{ isset($repository->moduleTitle) ? str_plural($repository->moduleTitle) : '' }} Listing
         </h3>
         <div class="card-tools">
             @include('common.'.strtolower($repository->moduleTitle).'.header-buttons', ['createRoute' =>

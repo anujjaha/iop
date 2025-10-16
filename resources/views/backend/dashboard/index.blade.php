@@ -148,7 +148,7 @@
                 <!-- /.info-box -->
               </div>
 
-                <div class="col-md-2 col-sm-4 col-12">
+                <!-- <div class="col-md-2 col-sm-4 col-12">
                 <div class="info-box">
                   <span class=""><i class="far fa-star"></i></span>
 
@@ -156,10 +156,10 @@
                     <span class="info-box-text">Other Profit</span>
                     <span class="info-box-number">{!! formProfit() !!}</span>
                   </div>
-                  <!-- /.info-box-content -->
+                  
                 </div>
-                <!-- /.info-box -->
-              </div>
+                
+              </div> -->
 
               <div class="col-md-2 col-sm-4 col-12">
                 <div class="info-box">
@@ -181,7 +181,7 @@
                   <div class="info-box-content">
                     <a target="_blank" href="{!! route('admin.interest.index') !!}">
                         <span class="info-box-text">Interest</span>
-                        <span class="info-box-number">{!! getTotalInterest() !!}</span>
+                        <span class="info-box-number">{!! getTotalInterest() !!} / {!! getTotalPaidInterest() !!}</span>
                     </a>
                   </div>
                   <!-- /.info-box-content -->

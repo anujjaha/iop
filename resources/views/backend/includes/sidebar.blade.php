@@ -193,6 +193,23 @@
                         </p>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.interest.index') }}" class="nav-link">
+                        <i class="nav-icon fas fa-table"></i>
+                        <p>
+                            Interest
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.paidinterest.index') }}" class="nav-link">
+                        <i class="nav-icon fas fa-table"></i>
+                        <p>
+                            Paid Interest
+                        </p>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>
