@@ -330,7 +330,7 @@ if (!function_exists('profitOrLoss')) {
 
     function profitOrLoss()
     {
-        return IpoAssignments::sum('profit_loss');
+        return IpoAssignments::where('status', 5)->sum('profit_loss');
     }
 }
 
@@ -831,3 +831,12 @@ if (!function_exists('getDeviceOptions')) {
         return $options;
     }
 }
+
+if (!function_exists('getMasterBalance')) {
+
+    function getMasterBalance()
+    {
+        return ClientDetail::where('is_free', 0)->sum('balance');
+    }
+}
+

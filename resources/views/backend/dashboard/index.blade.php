@@ -11,6 +11,7 @@
         $blockBal   = blockBalance();
         $masterBal  = $mainBal + $blockBal;
         $stockStats = getStockTransactionDetails();
+        $systemBal  = getMasterBalance();
     @endphp
     <h3>Dashboard</h3>
 
@@ -23,7 +24,7 @@
 
                   <div class="info-box-content">
                     <span class="info-box-text">Main Balance</span>
-                    <span class="info-box-number">{!! $masterBal !!}</span>
+                    <span class="info-box-number">{!! $systemBal !!}</span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -36,7 +37,7 @@
 
                   <div class="info-box-content">
                     <span class="info-box-text">Available Fund</span>
-                    <span class="info-box-number">{!! $mainBal !!}</span>
+                    <span class="info-box-number">{!! $systemBal - $blockBal !!}</span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -75,7 +76,7 @@
                   <span class=""><i class="far fa-copy"></i></span>
 
                   <div class="info-box-content">
-                    <span class="info-box-text">Applied IPO</span>
+                    <span class="info-box-text">Invested IPO(s)</span>
                     <span class="info-box-number">{!! count($assignedIpos) !!}</span>
                   </div>
                   <!-- /.info-box-content -->

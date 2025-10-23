@@ -507,7 +507,6 @@ class EloquentIpoAssignmentsRepository extends DbRepository
     {
         $ipoAssignment = $this->model->where('id', $assignmentId)->with(['client', 'ipo'])->first();
 
-        $amount                     = $ipoAssignment->share_qty * $ipoAssignment->ipo->price_band;
         $ipoAssignment->status      = 2;
         $ipoAssignment->profit_loss = 0;
         $ipoAssignment->revoked_date = date('Y-m-d');
@@ -515,31 +514,30 @@ class EloquentIpoAssignmentsRepository extends DbRepository
         $ipoAssignment->return_date = date('Y-m-d');
         $ipoAssignment->save();
 
-        
-        ClientDetail::where('id', $ipoAssignment->client_id)->update([
-            'balance' => $ipoAssignment->client->balance + $amount
-        ]);
+        return true;
 
-        
-        $main = Main::where('id', 1)->first();
-        $main->balance = $main->balance + $amount;
-        $main->save();
+        // $amount = $ipoAssignment->share_qty * $ipoAssignment->ipo->price_band;
+        // ClientDetail::where('id', $ipoAssignment->client_id)->update([
+        //     'balance' => $ipoAssignment->client->balance + $amount
+        // ]);
+        // $main = Main::where('id', 1)->first();
+        // $main->balance = $main->balance + $amount;
+        // $main->save();
+        // $lastTransaction = Transactions::orderBy('id','desc')->where([
+        //     'client_id' =>  $ipoAssignment->client_id])
+        //     ->first();
 
-        $lastTransaction = Transactions::orderBy('id','desc')->where([
-            'client_id' =>  $ipoAssignment->client_id])
-            ->first();
-
-        Transactions::create([
-            'master_account_id' => 1,
-            'ipo_id'            => $ipoAssignment->ipo->id,
-            'client_id'         => $ipoAssignment->client_id,
-            'credit'             => 1,
-            'amount'            => $amount,
-            'balance'           => $lastTransaction->balance + $amount,
-            'notes'             => 'Revoke for IPO ' . $ipoAssignment->ipo->ipo_name,
-            'transaction_date'  => date('Y-m-d'),
-            'created_by'        => auth()->user()->id,
-        ]);
+        // Transactions::create([
+        //     'master_account_id' => 1,
+        //     'ipo_id'            => $ipoAssignment->ipo->id,
+        //     'client_id'         => $ipoAssignment->client_id,
+        //     'credit'             => 1,
+        //     'amount'            => $amount,
+        //     'balance'           => $lastTransaction->balance + $amount,
+        //     'notes'             => 'Revoke for IPO ' . $ipoAssignment->ipo->ipo_name,
+        //     'transaction_date'  => date('Y-m-d'),
+        //     'created_by'        => auth()->user()->id,
+        // ]);
 
         return true;
     }
@@ -676,7 +674,7 @@ class EloquentIpoAssignmentsRepository extends DbRepository
                 {
                     continue;
                 }
-                $client->balance = $value['current'] + $value['remain'];
+                $client->balance = $value['current'];
                 $client->save();
 
                 $shareQty = $ipo->min_lot_size * $ipo->price_band == $value['applied'] ? $ipo->min_lot_size : $ipo->max_lot_size;
@@ -694,7 +692,7 @@ class EloquentIpoAssignmentsRepository extends DbRepository
                     ['client_id' => $client->id])
                     ->first();
                 
-                $cBalance = $value['current'] + $value['remain'];
+                $cBalance = $value['current'];
                 if($cBalance == $lastTransaction->amount)
                 {
                     continue;
