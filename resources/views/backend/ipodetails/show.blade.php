@@ -31,6 +31,8 @@
                                 @if($clientList && count($clientList))
                                     <a href="javascript:void(0)" onclick="assignIpo({!! $item->id !!})" class="btn btn-xs btn-success">Assign</a>
                                 @endif
+
+                                <a href="{!! route('admin.ipodetails.download-csv', $item->id) !!}" class="btn btn-xs btn-secondary">Download</a>
                             </div>
                         
                     </div>

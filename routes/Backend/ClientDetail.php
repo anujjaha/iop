@@ -10,6 +10,7 @@ Route::group([], function () {
 
     // Route for Ajax DataTable
     Route::get("clientdetail/get", [AdminClientDetailController::class, 'getTableData'])->name("clientdetail.get-list-data");
+    Route::post("clientdetail/investory-category", [AdminClientDetailController::class, 'investoryCategory'])->name("clientdetail.set-investory-category");
 
     Route::resource("clientdetail", AdminClientDetailController::class);
 });

@@ -192,7 +192,45 @@ class AdminClientDetailController extends Controller
             })
             ->addColumn('name', function ($item) {
                 return '<a target="_blank" href="'.route('admin.clientdetail.show', $item->id).'">'.$item->name.'</a>';
+
+            })
+            ->addColumn('email', function ($item) {
+                $rSelected = $item->investory_category == 1 ? 'checked="checked"' :'';
+                $sSelected = $item->investory_category == 2 ? 'checked="checked"' :'';
+                return $item->email.'<br/>
+                    <label>
+                        <input type="radio" name="category'.$item->id.'" class="category-radio"
+                            data-id="'.$item->id.'" value="1" '.$rSelected.'>
+                        Retail
+                    </label>
+                    <label>
+                        <input type="radio" name="category'.$item->id.'" class="category-radio"
+                            data-id="'.$item->id.'" value="2" '.$sSelected.'>
+                        HNI
+                    </label>
+                ';
             })
             ->make(true);
     }
+
+     /**
+     * ClientDetail Show
+     *
+     * @return \Illuminate\View\View
+     */
+    public function investoryCategory(Request $request)
+    {
+        $status = $this->repository->updateCategory($request->all());
+        if($status)
+        {
+            return response()->json([
+                'status' => true,
+            ]);       
+        }
+
+        return response()->json([
+            'status' => false,
+        ]);
+    }    
 }
+

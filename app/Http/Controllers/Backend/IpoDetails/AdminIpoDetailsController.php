@@ -10,6 +10,8 @@ use App\Http\Controllers\Controller;
 use Yajra\Datatables\Datatables;
 use App\Repositories\IpoDetails\EloquentIpoDetailsRepository;
 use App\Repositories\IpoAssignments\EloquentIpoAssignmentsRepository;
+use Illuminate\Support\Facades\Response;
+
 
 /**
  * Class AdminIpoDetailsController
@@ -64,6 +66,7 @@ class AdminIpoDetailsController extends Controller
             'repository' => $this->repository
         ]);
     }
+
 
     /**
      * IpoDetails View
@@ -269,5 +272,39 @@ class AdminIpoDetailsController extends Controller
 
 
         die('Break');
+    }
+
+    public function downloadCsv(Request $request, $ipoId = null)
+    {
+        $data = $this->repository->prepareClientSheet($ipoId);
+        // Filename
+        $filename = "prepare.csv";
+
+        // Create CSV string
+        $csvData = $this->arrayToCsv($data);
+
+        // Create response instance properly
+        $response = Response::make($csvData, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename={$filename}",
+        ]);
+
+        return $response;
+        dump($ipoId);
+        dd($request->all());
+        die('test');
+    }
+
+     // Helper function to convert array to CSV string
+    private function arrayToCsv(array $data): string
+    {
+        $csv = fopen('php://temp', 'r+');
+        foreach ($data as $row) {
+            fputcsv($csv, $row);
+        }
+        rewind($csv);
+        $csvData = stream_get_contents($csv);
+        fclose($csv);
+        return $csvData;
     }
 }

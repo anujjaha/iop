@@ -15,5 +15,7 @@ Route::group([], function () {
 
     Route::post("ipodetails/upload-csv", [AdminIpoDetailsController::class, 'uploadCsv'])->name("ipodetails.upload-csv");
 
+    Route::get("ipodetails/download-csv/{id}", [AdminIpoDetailsController::class, 'downloadCsv'])->name("ipodetails.download-csv");
+
     Route::resource("ipodetails", AdminIpoDetailsController::class);
 });

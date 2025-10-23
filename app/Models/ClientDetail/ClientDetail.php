@@ -32,7 +32,8 @@ class ClientDetail extends BaseModel
         'dmat_device',
         'mother_name',
         'notes',
-        'is_free'
+        'is_free',
+        "investory_category"
     ];
 
     /**

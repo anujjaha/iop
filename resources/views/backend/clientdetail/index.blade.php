@@ -8,6 +8,9 @@
 @php
     $ipoStats = getIpoStates();
 @endphp
+<style>
+    
+</style>
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">{{ isset($repository->moduleTitle) ? str_plural($repository->moduleTitle) : '' }} Listing
@@ -140,5 +143,36 @@ function storeBalance()
         }
     });
 }
+
+jQuery(document).on('change', '.category-radio', function () 
+{
+    let userId = jQuery(this).data('id');
+    let category = jQuery(this).val();
+
+    // Send AJAX update to Laravel
+    jQuery.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url : "{{ url(route('admin.clientdetail.set-investory-category')) }}",
+        method: 'POST',
+        data: {
+            userId,
+            category
+        },
+        success: function (response) {
+            swal({
+              title: "Updated!",
+              text: "Category updated successfully!",
+              icon: "success",
+              timer: 1000,
+              buttons: false
+            });
+        },
+        error: function () {
+            swal('Oh!','Something went wrong!', 'error');
+        }
+    });
+});
 </script>
 @endsection

@@ -431,4 +431,12 @@ class EloquentClientDetailRepository extends DbRepository
             ->with(['stockDetail'])
             ->get();
     }
+
+    public function updateCategory($input = [])
+    {
+        return $this->model->where('id', $input['userId'])
+            ->update([
+                'investory_category' => $input['category']
+            ]);
+    }
 }

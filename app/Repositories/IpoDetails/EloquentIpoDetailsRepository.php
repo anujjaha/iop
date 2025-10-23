@@ -496,4 +496,36 @@ class EloquentIpoDetailsRepository extends DbRepository
 
         return $return;
     }
+
+    public function prepareClientSheet($ipoId = null)
+    {
+        $ipo = $this->model->where('id', $ipoId)->first();
+        $clients = ClientDetail::where('is_free', 0)
+            ->orderBy('investory_category', 'desc')
+            ->orderBy('name')
+            ->get();
+
+        $data = [
+            ['Sr', 'Name', 'PAN', 'CurrentBalance', 'Remaining', 'IPO'],
+        ];
+        $sr = 1;
+        $retail = $ipo->min_lot_size * $ipo->price_band;
+        $shni = $ipo->max_lot_size * $ipo->price_band;
+        foreach($clients as $client)
+        {
+            $blockAmount = $client->investory_category == 2 ? $shni : $retail;
+            $due = $client->balance - $blockAmount;
+            $data[] = [
+                $sr,
+                $client->name,
+                $client->pan_no,
+                $client->balance,
+                $due,
+                $blockAmount,
+            ];
+            $sr++;
+        }
+
+        return $data;
+    }
 }
