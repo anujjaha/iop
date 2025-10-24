@@ -439,4 +439,48 @@ class EloquentClientDetailRepository extends DbRepository
                 'investory_category' => $input['category']
             ]);
     }
+
+    public function resetBalance($file)
+    {
+        // Open the uploaded CSV file
+        $handle = fopen($file->getRealPath(), 'r');
+        $sr = 0;
+        while (($row = fgetcsv($handle, 1000, ',')) !== false) 
+        {
+            if($sr > 0)
+            {
+                $this->model->where('pan_no', $row[2])
+                    ->update([
+                        'balance' => $row[3]
+                    ]);
+            }
+            $sr++;
+        }
+
+        fclose($handle);
+        return true;
+    }
+
+    public function downloadClients()
+    {
+        $clients = $this->model->where('is_free', 0)
+            ->orderBy('name')
+            ->get();
+        $data = [
+            ['Sr', 'Name', 'PAN', 'Balance'],
+        ];
+        $sr = 1;
+        foreach($clients as $client)
+        {
+            $data[] = [
+                $sr,
+                $client->name,
+                $client->pan_no,
+                $client->balance,
+            ];
+            $sr++;
+        }
+
+        return $data;
+    }
 }

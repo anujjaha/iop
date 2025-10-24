@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Yajra\Datatables\Datatables;
 use App\Repositories\ClientDetail\EloquentClientDetailRepository;
 use App\Repositories\StockDetails\EloquentStockDetailsRepository;
+use Illuminate\Support\Facades\Response;
 
 /**
  * Class AdminClientDetailController
@@ -213,7 +214,7 @@ class AdminClientDetailController extends Controller
             ->make(true);
     }
 
-     /**
+    /**
      * ClientDetail Show
      *
      * @return \Illuminate\View\View
@@ -231,6 +232,73 @@ class AdminClientDetailController extends Controller
         return response()->json([
             'status' => false,
         ]);
-    }    
+    }
+
+    /**
+     * Reset Balance
+     *
+     * @return \Illuminate\View\View
+     */
+    public function resetBalance(Request $request)
+    {
+        if (!$request->hasFile('file')) {
+            return response()->json(['error' => 'No file uploaded.'], 400);
+        }
+
+        $file = $request->file('file');
+
+        if ($file->getClientOriginalExtension() !== 'csv') {
+            return response()->json(['error' => 'Invalid file type. Only CSV allowed.'], 422);
+        }
+
+        $status = $this->repository->resetBalance($file);
+        
+        if($status)
+        {
+            return response()->json([
+                'status' => true,
+            ]);       
+        }
+
+        return response()->json([
+            'status' => false,
+        ]);
+    }
+
+    /**
+     * Download Balance
+     *
+     * @return \Illuminate\View\View
+     */
+    public function downloadBalance(Request $request)
+    {
+        $data = $this->repository->downloadClients();
+        // Filename
+        $filename = "clients.csv";
+
+        // Create CSV string
+        $csvData = $this->arrayToCsv($data);
+
+        // Create response instance properly
+        $response = Response::make($csvData, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename={$filename}",
+        ]);
+
+        return $response;
+    }
+
+    // Helper function to convert array to CSV string
+    private function arrayToCsv(array $data): string
+    {
+        $csv = fopen('php://temp', 'r+');
+        foreach ($data as $row) {
+            fputcsv($csv, $row);
+        }
+        rewind($csv);
+        $csvData = stream_get_contents($csv);
+        fclose($csv);
+        return $csvData;
+    }
 }
 

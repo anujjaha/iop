@@ -12,7 +12,6 @@ use App\Repositories\IpoDetails\EloquentIpoDetailsRepository;
 use App\Repositories\IpoAssignments\EloquentIpoAssignmentsRepository;
 use Illuminate\Support\Facades\Response;
 
-
 /**
  * Class AdminIpoDetailsController
  */
@@ -290,12 +289,9 @@ class AdminIpoDetailsController extends Controller
         ]);
 
         return $response;
-        dump($ipoId);
-        dd($request->all());
-        die('test');
     }
 
-     // Helper function to convert array to CSV string
+    // Helper function to convert array to CSV string
     private function arrayToCsv(array $data): string
     {
         $csv = fopen('php://temp', 'r+');

@@ -8,16 +8,26 @@
 @php
     $ipoStats = getIpoStates();
 @endphp
-<style>
-    
-</style>
+<!-- Dropzone CSS & JS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">{{ isset($repository->moduleTitle) ? str_plural($repository->moduleTitle) : '' }} Listing
-        </h3>
-        <div class="card-tools">
-            @include('common.'.strtolower($repository->moduleTitle).'.header-buttons', ['createRoute' =>
+        <div class="row">
+            <div class="col-md-8">
+            <h3 class="card-title">{{ isset($repository->moduleTitle) ? str_plural($repository->moduleTitle) : '' }} Listing</h3>
+            </div>
+            <div class="col-md-2 text-right">
+                <a href="javascript:void(0)" onclick="bulkUpload()" class="btn btn-xs btn-success">Upload</a>
+            
+            
+                <a href="{!! route('admin.clientdetail.download-balance') !!}" class="btn btn-xs btn-secondary">Download</a>
+            </div>
+            <div class="col-md-2 text-right">
+                @include('common.'.strtolower($repository->moduleTitle).'.header-buttons', ['createRoute' =>
             $repository->getActionRoute('createRoute')])
+            </div>
+            
         </div>
     </div>
     <div class="card-body">
@@ -82,10 +92,40 @@
     </div>
   </div>
 </div>
+
+<!-- Upload Modal -->
+<div class="modal fade " id="bulkUploadModal" tabindex="-1" role="dialog" aria-labelledby="addBalanceModal" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="">
+                Client Reset Balance
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        
+        <div class="modal-body">
+            <div id="dropzoneArea" class="dropzone"></div>
+        </div>
+        <div class="modal-footer">
+        <input type="hidden" name="ipoHiddenId" id="ipoHiddenId" value="">
+        <button type="button" onclick="applyIpo()"  class="btn btn-success">Apply</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"  data-dismiss="modal">Close</button>
+        </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @section('after-scripts')
 <script type="text/javascript">
+
+Dropzone.autoDiscover = false;
+
+let csvUploader;
+
 var headers = JSON.parse('{!! $repository->getTableHeaders() !!}'),
     columns = JSON.parse('{!! $repository->getTableColumns() !!}'),
     moduleConfig = {
@@ -174,5 +214,37 @@ jQuery(document).on('change', '.category-radio', function ()
         }
     });
 });
+
+function bulkUpload()
+{
+    jQuery("#bulkUploadModal").modal('show');
+    
+
+    // Initialize only once
+    if (!csvUploader) {
+        csvUploader = new Dropzone("#dropzoneArea", {
+            url: "{{ route('admin.clientdetail.reset-balance') }}", // Your Laravel route
+            method: 'post',
+            maxFiles: 1,
+            acceptedFiles: '.csv',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dictDefaultMessage: "Drag & drop CSV here or click to browse",
+            init: function () {
+                this.on("success", function (file, response) {
+                    alert("CSV uploaded successfully!");
+                    $('#bulkUploadModal').modal('hide');
+                    this.removeAllFiles();
+                    // location.reload(); // or handle refresh manually
+                });
+                this.on("error", function (file, errorMessage) {
+                    alert("Error uploading file.");
+                });
+            }
+        });
+    }
+}
+
 </script>
 @endsection
