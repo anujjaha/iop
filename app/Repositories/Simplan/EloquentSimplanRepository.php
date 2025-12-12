@@ -352,6 +352,7 @@ class EloquentSimplanRepository extends DbRepository
         if($simCard)
         {
             $input = [
+                'sim_id'        => $input['simId'],
                 'title'         => $input['planTitle'],
                 'cost'          => $input['planCost'],
                 'recharge_date' => date('Y-m-d', strtotime($input['planDate'])),

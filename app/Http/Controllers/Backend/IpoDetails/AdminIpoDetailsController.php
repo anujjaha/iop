@@ -211,7 +211,6 @@ class AdminIpoDetailsController extends Controller
         $chartData = $this->repository->getChartData($months);
         $monthlyExpense = $this->repository->getMonthlyExpenses($months);
         
-
         // dd([
         //     'chartData' => $chartData,
         //     'monthlyExpense' => $monthlyExpense,

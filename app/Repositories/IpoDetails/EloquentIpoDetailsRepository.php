@@ -14,6 +14,7 @@ use App\Models\Fees\Fees;
 use App\Exceptions\GeneralException;
 use App\Models\ClientDetail\ClientDetail;
 use App\Models\Simplan\Simplan;
+use App\Models\PaidInterest\PaidInterest;
 
 class EloquentIpoDetailsRepository extends DbRepository
 {
@@ -460,15 +461,19 @@ class EloquentIpoDetailsRepository extends DbRepository
             $totalClients = $totalClients + ClientDetail::whereRaw("UPPER(DATE_FORMAT(created_at, '%b-%Y')) = ?", [$month])
                 ->where('is_free', 0)
                 ->count();
+            $paidInt = PaidInterest::whereRaw("
+                UPPER(DATE_FORMAT(STR_TO_DATE(title, '%d-%m-%Y'), '%b-%Y')) = ?
+            ", [$month])->first() ?? 0;
+            $bajajPaid = 0;
+            if(isset($paidInt) && isset($paidInt->id))
+            {
+                $bajajPaid = $paidInt->amount;
+            }
 
             $tFees = $tFees + ( $totalClients * 500 );
             $simCost = Simplan::whereRaw("UPPER(DATE_FORMAT(recharge_date, '%b-%Y')) = ?", [$month])
                 ->sum('cost');
-
-
-
-            $op[ucfirst(strtolower($month))] = ($totalClients * 500) + $simCost;
-
+            $op[ucfirst(strtolower($month))] = ($totalClients * 500) + $simCost + $bajajPaid;
         }
         
         // dd($op);
