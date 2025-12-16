@@ -179,6 +179,27 @@ class AdminClientDetailController extends Controller
 
                 return $html;
             })
+            ->addColumn('bank_account', function ($item) {
+                $html = $item->bank_account;
+                    
+
+                $isFreeSelected = $item->is_free == 1 ? 'checked="checked"' :'';
+                $isPaidSelected = $item->is_free == 0 ? 'checked="checked"' :'';
+                $html .= '<br/>
+                    <label>
+                        <input type="radio" name="paid'.$item->id.'" class="paid-radio"
+                            data-id="'.$item->id.'" value="0" '.$isPaidSelected.'>
+                        Paid
+                    </label>
+                    <label>
+                        <input type="radio" name="paid'.$item->id.'" class="paid-radio"
+                            data-id="'.$item->id.'" value="1" '.$isFreeSelected.'>
+                        Free
+                    </label>
+                ';
+
+                return $html;
+            })
             ->addColumn('profit_loss', function ($item) {
                 $assignedIpos = $item->assignedIpos->where('status', 5);
 
@@ -222,6 +243,26 @@ class AdminClientDetailController extends Controller
     public function investoryCategory(Request $request)
     {
         $status = $this->repository->updateCategory($request->all());
+        if($status)
+        {
+            return response()->json([
+                'status' => true,
+            ]);       
+        }
+
+        return response()->json([
+            'status' => false,
+        ]);
+    }
+
+    /**
+     * ClientDetail Show
+     *
+     * @return \Illuminate\View\View
+     */
+    public function investoryPayType(Request $request)
+    {
+        $status = $this->repository->updatePaidType($request->all());
         if($status)
         {
             return response()->json([

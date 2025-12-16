@@ -215,6 +215,38 @@ jQuery(document).on('change', '.category-radio', function ()
     });
 });
 
+
+jQuery(document).on('change', '.paid-radio', function () 
+{
+    let userId = jQuery(this).data('id');
+    let isFree = jQuery(this).val();
+
+    // Send AJAX update to Laravel
+    jQuery.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url : "{{ url(route('admin.clientdetail.set-client-paid-type')) }}",
+        method: 'POST',
+        data: {
+            userId,
+            isFree
+        },
+        success: function (response) {
+            swal({
+              title: "Updated!",
+              text: "Client Pay Type updated successfully!",
+              icon: "success",
+              timer: 1000,
+              buttons: false
+            });
+        },
+        error: function () {
+            swal('Oh!','Something went wrong!', 'error');
+        }
+    });
+});
+
 function bulkUpload()
 {
     jQuery("#bulkUploadModal").modal('show');

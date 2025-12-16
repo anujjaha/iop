@@ -418,7 +418,6 @@ class EloquentIpoDetailsRepository extends DbRepository
             $assignments = $ipo->assignments;
             $pl = $assignments->where('status',5)
                 ->sum('profit_loss');
-
             if(isset($output[$iDate]))
             {
                 $output[$iDate] = $output[$iDate] + $pl;
@@ -461,6 +460,7 @@ class EloquentIpoDetailsRepository extends DbRepository
             $totalClients = $totalClients + ClientDetail::whereRaw("UPPER(DATE_FORMAT(created_at, '%b-%Y')) = ?", [$month])
                 ->where('is_free', 0)
                 ->count();
+            // dd($totalClients);
             $paidInt = PaidInterest::whereRaw("
                 UPPER(DATE_FORMAT(STR_TO_DATE(title, '%d-%m-%Y'), '%b-%Y')) = ?
             ", [$month])->first() ?? 0;

@@ -440,6 +440,14 @@ class EloquentClientDetailRepository extends DbRepository
             ]);
     }
 
+    public function updatePaidType($input = [])
+    {
+        return $this->model->where('id', $input['userId'])
+            ->update([
+                'is_free' => $input['isFree']
+            ]);
+    }
+
     public function resetBalance($file)
     {
         // Open the uploaded CSV file

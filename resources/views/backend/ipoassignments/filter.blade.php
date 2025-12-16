@@ -157,10 +157,20 @@
 
 function bulkIpoAction(isAlloted = 0)
 {
+    var title = "Sure, allotment not received";
+    var texgt = "You will not be able to recover operation";
+    var ptype = 'warning';
+
+    if(isAlloted == 1)
+    {
+        title = "Sure, Alloted";
+        texgt = "You will not be able to recover operation!";
+        ptype = 'success';
+    }
     swal({
-    title: "Sure, allotment not received",
-    text: "You will not be able to recover operation",
-    type: "warning",
+    title: title,
+    text: texgt,
+    type: ptype,
     showCancelButton: true,
     confirmButtonColor: '#DD6B55',
     confirmButtonText: 'Yes, I am sure!',

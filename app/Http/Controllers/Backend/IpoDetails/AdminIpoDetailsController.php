@@ -118,7 +118,7 @@ class AdminIpoDetailsController extends Controller
             ->first();
 
         $assignmentRepo = new EloquentIpoAssignmentsRepository();
-        $clientList     = $assignmentRepo->getEligibleClientList($item->id);
+        $clientList     = $assignmentRepo->getEligibleClientList($item->id, 1);
 
         return view($this->repository->setAdmin(true)->getModuleView('showView'))->with([
             'item'          => $item,
@@ -200,7 +200,7 @@ class AdminIpoDetailsController extends Controller
     {
         $start  = new DateTime('2024-10-01');
         $end    = new DateTime();
-        $end->modify('first day of next month');
+        $end->modify('last day of this month');
         $interval = new DateInterval('P1M');
         $period = new DatePeriod($start, $interval, $end);
         $months = [];
