@@ -205,7 +205,7 @@ class AdminClientDetailController extends Controller
 
                 if($assignedIpos)
                 {
-                    return $assignedIpos->sum('profit_loss');
+                    return $assignedIpos->sum('final_net_pl');
                 }
                 return 0;
             })

@@ -36,6 +36,7 @@
             'june-2026' => 'Jun-2026',
             'july-2026' => 'Jul-2026',
         ];
+        $clientNetPl = 0;
 @endphp
 {{ Form::model($item, ['route' => [$repository->getActionRoute('updateRoute'), $item], 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'PATCH']) }}
 
@@ -286,9 +287,34 @@
                     <td>Status</td>
                     <td>Block</td>
                     <td>Invested</td>
+                    <td>@</td>
                     <td>P/L</td>
+                    <td>Brokerage</td>
+                    <td>STT</td>
+                    <td>GST</td>
+                    <td>Net PL</td>
                 </tr>
+
                 @foreach($item->assignedIpos as $ipo)
+                    @php
+                    $totalInvested =  $ipo->share_qty * $ipo->ipo->price_band;
+                    $clientNetPl += $ipo->final_net_pl;
+                    /*if($ipo->sell_price != null)
+                    {
+                        $totalInvested =  $ipo->share_qty * $ipo->ipo->price_band;
+                        $totalTransactionValue = $ipo->share_qty * $ipo->sell_price;
+                        $brokerage = round($totalTransactionValue / 100 * .3 ) + 1;
+                        $stt = round($totalTransactionValue / 100 * .1 );
+                        $gst = ( $brokerage  ) / 100 * 18;
+                        $finalProfit = $totalTransactionValue - $totalInvested- $brokerage - $stt - $gst;
+                    }
+                    else
+                    {
+
+                        $totalInvested =  $ipo->share_qty * $ipo->ipo->price_band;
+                        $finalProfit = $gst = $stt = $brokerage = $totalTransactionValue = '';
+                    }*/
+                    @endphp
                     <tr>
                         <td>
                             @php
@@ -315,7 +341,8 @@
                         </td>
                         <td>{!! getAssignmentLiveStatus($ipo->status) !!}</td>
                         <td>{!! $ipo->status == 1 ? $ipo->share_qty * $ipo->ipo->price_band : 'N/A' !!}</td>
-                        <td>{!! $ipo->share_qty * $ipo->ipo->price_band !!}</td>
+                        <td>{!! $totalInvested !!}</td>
+                        <td>{!! $ipo->sell_price !!}</td>
                         <td>    
                             @if($ipo->profit_loss > 0)
                                 <span class="font-weight-bold text-success">
@@ -331,8 +358,16 @@
                                 </span>
                             @endif
                             </td>
+                        <td>{!! $ipo->brokerage_amount !!}</td>
+                        <td>{!! $ipo->brokerage_stt   !!}</td>
+                        <td>{!! $ipo->gst_value  !!}</td>
+                        <td align="right">{!! $ipo->final_net_pl  !!}</td>
                     </tr>
                 @endforeach
+                <tfoot>
+                    <td colspan="9"></td>
+                    <td align="right">{!! $clientNetPl !!}</td>
+                </tfoot>
             </table>
         </div>
     </div>

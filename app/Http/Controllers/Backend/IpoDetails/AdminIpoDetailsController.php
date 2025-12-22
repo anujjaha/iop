@@ -168,7 +168,7 @@ class AdminIpoDetailsController extends Controller
                 $assignments = $item->assignments;
 
                 $pl = $assignments->where('status',5)
-                ->sum('profit_loss');
+                ->sum('final_net_pl');
                 
                 $span = '';
                 if($pl > 0)

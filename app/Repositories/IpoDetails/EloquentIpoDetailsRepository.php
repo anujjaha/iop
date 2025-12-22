@@ -417,7 +417,7 @@ class EloquentIpoDetailsRepository extends DbRepository
             $iDate = date('M-Y', strtotime($ipo->listing_date));
             $assignments = $ipo->assignments;
             $pl = $assignments->where('status',5)
-                ->sum('profit_loss');
+                ->sum('final_net_pl');
             if(isset($output[$iDate]))
             {
                 $output[$iDate] = $output[$iDate] + $pl;

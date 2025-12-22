@@ -810,9 +810,9 @@ function getIpoStates($ipoId = null)
     }
 
     return [
-        'pl' => $assigned->sum('profit_loss'),
+        'pl' => $assigned->sum('final_net_pl'),
         'tax' => $assigned->sum('tax_amount'),
-        'netpl' => $assigned->sum('profit_loss_aftertax'),
+        'netpl' => $assigned->sum('final_net_pl'),
         'totalFees' => Fees::sum('fee_amount')
     ];
 }
