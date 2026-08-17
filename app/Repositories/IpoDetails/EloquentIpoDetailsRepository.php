@@ -430,7 +430,7 @@ class EloquentIpoDetailsRepository extends DbRepository
 
         foreach($months as $amonth)
         {
-            $return[$amonth] = $output[$amonth] ?? 0;
+            $return[$amonth] = round($output[$amonth] ?? 0);
         }
 
         return $return;
@@ -473,7 +473,7 @@ class EloquentIpoDetailsRepository extends DbRepository
             $tFees = $tFees + ( $totalClients * 500 );
             $simCost = Simplan::whereRaw("UPPER(DATE_FORMAT(recharge_date, '%b-%Y')) = ?", [$month])
                 ->sum('cost');
-            $op[ucfirst(strtolower($month))] = ($totalClients * 500) + $simCost + $bajajPaid;
+            $op[ucfirst(strtolower($month))] = round(($totalClients * 500) + $simCost + $bajajPaid);
         }
         
         // dd($op);
@@ -501,6 +501,65 @@ class EloquentIpoDetailsRepository extends DbRepository
 
         return $return;
     }
+
+    // public function getMonthlyProfit($months = null)
+    // {
+    //     $start = Carbon::create(2024, 10, 1); // October 2024
+    //     $end = Carbon::now()->startOfMonth(); // Current month (October 2025)
+
+    //     $months = collect();
+
+    //     while ($start <= $end) {
+    //         $months->push(strtoupper($start->format('M-Y')));
+    //         $start->addMonth();
+    //     }
+
+    //     foreach($months as $month)
+    //     {
+    //         $totalClients = $totalClients + ClientDetail::whereRaw("UPPER(DATE_FORMAT(created_at, '%b-%Y')) = ?", [$month])
+    //             ->where('is_free', 0)
+    //             ->count();
+    //         // dd($totalClients);
+    //         $paidInt = PaidInterest::whereRaw("
+    //             UPPER(DATE_FORMAT(STR_TO_DATE(title, '%d-%m-%Y'), '%b-%Y')) = ?
+    //         ", [$month])->first() ?? 0;
+    //         $bajajPaid = 0;
+    //         if(isset($paidInt) && isset($paidInt->id))
+    //         {
+    //             $bajajPaid = $paidInt->amount;
+    //         }
+
+    //         $tFees = $tFees + ( $totalClients * 500 );
+    //         $simCost = Simplan::whereRaw("UPPER(DATE_FORMAT(recharge_date, '%b-%Y')) = ?", [$month])
+    //             ->sum('cost');
+    //         $op[ucfirst(strtolower($month))] = ($totalClients * 500) + $simCost + $bajajPaid;
+    //     }
+        
+    //     // dd($op);
+    //     return $op;
+    //     $fees = Fees::all();
+    //     $output = [];
+    //     $return = [];
+    //     foreach($fees as $fee)
+    //     {
+    //         $monthTitle = ucfirst($fee->month_title);
+    //         if(isset($output[$monthTitle]))
+    //         {
+    //             $output[$monthTitle] = $output[$monthTitle] + $fee->fee_amount;
+    //         }
+    //         else
+    //         {
+    //             $output[$monthTitle] = $fee->fee_amount;
+    //         }
+    //     }
+
+    //     foreach($months as $amonth)
+    //     {
+    //         $return[$amonth] = $output[$amonth] ?? 0;
+    //     }
+
+    //     return $return;
+    // }
 
     public function prepareClientSheet($ipoId = null)
     {

@@ -210,15 +210,25 @@ class AdminIpoDetailsController extends Controller
         }
         $chartData = $this->repository->getChartData($months);
         $monthlyExpense = $this->repository->getMonthlyExpenses($months);
+        $monthlyProfit = [];
+        foreach($monthlyExpense as $mexpenseKey => $evalue)
+        {
+            $monthlyProfit[$mexpenseKey] = round($chartData[$mexpenseKey] - $evalue);
+        }
+
+        
+
         
         // dd([
         //     'chartData' => $chartData,
         //     'monthlyExpense' => $monthlyExpense,
         //     'months'    => $months
         // ]);
+        
         return view($this->repository->setAdmin(true)->getModuleView('chartView'))->with([
             'chartData'         => $chartData,
             'monthlyExpense'    => $monthlyExpense,
+            'monthlyProfit'    => $monthlyProfit,
             'totalProfit'       => array_sum(array_values($chartData)),
             'totalExpense'      => array_sum(array_values($monthlyExpense)),
             'months'            => $months,

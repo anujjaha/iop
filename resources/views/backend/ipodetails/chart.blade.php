@@ -159,6 +159,12 @@
           data: {!! json_encode(array_values($monthlyExpense)) !!},
           backgroundColor: 'rgba(255, 99, 132, 0.7)',
           barThickness: 10,
+        },
+        {
+          label: 'Investment',
+          data: {!! json_encode(array_values($monthlyProfit)) !!},
+          backgroundColor: '#ecff00',
+          barThickness: 10,
         }
       ]
     };
