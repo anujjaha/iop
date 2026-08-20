@@ -46,10 +46,7 @@ class EloquentClientDetailRepository extends DbRepository
 		'profit_loss'     => 'Profit_loss',
         'bank_account'    => 'Bank Account',
 		'email'           => 'Email',
-        'crn_no'          => 'CRN',
-        'crn_pwd'         => 'Password',
-		'mobile'          => 'Mobile',
-		'aadhar_no'       => 'Aadhar_no',
+        'mobile'          => 'Mobile',
 		'pan_no'          => 'Pan_no',
 		"actions"         => "Actions"
     ];
@@ -96,32 +93,13 @@ class EloquentClientDetailRepository extends DbRepository
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-        'crn_no' =>   [
-                    'data'          => 'crn_no',
-                    'name'          => 'crn_no',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],
-        'crn_pwd' =>   [
-                    'data'          => 'crn_pwd',
-                    'name'          => 'crn_pwd',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],   
-        
-		'mobile' =>   [
+        'mobile' =>   [
                     'data'          => 'mobile',
                     'name'          => 'mobile',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
 		
-		'aadhar_no' =>   [
-                    'data'          => 'aadhar_no',
-                    'name'          => 'aadhar_no',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],
 		'pan_no' =>   [
                     'data'          => 'pan_no',
                     'name'          => 'pan_no',
@@ -129,7 +107,6 @@ class EloquentClientDetailRepository extends DbRepository
                     'sortable'      => true
                 ],
                      
-		
 		'actions' => [
                 'data'          => 'actions',
                 'name'          => 'actions',

@@ -42,7 +42,7 @@
                                 <div class="form-group row row">
                                     <label for="name" class="col-lg-5 control-label">Start:</label>
                                     <div class="col-lg-7">
-                                        {!! $item->opening_date !!}
+                                        {!! date('d M Y',strtotime($item->opening_date)) !!}
                                     </div>
                                 </div>
                             </div>
@@ -51,7 +51,7 @@
                                 <div class="form-group row row">
                                     <label for="name" class="col-lg-5 control-label">END:</label>
                                     <div class="col-lg-7">
-                                        {!! $item->closing_date !!}
+                                        {!! date('d M Y',strtotime($item->closing_date)) !!}
                                     </div>
                                 </div>
                             </div>
@@ -87,7 +87,7 @@
                                 <div class="form-group row row">
                                     <label for="name" class="col-lg-5 control-label">Blocked:</label>
                                     <div class="col-lg-7">
-                                        {!! $item->assignments->whereIn('status', [1,2,3])->pluck('profit_loss')->sum()  !!}
+                                        {!! $item->assignments->whereIn('status', [1,2,3])->pluck('final_net_pl')->sum()  !!}
                                     </div>
                                 </div>
                             </div>
@@ -105,7 +105,7 @@
                                 <div class="form-group row row">
                                     <label for="name" class="col-lg-5 control-label">P/L:</label>
                                     <div class="col-lg-7">
-                                        {!! $item->assignments->sum('profit_loss')  !!}
+                                        {!! $item->assignments->sum('final_net_pl')  !!}
                                     </div>
                                 </div>
                             </div>

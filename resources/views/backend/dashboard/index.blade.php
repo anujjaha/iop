@@ -358,7 +358,7 @@
                             </tr>
 
                              @foreach($filter as $record)
-                                <tr>
+                                <tr id="recContainer-{!! $record->id !!}">
                                     <td>{!! $record->client->name !!}</td>
                                     <td>{!! $record->ipo->block_amt / $record->ipo->lot_size !!}</td>
                                     <td>{!! $record->ipo->lot_size !!}</td>
@@ -656,6 +656,8 @@
                     setTimeout(function() {
                         //window.location.reload();
                     }, 2000);
+
+                    jQuery("#recContainer-"+assignmentId).hide();
 
                     return;
                 }

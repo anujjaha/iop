@@ -584,7 +584,7 @@ class EloquentIpoAssignmentsRepository extends DbRepository
         $ipoAssignment  = $this->model->with(['client', 'ipo'])->where('id', $input['assignmentId'])
             ->where('status', getIpoAllotedStatusInt())
             ->first();
-
+        
         if(!$ipoAssignment)
         {
             return true;
@@ -596,10 +596,9 @@ class EloquentIpoAssignmentsRepository extends DbRepository
         $investedAmount = $ipoAssignment->ipo->price_band * $ipoAssignment->share_qty;
         $tax            = 0;
         $total          = $qty * $amount;
-
+        $profit = $total - $investedAmount;
         if($total > $investedAmount)
         {
-            $profit = $total - $investedAmount;
             $tax    = ($profit * getTaxRate()) / 100;
         }
 
@@ -607,9 +606,19 @@ class EloquentIpoAssignmentsRepository extends DbRepository
         $ipoAssignment->sell_price          = $amount;
         $ipoAssignment->share_profit_loss   = $amount - $shareCost;
         $ipoAssignment->opening_rate        = $shareCost;
-        $ipoAssignment->profit_loss         = $total - $investedAmount;
+        $ipoAssignment->profit_loss         = $profit;
         $ipoAssignment->profit_loss_aftertax = $profit - $tax;
         $ipoAssignment->tax_amount          = $tax;
+
+        $brokerageCharges = 20;
+        $stt = $total * 0.001;
+        $gstValue = 10;
+
+        $ipoAssignment->gst_value          = $gstValue;
+        $ipoAssignment->brokerage_stt      = $stt;
+        $ipoAssignment->brokerage_amount      = 20;
+        $ipoAssignment->final_net_pl       = $profit - $tax - $brokerageCharges - $stt - $gstValue;
+
         $ipoAssignment->save();
 
         $clientInfo = ClientDetail::where('id', $ipoAssignment->client_id)->first();

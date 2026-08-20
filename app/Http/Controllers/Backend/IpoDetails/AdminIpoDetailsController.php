@@ -183,7 +183,13 @@ class AdminIpoDetailsController extends Controller
                 
             })
             ->addColumn('closing_date', function ($item) {
-                return $item->opening_date .'-'. $item->closing_date;
+                return date('d M',strtotime($item->opening_date)) .'-'. date('d M Y',strtotime($item->closing_date));
+            })
+            ->addColumn('listing_date', function ($item) {
+                return date('d M',strtotime($item->listing_date));
+            })
+            ->addColumn('refund_date', function ($item) {
+                return date('d M',strtotime($item->refund_date));
             })
             ->addColumn('actions', function ($item) {
                 return $item->admin_action_buttons;
