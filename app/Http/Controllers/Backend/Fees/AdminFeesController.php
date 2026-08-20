@@ -70,18 +70,33 @@ class AdminFeesController extends Controller
     public function create(Request $request)
     {
         $months = [
-            'aug-2024' => 'Aug-2024',
-            'sep-2024' => 'Sep-2024',
-            'oct-2024' => 'Oct-2024',
-            'nov-2024' => 'Nov-2024',
-            'dec-2024' => 'Dec-2024',
-            'jan-2025' => 'Jan-2025',
-            'feb-2025' => 'Feb-2025',
-            'mar-2025' => 'Mar-2025',
-            'apr-2025' => 'Apr-2025',
-            'may-2025' => 'May-2025',
-            'june-2025' => 'Jun-2025',
-        ];
+        'dec-2026' => 'Dec-2026',
+        'nov-2026' => 'Nov-2026',
+        'oct-2026' => 'Oct-2026',
+        'sep-2026' => 'Sep-2026',
+        'aug-2026' => 'Aug-2026',
+        'july-2026' => 'Jul-2026',
+        'june-2026' => 'Jun-2026',
+        'may-2026' => 'May-2026',
+        'apr-2026' => 'Apr-2026',
+        'mar-2026' => 'Mar-2026',
+        'feb-2026' => 'Feb-2026',
+        'jan-2026' => 'Jan-2026',
+
+        'june-2025' => 'Jun-2025',
+        'may-2025' => 'May-2025',
+        'apr-2025' => 'Apr-2025',
+        'mar-2025' => 'Mar-2025',
+        'feb-2025' => 'Feb-2025',
+        'jan-2025' => 'Jan-2025',
+
+        'dec-2024' => 'Dec-2024',
+        'nov-2024' => 'Nov-2024',
+        'oct-2024' => 'Oct-2024',
+        'sep-2024' => 'Sep-2024',
+        'aug-2024' => 'Aug-2024',
+    ];
+
 
         return view($this->repository->setAdmin(true)->getModuleView('createView'))->with([
             'repository'    => $this->repository,

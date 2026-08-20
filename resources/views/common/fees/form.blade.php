@@ -5,6 +5,40 @@
     </div>
 </div>
 
+<hr />
+<div class="form-group row">
+    {{ Form::label('from_month', 'From Month :', ['class' => 'col-lg-2 control-label']) }}
+    <div class="col-lg-10">
+        {{ Form::select(
+            'from_month',
+            $months,
+            null,
+            [
+                'class' => 'form-control',
+                'placeholder' => 'Select From Month',
+                
+            ]
+        ) }}
+    </div>
+</div>
+
+<div class="form-group row">
+    {{ Form::label('to_month', 'To Month :', ['class' => 'col-lg-2 control-label']) }}
+    <div class="col-lg-10">
+        {{ Form::select(
+            'to_month',
+            $months,
+            null,
+            [
+                'class' => 'form-control',
+                'placeholder' => 'Select To Month',
+                
+            ]
+        ) }}
+    </div>
+</div>
+
+
 <div class="form-group row">
     {{ Form::label('client_id', 'Client Id :', ['class' => 'col-lg-2 control-label']) }}
     <div class="col-lg-10">

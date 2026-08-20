@@ -166,14 +166,46 @@ class EloquentFeesRepository extends DbRepository
      */
     public function create($input)
     {
-        $input = $this->prepareInputData($input, true);
-        $model = $this->model->create($input);
-
-        if($model)
+        if($input['from_month'] == null)
         {
-            return $model;
-        }
 
+            $input = $this->prepareInputData($input);
+            return $this->model->create($monthInput);
+        }
+        else
+        {
+            $fromMonth = $input['from_month'];
+            $toMonth   = $input['to_month'];
+
+            // Convert month-year to Carbon dates
+            $start = \Carbon\Carbon::createFromFormat('M-Y', ucfirst($fromMonth))->startOfMonth();
+            $end   = \Carbon\Carbon::createFromFormat('M-Y', ucfirst($toMonth))->startOfMonth();
+
+            $models = [];
+
+            while ($start->lte($end)) {
+
+                $monthInput = $input;
+
+                // Store current month as month_title
+                $monthInput['month_title'] = strtolower($start->format('M-Y'));
+
+                // Remove from/to fields if they are not database columns
+                unset($monthInput['from_month']);
+                unset($monthInput['to_month']);
+
+                $monthInput = $this->prepareInputData($monthInput, true);
+
+                $model = $this->model->create($monthInput);
+
+                if (!$model) {
+                    return false;
+                }
+
+                $start->addMonth();
+            }
+        }
+        
         return false;
     }
 
