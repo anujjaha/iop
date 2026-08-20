@@ -66,7 +66,7 @@
                 </div>
             </div>
 
-            <div class="col-md-2 col-sm-4 col-12">
+            <!-- <div class="col-md-2 col-sm-4 col-12">
                 <div class="info-box">
                     <span class=""><i class="far fa-envelope"></i></span>
                     <div class="info-box-content">
@@ -74,7 +74,7 @@
                         <span class="info-box-number">{!! $item->assignedIpos->sum('profit_loss') !!}</span>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <div class="col-md-2 col-sm-4 col-12">
                 <div class="info-box">
@@ -91,12 +91,12 @@
                     <span class=""><i class="far fa-envelope"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text">Net P & L</span>
-                        <span class="info-box-number">{!! $item->assignedIpos->sum('profit_loss_aftertax') !!}</span>
+                        <span class="info-box-number">{!! $item->assignedIpos->sum('final_net_pl') !!}</span>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-2 col-sm-4 col-12">
+            <!-- <div class="col-md-2 col-sm-4 col-12">
                 <div class="info-box">
                     <span class=""><i class="far fa-envelope"></i></span>
                     <div class="info-box-content">
@@ -108,8 +108,7 @@
                         </span>
                     </div>
                 </div>
-            </div>
-
+            </div>-->
             <div class="col-md-2 col-sm-4 col-12">
                 <div class="info-box">
                     <span class=""><i class="far fa-envelope"></i></span>
@@ -265,6 +264,12 @@
                             {!! $item->bank_account !!}
                         </div>
                     </div>
+                    <div class="form-group row row">
+                        <label for="otTotalPay" class="col-lg-3 control-label">Notes:</label>
+                        <div class="col-lg-9">
+                            {!! $item->notes !!}
+                        </div>
+                    </div>
                 </div>
                 
             </div>
@@ -283,9 +288,10 @@
         <div class="card-body">
             <table class="table table-bordered">
                 <tr>
+                    <td>Date</td>
                     <td>Name</td>
-                    <td>Status</td>
-                    <td>Block</td>
+                    <td>Buy</td>
+                    <td>Qty</td>
                     <td>Invested</td>
                     <td>@</td>
                     <td>P/L</td>
@@ -297,6 +303,12 @@
 
                 @foreach($item->assignedIpos as $ipo)
                     @php
+                    $buyPrice = $ipo->ipo->block_amt / $ipo->ipo->lot_size;
+                    if($ipo->status == 2)
+                    {
+                        continue;
+                    }
+                    $ldate = date('d M Y', strtotime($ipo->ipo->listing_date));
                     $totalInvested =  $ipo->share_qty * $ipo->ipo->price_band;
                     $clientNetPl += $ipo->final_net_pl;
                     /*if($ipo->sell_price != null)
@@ -316,6 +328,7 @@
                     }*/
                     @endphp
                     <tr>
+                        <td>{!! $ldate !!}</td>
                         <td>
                             @php
                                 $txtClass = '';
@@ -339,8 +352,9 @@
                                 {!! $ipo->ipo->ipo_name !!}
                             </span>
                         </td>
-                        <td>{!! getAssignmentLiveStatus($ipo->status) !!}</td>
-                        <td>{!! $ipo->status == 1 ? $ipo->share_qty * $ipo->ipo->price_band : 'N/A' !!}</td>
+                        
+                        <td>{!! $buyPrice !!}</td>
+                        <td>{!! $ipo->share_qty !!}</td>
                         <td>{!! $totalInvested !!}</td>
                         <td>{!! $ipo->sell_price !!}</td>
                         <td>    
@@ -365,7 +379,7 @@
                     </tr>
                 @endforeach
                 <tfoot>
-                    <td colspan="9"></td>
+                    <td colspan="10"></td>
                     <td align="right">{!! $clientNetPl !!}</td>
                 </tfoot>
             </table>
