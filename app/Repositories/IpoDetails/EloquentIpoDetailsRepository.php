@@ -434,7 +434,8 @@ class EloquentIpoDetailsRepository extends DbRepository
         // $clients = ClientDetail::all();
         // dd($clients);
         
-
+        $paidIntAll = PaidInterest::all();
+        
         $start = Carbon::create(2024, 10, 1); // October 2024
             $end = Carbon::now()->startOfMonth(); // Current month (October 2025)
 
@@ -448,25 +449,31 @@ class EloquentIpoDetailsRepository extends DbRepository
         $tFees = 0;
         $totalClients = 0;
         $op = [];
-        foreach($months as $month)
+        foreach ($months as $month)
         {
-            $totalClients = $totalClients + ClientDetail::whereRaw("UPPER(DATE_FORMAT(created_at, '%b-%Y')) = ?", [$month])
-                ->where('is_free', 0)
-                ->count();
-            // dd($totalClients);
-            $paidInt = PaidInterest::whereRaw("
-                UPPER(DATE_FORMAT(STR_TO_DATE(title, '%d-%m-%Y'), '%b-%Y')) = ?
-            ", [$month])->first() ?? 0;
-            $bajajPaid = 0;
-            if(isset($paidInt) && isset($paidInt->id))
-            {
-                $bajajPaid = $paidInt->amount;
-            }
+            $totalClients = $totalClients + ClientDetail::whereRaw(
+                "UPPER(DATE_FORMAT(created_at, '%b-%Y')) = ?",
+                [strtoupper($month)]
+            )
+            ->where('is_free', 0)
+            ->count();
 
-            $tFees = $tFees + ( $totalClients * 500 );
-            $simCost = Simplan::whereRaw("UPPER(DATE_FORMAT(recharge_date, '%b-%Y')) = ?", [$month])
-                ->sum('cost');
-            $op[ucfirst(strtolower($month))] = round(($totalClients * 500) + $simCost + $bajajPaid);
+            $paidInt = $paidIntAll
+                ->where('month_year', strtoupper($month))
+                ->first();
+
+            $bajajPaid = $paidInt ? (float) $paidInt->amount : 0;
+
+            $tFees = $tFees + ($totalClients * 500);
+
+            $simCost = Simplan::whereRaw(
+                "UPPER(DATE_FORMAT(recharge_date, '%b-%Y')) = ?",
+                [strtoupper($month)]
+            )->sum('cost');
+
+            $op[ucfirst(strtolower($month))] = round(
+                ($totalClients * 500) + $simCost + $bajajPaid
+            );
         }
         
         // dd($op);

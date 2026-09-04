@@ -27,6 +27,7 @@ class PaidInterest extends BaseModel
      */
     protected $fillable = [
         "id", "title", "amount", "pay_mode", "notes", "created_at", "updated_at", 
+        "month_year"
     ];
 
     /**

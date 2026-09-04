@@ -34,12 +34,13 @@ class EloquentPaidInterestRepository extends DbRepository
      * @var array
      */
     public $tableHeaders = [
-        		'id'        => 'Id',
-		'title'        => 'Title',
+        'id'        => 'Id',
+		'month_year'        => 'Month',
+        'title'        => 'Title',
 		'amount'        => 'Amount',
 		'pay_mode'        => 'Pay_mode',
 		'notes'        => 'Notes',
-"actions"         => "Actions"
+        "actions"         => "Actions"
     ];
 
     /**
@@ -54,12 +55,19 @@ class EloquentPaidInterestRepository extends DbRepository
                     'searchable'    => true,
                     'sortable'      => true
                 ],
+        'month_year' =>   [
+                    'data'          => 'month_year',
+                    'name'          => 'month_year',
+                    'searchable'    => true,
+                    'sortable'      => true
+                ],
 		'title' =>   [
                     'data'          => 'title',
                     'name'          => 'title',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
+
 		'amount' =>   [
                     'data'          => 'amount',
                     'name'          => 'amount',

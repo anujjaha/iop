@@ -151,13 +151,13 @@
         {
           label: 'Profit',
           data: {!! json_encode(array_values($chartData)) !!},
-          backgroundColor: 'rgba(54, 162, 235, 0.7)',
+          backgroundColor: 'rgba(204, 101, 235, 0.7)',
           barThickness: 10,
         },
         {
           label: 'Investment',
           data: {!! json_encode(array_values($monthlyExpense)) !!},
-          backgroundColor: 'rgba(255, 99, 132, 0.7)',
+          backgroundColor: 'rgba(255, 219, 132, 0.7)',
           barThickness: 10,
         },
         {
