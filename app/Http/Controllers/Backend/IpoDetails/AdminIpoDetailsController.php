@@ -160,15 +160,17 @@ class AdminIpoDetailsController extends Controller
     public function getTableData()
     {
         return Datatables::of($this->repository->getForDataTable())
-            ->escapeColumns(['id', 'sort'])
-            ->addColumn('ipo_name', function ($item) {
-                return '<a href="' . route('admin.ipodetails.show', $item->id) . '">'.$item->ipo_name.'</a> <br />';  
+            ->escapeColumns(['id'])
+            ->addColumn('ipo_type', function ($item) {
+                return '<a target="_blank" href="' .  $item->external_link . '">'.( $item->ipo_type == "1" ? "NSE" : "SME").'</a>';  
+            })->addColumn('ipo_name', function ($item) {
+                return '<a href="' . route('admin.ipodetails.show', $item->id) . '">'.$item->ipo_name. '</a> <br />';  
             })
             ->addColumn('opening_date', function ($item) {
                 $assignments = $item->assignments;
 
-                $pl = $assignments->where('status',5)
-                ->sum('final_net_pl');
+                $pl = ($assignments->where('status',5)
+                ->sum('final_net_pl')) - $item->risk_amount;
                 
                 $span = '';
                 if($pl > 0)
@@ -183,13 +185,25 @@ class AdminIpoDetailsController extends Controller
                 
             })
             ->addColumn('closing_date', function ($item) {
-                return date('d M',strtotime($item->opening_date)) .'-'. date('d M Y',strtotime($item->closing_date));
+                return date('d M',strtotime($item->opening_date)) .' - '. date('d M Y',strtotime($item->closing_date));
             })
             ->addColumn('listing_date', function ($item) {
                 return date('d M',strtotime($item->listing_date));
             })
+            ->addColumn('lot_size', function ($item) {
+                return $item->lot_size . ' | ' . $item->max_lot_size;
+            })
             ->addColumn('refund_date', function ($item) {
                 return date('d M',strtotime($item->refund_date));
+            })
+             ->addColumn('retail_applications', function ($item) {
+                return 'R-' . $item->retail_applications . ' | SHNI-' .$item->shni_applications . ' | BHNI-'. $item->bhni_applications;
+            })
+            ->addColumn('invested_amount', function ($item) {
+                return $item->invested_amount == 0 ? $item->block_amt  : $item->invested_amount . ' | ' . $item->paid_interest;
+            })
+             ->addColumn('paid_interest', function ($item) {
+                return $item->loan_interest; 
             })
             ->addColumn('actions', function ($item) {
                 return $item->admin_action_buttons;

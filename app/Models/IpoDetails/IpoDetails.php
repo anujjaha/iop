@@ -31,6 +31,16 @@ class IpoDetails extends BaseModel
         "min_lot_size",
         "max_lot_size",
         "price_band",
+        'invested_amount',
+    'paid_interest',
+    'block_days',
+    'retail_applications',
+    'shni_applications',
+    'bhni_applications',
+    'bhni_lot_size',
+    'loan_amount',
+    'loan_interest',
+    'risk_amount'
     ];
 
     /**

@@ -57,7 +57,7 @@ var headers = JSON.parse('{!! $repository->getTableHeaders() !!}'),
 jQuery(document).ready(function() {
     BaseCommon.Utils.setTableHeaders(document.getElementById("tableHeadersContainer"), headers);
     BaseCommon.Utils.setTableColumns(document.getElementById("items-table"), moduleConfig.getTableDataUrl,
-        'GET', columns, [[4, "desc"]]);
+        'GET', columns, [[0, "desc"]]);
 });
 </script>
 @endsection

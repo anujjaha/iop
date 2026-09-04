@@ -38,19 +38,17 @@ class EloquentIpoDetailsRepository extends DbRepository
      * @var array
      */
     public $tableHeaders = [
-        'id'        => 'Id',
-		'ipo_name'        => 'Ipo_name',
+        'id'                  => 'Id',
+		'ipo_type'            => 'Ipo Type',
+		'ipo_name'            => 'Name',
 		'opening_date'        => 'P&L',
 		'closing_date'        => 'Dates',
 		'listing_date'        => 'Listing',
-		'gmp_latest'        => 'Gmp',
-		'lot_size'        => 'Lot Size',
-		'block_amt'        => 'Blocked',
-		'refund_date'        => 'Refund_date',
-		'listed_price'        => 'Listed',
-		'ipo_type'        => 'Ipo Type',
-		'notes'        => 'Notes',
-"actions"         => "Actions"
+		'lot_size'            => 'Lot Size',
+        'retail_applications' => 'Applications',
+		'invested_amount'     => 'Invested',
+        'paid_interest'       => 'Interest',
+		"actions"             => "Actions"
     ];
 
     /**
@@ -62,6 +60,12 @@ class EloquentIpoDetailsRepository extends DbRepository
         'id' =>   [
                     'data'          => 'id',
                     'name'          => 'id',
+                    'searchable'    => true,
+                    'sortable'      => true
+                ],
+        'ipo_type' =>   [
+                    'data'          => 'ipo_type',
+                    'name'          => 'ipo_type',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
@@ -89,45 +93,28 @@ class EloquentIpoDetailsRepository extends DbRepository
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'gmp_latest' =>   [
-                    'data'          => 'gmp_latest',
-                    'name'          => 'gmp_latest',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],
 		'lot_size' =>   [
                     'data'          => 'lot_size',
                     'name'          => 'lot_size',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'block_amt' =>   [
-                    'data'          => 'block_amt',
-                    'name'          => 'block_amt',
+		'retail_applications' =>   [
+                    'data'          => 'retail_applications',
+                    'name'          => 'retail_applications',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'refund_date' =>   [
-                    'data'          => 'refund_date',
-                    'name'          => 'refund_date',
+		'invested_amount' =>   [
+                    'data'          => 'invested_amount',
+                    'name'          => 'invested_amount',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'listed_price' =>   [
-                    'data'          => 'listed_price',
-                    'name'          => 'listed_price',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],
-		'ipo_type' =>   [
-                    'data'          => 'ipo_type',
-                    'name'          => 'ipo_type',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],
-		'notes' =>   [
-                    'data'          => 'notes',
-                    'name'          => 'notes',
+		
+        'paid_interest' =>   [
+                    'data'          => 'paid_interest',
+                    'name'          => 'paid_interest',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
@@ -318,7 +305,7 @@ class EloquentIpoDetailsRepository extends DbRepository
     public function getForDataTable()
     {
         return $this->model->select($this->getTableFields())
-            ->orderBy('listing_date', 'asc')
+            ->orderBy('listing_date', 'desc')
             ->get();
     }
 
@@ -348,6 +335,12 @@ class EloquentIpoDetailsRepository extends DbRepository
             $input = array_merge($input, ['user_id' => access()->user()->id]);
         }
 
+        if(empty($input['min_lot_size']))
+        {
+            $input['min_lot_size'] = $input['lot_size'];
+        }
+
+        $input['invested_amount'] = $input['block_amt'];
         $input['opening_date'] = date('Y-m-d', strtotime($input['opening_date']));
         $input['closing_date'] = date('Y-m-d', strtotime($input['closing_date']));
         $input['listing_date'] = date('Y-m-d', strtotime($input['listing_date']));

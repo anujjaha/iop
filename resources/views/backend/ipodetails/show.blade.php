@@ -110,6 +110,42 @@
                                 </div>
                             </div>
 
+                            <div class="col-md-3">
+                                <div class="form-group row row">
+                                    <label for="name" class="col-lg-5 control-label">Invested:</label>
+                                    <div class="col-lg-7">
+                                        {!! $item->invested_amount == 0 ? $item->block_amt : $item->invested_amount;  !!}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group row row">
+                                    <label for="name" class="col-lg-5 control-label">Loan:</label>
+                                    <div class="col-lg-7">
+                                        {!! $item->loan_amount;  !!}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group row row">
+                                    <label for="name" class="col-lg-5 control-label">Paid Interest:</label>
+                                    <div class="col-lg-7">
+                                        {!! $item->loan_interest . ' | ' . $item->paid_interest ;  !!}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group row row">
+                                    <label for="name" class="col-lg-5 control-label">Total Risk:</label>
+                                    <div class="col-lg-7">
+                                        {!! $item->risk_amount;  !!}
+                                    </div>
+                                </div>
+                            </div>
+                            
 
                         </div>  
                     </div>
