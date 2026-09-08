@@ -1,3 +1,15 @@
+@php
+    use Carbon\Carbon;
+
+    $formatDate = function ($date) {
+        if (empty($date)) {
+            return null;
+        }
+
+        return Carbon::parse($date)->format('d/m/Y');
+    };
+@endphp
+
 <div class="row">
 
     {{-- =========================================================
@@ -43,6 +55,7 @@
         </div>
     </div>
 
+   
     {{-- Opening Date --}}
     <div class="col-md-3">
         <div class="form-group">
@@ -50,18 +63,17 @@
 
             {{ Form::text(
                 'opening_date',
-                isset($item) && $item->opening_date
-                    ? date('d/m/Y',strtotime($item->opening_date))
-                    : null,
+                old('opening_date', isset($item) && $item->opening_date ? $formatDate($item->opening_date) : null),
                 [
                     'class' => 'form-control date-picker',
-                    'placeholder' => 'DD-MM-YYYY',
+                    'placeholder' => 'DD/MM/YYYY',
                     'required' => 'required',
                     'autocomplete' => 'off'
                 ]
             ) }}
         </div>
     </div>
+
 
     {{-- Closing Date --}}
     <div class="col-md-3">
@@ -70,18 +82,17 @@
 
             {{ Form::text(
                 'closing_date',
-                isset($item) && $item->closing_date
-                    ? date('d/m/Y',strtotime($item->closing_date))
-                    : null,
+                old('closing_date', isset($item) && $item->closing_date ? $formatDate($item->closing_date) : null),
                 [
                     'class' => 'form-control date-picker',
-                    'placeholder' => 'DD-MM-YYYY',
+                    'placeholder' => 'DD/MM/YYYY',
                     'required' => 'required',
                     'autocomplete' => 'off'
                 ]
             ) }}
         </div>
     </div>
+
 
     {{-- Refund Date --}}
     <div class="col-md-3">
@@ -90,18 +101,17 @@
 
             {{ Form::text(
                 'refund_date',
-                isset($item) && $item->refund_date
-                    ? date('d/m/Y',strtotime($item->refund_date))
-                    : null,
+                old('refund_date', isset($item) && $item->refund_date ? $formatDate($item->refund_date) : null),
                 [
                     'class' => 'form-control date-picker',
-                    'placeholder' => 'DD-MM-YYYY',
+                    'placeholder' => 'DD/MM/YYYY',
                     'required' => 'required',
                     'autocomplete' => 'off'
                 ]
             ) }}
         </div>
     </div>
+
 
     {{-- Listing Date --}}
     <div class="col-md-3">
@@ -110,12 +120,10 @@
 
             {{ Form::text(
                 'listing_date',
-                isset($item) && $item->listing_date
-                    ? date('d/m/Y',strtotime($item->listing_date))
-                    : null,
+                old('listing_date', isset($item) && $item->listing_date ? $formatDate($item->listing_date) : null),
                 [
                     'class' => 'form-control date-picker',
-                    'placeholder' => 'DD-MM-YYYY',
+                    'placeholder' => 'DD/MM/YYYY',
                     'required' => 'required',
                     'autocomplete' => 'off'
                 ]

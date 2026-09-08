@@ -233,7 +233,7 @@ class EloquentIpoDetailsRepository extends DbRepository
         if($model)
         {
             $input = $this->prepareInputData($input);
-
+            
             return $model->update($input);
         }
 
@@ -340,11 +340,23 @@ class EloquentIpoDetailsRepository extends DbRepository
             $input['min_lot_size'] = $input['lot_size'];
         }
 
+        $opening_date = Carbon::createFromFormat('d/m/Y', $input['opening_date'])
+            ->format('Y-m-d');
+
+        $closing_date = Carbon::createFromFormat('d/m/Y', $input['closing_date'])
+            ->format('Y-m-d');
+
+        $refund_date = Carbon::createFromFormat('d/m/Y', $input['refund_date'])
+            ->format('Y-m-d');
+
+        $listing_date = Carbon::createFromFormat('d/m/Y', $input['listing_date'])
+            ->format('Y-m-d');
+
         $input['invested_amount'] = $input['block_amt'];
-        $input['opening_date'] = date('Y-m-d', strtotime($input['opening_date']));
-        $input['closing_date'] = date('Y-m-d', strtotime($input['closing_date']));
-        $input['listing_date'] = date('Y-m-d', strtotime($input['listing_date']));
-        $input['refund_date'] = date('Y-m-d', strtotime($input['refund_date']));
+        $input['opening_date'] = $opening_date;
+        $input['closing_date'] = $closing_date ;
+        $input['refund_date'] = $refund_date;
+        $input['listing_date'] =  $listing_date;
 
         return $input;
     }
