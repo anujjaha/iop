@@ -13,6 +13,13 @@
 </div>
 
 <div class="form-group row">
+    {{ Form::label('executed_on', 'Loss Amount :', ['class' => 'col-lg-2 control-label']) }}
+    <div class="col-lg-10">
+        {{ Form::date('executed_on', null, ['class' => 'form-control', 'placeholder' => 'Date', 'required' => 'required']) }}
+    </div>
+</div>
+
+<div class="form-group row">
     {{ Form::label('notes', 'Notes :', ['class' => 'col-lg-2 control-label']) }}
     <div class="col-lg-10">
         {{ Form::text('notes', null, ['class' => 'form-control', 'placeholder' => 'Notes', 'required' => 'required']) }}

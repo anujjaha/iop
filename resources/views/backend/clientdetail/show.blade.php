@@ -3,6 +3,9 @@
 @section ('title', isset($repository->moduleTitle) ? 'Edit - '. $repository->moduleTitle : 'Edit')
 
 @section('page-header')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
 <h1>CLIENT INFO: {!! $item->getFullName() !!}</h1>
 @endsection
 
@@ -22,7 +25,7 @@
             'apr-2025' => 'Apr-2025',
             'may-2025' => 'May-2025',
             'june-2025' => 'Jun-2025',
-            'july-2025' => 'July-2025',
+            'july-2025' => 'Jul-2025',
             'aug-2025' => 'Aug-2025',
             'sep-2025' => 'Sep-2025',
             'oct-2025' => 'Oct-2025',
@@ -35,8 +38,11 @@
             'may-2026' => 'May-2026',
             'june-2026' => 'Jun-2026',
             'july-2026' => 'Jul-2026',
+            'aug-2026' => 'Aug-2026',
+            'sep-2026' => 'Sep-2026',
         ];
         $clientNetPl = 0;
+    $transactionMonthList = [];
 @endphp
 {{ Form::model($item, ['route' => [$repository->getActionRoute('updateRoute'), $item], 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'PATCH']) }}
 
@@ -301,6 +307,10 @@
                     <td>Net PL</td>
                 </tr>
 
+                @php
+                    $totProfit = $totBrokerage =  $totStt = $totGst = 0;
+                @endphp
+
                 @foreach($item->assignedIpos as $ipo)
                     @php
                     $buyPrice = $ipo->ipo->block_amt / $ipo->ipo->lot_size;
@@ -326,6 +336,26 @@
                         $totalInvested =  $ipo->share_qty * $ipo->ipo->price_band;
                         $finalProfit = $gst = $stt = $brokerage = $totalTransactionValue = '';
                     }*/
+
+                    $monthLabel = strtolower(date('M-Y',strtotime($ldate)));
+                    
+
+                    if(isset($transactionMonthList[$monthLabel]))
+                    {
+                        $transactionMonthList[$monthLabel]['profit'] = $transactionMonthList[$monthLabel]['profit'] + $ipo->final_net_pl;
+                    }
+                    else
+                    {
+                        $transactionMonthList[$monthLabel] = [
+                            'label'   => $monthLabel,
+                            'profit'  => $ipo->final_net_pl,
+                        ];
+                    }
+
+                    $totProfit += $ipo->profit_loss ;
+                    $totBrokerage += $ipo->brokerage_amount;
+                    $totStt += $ipo->brokerage_stt;
+                    $totGst += $ipo->gst_value;
                     @endphp
                     <tr>
                         <td>{!! $ldate !!}</td>
@@ -357,7 +387,7 @@
                         <td>{!! $ipo->share_qty !!}</td>
                         <td>{!! $totalInvested !!}</td>
                         <td>{!! $ipo->sell_price !!}</td>
-                        <td>    
+                        <td align="right">    
                             @if($ipo->profit_loss > 0)
                                 <span class="font-weight-bold text-success">
                                     {!! $ipo->profit_loss !!}
@@ -372,21 +402,83 @@
                                 </span>
                             @endif
                             </td>
-                        <td>{!! $ipo->brokerage_amount !!}</td>
-                        <td>{!! $ipo->brokerage_stt   !!}</td>
-                        <td>{!! $ipo->gst_value  !!}</td>
+                        <td align="right">{!! $ipo->brokerage_amount !!}</td>
+                        <td align="right">{!! $ipo->brokerage_stt   !!}</td>
+                        <td align="right">{!! $ipo->gst_value  !!}</td>
                         <td align="right">{!! $ipo->final_net_pl  !!}</td>
                     </tr>
                 @endforeach
                 <tfoot>
-                    <td colspan="10"></td>
+                    <td colspan="6"></td>
+                    <td align="right">{!! $totProfit !!}</td>
+                    <td align="right">{!! $totBrokerage !!}</td>
+                    <td align="right">{!! $totStt !!}</td>
+                    <td align="right">{!! $totGst !!}</td>
                     <td align="right">{!! $clientNetPl !!}</td>
                 </tfoot>
             </table>
+
+            
+        </div>
+    </div>
+
+    @php
+        $finalMonths = [];
+        $totalCalProfit = $totalCalLoss = 0;
+        foreach($months as $month)
+        {   
+            if($month == 'jul-2026' )
+            {
+                $month = 'july-2026';
+            }
+            if($month == 'jul-2025' )
+            {
+                $month = 'july-2025';
+            }
+            
+            $totalExpense = getMonthlyLoss($item->id, $month) + getMonthlyFee($item->id, $month);
+            if($totalExpense || isset($transactionMonthList[strtolower($month)]['profit']))
+            {
+                $profit = $transactionMonthList[strtolower($month)]['profit'] ?? 0;
+                $finalMonths[] = [
+                    'label'     => ucfirst($month),
+                    'profit'    => $profit,
+                    'loss'      => $totalExpense
+                ];
+
+                $totalCalProfit += $profit;
+                $totalCalLoss += $totalExpense;
+            }
+        }
+        @endphp
+
+
+    <div class="col-md-12">
+        <div class="card card-primary">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-lg-10">
+                        Monthly Details
+                    </div>
+                    <div class="col-lg-2 text-right pull-right">
+                        <a href="javascript:void(0);" class="btn btn-xs btn-danger">Loss:{!! $totalCalLoss !!}</a>
+                        <a href="javascript:void(0);" class="btn btn-xs btn-secondary">Profit: {!! $totalCalProfit !!}</a>
+                        <a href="javascript:void(0);" class="btn btn {!!  $totalCalProfit > $totalCalLoss ? 'btn-success' : 'btn-danger' !!}">{!! $totalCalProfit - $totalCalLoss !!}</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+                <div style="height: 400px;">
+                    <canvas id="monthlyProfitLossChart"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 
 </div>
+
 <!-- 
 <div class="col-md-12">
 <div class="card card-primary">
@@ -1278,5 +1370,119 @@ function settleClientStockCancel()
     jQuery("#formContainer").show();
     jQuery("#settleBtn").html('Settle');
 }
+</script>
+
+<script>
+const monthlyProfitLossData = @json(array_values($finalMonths));
+
+const labels = monthlyProfitLossData.map(item => item.label);
+const profits = monthlyProfitLossData.map(item => Number(item.profit));
+const losses = monthlyProfitLossData.map(item => Number(item.loss));
+
+const ctx = document.getElementById('monthlyProfitLossChart').getContext('2d');
+
+new Chart(ctx, {
+    type: 'bar',
+
+    plugins: [ChartDataLabels],
+
+    data: {
+        labels: labels,
+
+        datasets: [
+            {
+                label: 'Profit',
+                data: profits,
+                backgroundColor: '#28a745',
+                borderColor: '#28a745',
+                borderWidth: 1
+            },
+            {
+                label: 'Loss / Expense',
+                data: losses,
+                backgroundColor: '#dc3545',
+                borderColor: '#dc3545',
+                borderWidth: 1
+            }
+        ]
+    },
+
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+
+        interaction: {
+            mode: 'index',
+            intersect: false
+        },
+
+        scales: {
+            x: {
+                stacked: false,
+                title: {
+                    display: true,
+                    text: 'Month'
+                }
+            },
+
+            y: {
+                beginAtZero: true,
+
+                title: {
+                    display: true,
+                    text: 'Amount'
+                },
+
+                ticks: {
+                    callback: function(value) {
+                        return '₹' + Number(value).toLocaleString('en-IN');
+                    }
+                }
+            }
+        },
+
+        plugins: {
+
+            legend: {
+                display: true,
+                position: 'top'
+            },
+
+            datalabels: {
+                display: true,
+
+                anchor: 'end',
+                align: 'top',
+
+                offset: 4,
+
+                color: '#000',
+
+                font: {
+                    weight: 'bold',
+                    size: 11
+                },
+
+                formatter: function(value) {
+                    if (value == 0) {
+                        return '';
+                    }
+
+                    return '₹' + Number(value).toLocaleString('en-IN');
+                }
+            },
+
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+
+                        return context.dataset.label + ': ₹' +
+                            Number(context.raw).toLocaleString('en-IN');
+                    }
+                }
+            }
+        }
+    }
+});
 </script>
 @endsection

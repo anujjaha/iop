@@ -19,6 +19,7 @@ use App\Models\ClientStockTransaction\ClientStockTransaction;
 use App\Models\Mobile\Mobile;
 use App\Models\PaidInterest\PaidInterest;
 
+
 /**
  * Global helpers file with misc functions.
  */
@@ -840,3 +841,33 @@ if (!function_exists('getMasterBalance')) {
     }
 }
 
+if (!function_exists('getMonthlyLoss')) {
+
+    function getMonthlyLoss($clientId, $month)
+    {
+        $query = Loss::query();
+
+        if ($clientId) {
+            $query->where('client_id', $clientId);
+        }
+
+        return $query
+            ->whereMonth('created_at', date('m', strtotime($month)))
+            ->whereYear('created_at', date('Y', strtotime($month)))
+            ->sum('loss_amount');
+    }
+}
+
+
+
+
+function getMonthlyFee($clientId, $month)
+{
+    $query = Fees::where('month_title', strtolower($month));
+
+    if ($clientId) {
+        $query->where('client_id', $clientId);
+    }
+
+    return $query->sum('fee_amount');
+}
