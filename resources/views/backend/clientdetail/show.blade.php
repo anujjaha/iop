@@ -457,10 +457,10 @@
         <div class="card card-primary">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-lg-10">
+                    <div class="col-lg-8">
                         Monthly Details
                     </div>
-                    <div class="col-lg-2 text-right pull-right">
+                    <div class="col-lg-4 text-right pull-right">
                         <a href="javascript:void(0);" class="btn btn-xs btn-danger">Loss:{!! $totalCalLoss !!}</a>
                         <a href="javascript:void(0);" class="btn btn-xs btn-secondary">Profit: {!! $totalCalProfit !!}</a>
                         <a href="javascript:void(0);" class="btn btn {!!  $totalCalProfit > $totalCalLoss ? 'btn-success' : 'btn-danger' !!}">{!! $totalCalProfit - $totalCalLoss !!}</a>
