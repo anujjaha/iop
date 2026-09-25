@@ -169,8 +169,7 @@ class AdminIpoDetailsController extends Controller
             ->addColumn('opening_date', function ($item) {
                 $assignments = $item->assignments;
 
-                $pl = ($assignments->where('status',5)
-                ->sum('final_net_pl')) - $item->risk_amount;
+                $pl = floor(($assignments->where('status',5)->sum('final_net_pl')) + $assignments->where('status',5)->sum('tax_amount')  - $item->loan_interest);
                 
                 $span = '';
                 if($pl > 0)
@@ -230,6 +229,7 @@ class AdminIpoDetailsController extends Controller
         }
         $chartData = $this->repository->getChartData($months);
         $monthlyExpense = $this->repository->getMonthlyExpenses($months);
+
 
         
         $monthlyProfit = [];

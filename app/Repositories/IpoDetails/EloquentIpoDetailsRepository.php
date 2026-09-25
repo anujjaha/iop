@@ -420,9 +420,16 @@ class EloquentIpoDetailsRepository extends DbRepository
         foreach($ipos as $ipo)
         {
             $iDate = date('M-Y', strtotime($ipo->listing_date));
+
             $assignments = $ipo->assignments;
-            $pl = $assignments->where('status',5)
-                ->sum('final_net_pl');
+            $sPl = $assignments->where('status',5)
+                ->sum('profit_loss');
+
+            $txPl = $assignments->where('status',5)
+                ->sum('tax_amount');
+
+            $pl = $sPl + $txPl;
+            
             if(isset($output[$iDate]))
             {
                 $output[$iDate] = $output[$iDate] + $pl;
@@ -432,6 +439,7 @@ class EloquentIpoDetailsRepository extends DbRepository
                 $output[$iDate] = $pl;
             }
         }
+      
 
         foreach($months as $amonth)
         {
@@ -443,9 +451,6 @@ class EloquentIpoDetailsRepository extends DbRepository
 
     public function getMonthlyExpenses($months = null)
     {
-        // $clients = ClientDetail::all();
-        // dd($clients);
-        
         $paidIntAll = PaidInterest::all();
         
         $start = Carbon::create(2024, 10, 1); // October 2024
@@ -461,8 +466,14 @@ class EloquentIpoDetailsRepository extends DbRepository
         $tFees = 0;
         $totalClients = 0;
         $op = [];
+
         foreach ($months as $month)
         {
+            $extraInt = $this->model->whereRaw(
+                "UPPER(DATE_FORMAT(listing_date, '%b-%Y')) = ?",
+                [strtoupper($month)]
+            )->sum('loan_interest');
+
             $totalClients = $totalClients + ClientDetail::whereRaw(
                 "UPPER(DATE_FORMAT(created_at, '%b-%Y')) = ?",
                 [strtoupper($month)]
@@ -484,7 +495,7 @@ class EloquentIpoDetailsRepository extends DbRepository
             )->sum('cost');
 
             $op[ucfirst(strtolower($month))] = round(
-                ($totalClients * 500) + $simCost + $bajajPaid
+                ($totalClients * 500) + $simCost + $bajajPaid + $extraInt
             );
         }
         

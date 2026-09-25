@@ -105,7 +105,7 @@
                                 <div class="form-group row row">
                                     <label for="name" class="col-lg-5 control-label">P/L:</label>
                                     <div class="col-lg-7">
-                                        {!! $item->assignments->sum('final_net_pl')  !!}
+                                        {!!  floor($item->assignments->sum('final_net_pl') +  $item->assignments->sum('tax_amount') - $item->loan_interest) !!}
                                     </div>
                                 </div>
                             </div>
@@ -162,15 +162,22 @@
                     <td>PAN</td>
                     <td>Allotment</td>
                     <td>P/L</td>
+                    <td>Deductions</td>
+                    <td>Net P/L</td>
                     <td>Blocked Amount</td>
                 </tr>
             </thead>
             @php
                 $sr = 1;
-                $totalBlock = 0;
+                $totalPl = $totalDeductions = $totalBlock = 0;
+
             @endphp
             <tbody>
             @foreach($item->assignments as $assignment)
+                @php
+                $deductions = $assignment->brokerage_amount + $assignment->brokerage_stt + $assignment->gst_value;
+
+                @endphp
                 <tr>
                     <td>{!! $sr !!}</td>
                     <td>
@@ -181,19 +188,26 @@
                     </td>
                     <td>{!! $assignment->client->pan_no !!}</td>
                     <td>{!! getAssignmentLiveStatus($assignment->status) !!}</td>
-                    <td>{!! $assignment->profit_loss !!}</td>
+                    <td class="text-right">{!! $assignment->profit_loss !!}</td>
+                    <td class="text-right">{!!  $deductions !!}</td>
+                    <td class="text-right">{!! $assignment->profit_loss - $deductions !!}</td>
                     <td class="text-right">{!! $assignment->share_qty * $item->price_band !!}</td>
                 </tr>
                 @php
                     $sr++;
-                    $totalBlock = $totalBlock + ($assignment->share_qty * $item->price_band);
+                    $totalBlock         = $totalBlock + ($assignment->share_qty * $item->price_band);
+                    $totalDeductions    += $deductions;
+                    $totalPl            += $assignment->profit_loss;
                 @endphp
             @endforeach
              
             </tbody>
             <tfoot>
             <tr>
-                <td colspan="5">-</td>
+                <td colspan="4">-</td>
+                <td class="text-right">{!! $totalPl !!}</td>
+                <td class="text-right">{!! $totalDeductions !!}</td>
+                <td class="text-right">{!! floor($totalPl - $totalDeductions) !!}</td>
                 <td class="text-right text-strong"><strong>{!! $totalBlock !!}</strong></td>
             </tr>
             </tfoot>
