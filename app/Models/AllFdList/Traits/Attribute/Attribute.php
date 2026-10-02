@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\Models\PaidInterest\Traits\Attribute;
+namespace App\Models\AllFdList\Traits\Attribute;
 
 /**
  * Trait Attribute
@@ -8,7 +8,7 @@ namespace App\Models\PaidInterest\Traits\Attribute;
  * @author Anuj Jaha ( er.anujjaha@gmail.com )
  */
 
-use App\Repositories\PaidInterest\EloquentPaidInterestRepository;
+use App\Repositories\AllFdList\EloquentAllFdListRepository;
 
 trait Attribute
 {
@@ -40,7 +40,7 @@ trait Attribute
      */
     public function getActionButtonsAttribute()
     {
-        $repository = new EloquentPaidInterestRepository;
+        $repository = new EloquentAllFdListRepository;
         $routes     = $repository->getModuleRoutes();
 
         return $this->getEditButtonAttribute($routes, $repository->clientRoutePrefix) . $this->getDeleteButtonAttribute($routes, $repository->clientRoutePrefix);
@@ -51,7 +51,7 @@ trait Attribute
      */
     public function getAdminActionButtonsAttribute()
     {
-        $repository = new EloquentPaidInterestRepository;
+        $repository = new EloquentAllFdListRepository;
         $routes     = $repository->getModuleRoutes();
 
         return $this->getEditButtonAttribute($routes, $repository->adminRoutePrefix, true) . $this->getDeleteButtonAttribute($routes, $repository->adminRoutePrefix);

@@ -613,7 +613,7 @@ if (!function_exists('getClientOptions')) {
 
     function getClientOptions()
     {
-        $clients = ClientDetail::all();
+        $clients = ClientDetail::orderBy('name')->get();
         $options = [];
 
         foreach($clients as $client)

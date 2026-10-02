@@ -1,32 +1,32 @@
 <?php 
 
-namespace App\Repositories\PaidInterest;
+namespace App\Repositories\AllFdList;
 
 /**
- * Class EloquentPaidInterestRepository
+ * Class EloquentAllFdListRepository
  *
  * @author Anuj Jaha ( er.anujjaha@gmail.com)
  */
 
-use App\Models\PaidInterest\PaidInterest;
+use App\Models\AllFdList\AllFdList;
 use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
 
-class EloquentPaidInterestRepository extends DbRepository
+class EloquentAllFdListRepository extends DbRepository
 {
     /**
-     * PaidInterest Model
+     * AllFdList Model
      *
      * @var Object
      */
     public $model;
 
     /**
-     * PaidInterest Title
+     * AllFdList Title
      *
      * @var string
      */
-    public $moduleTitle = 'PaidInterest';
+    public $moduleTitle = 'AllFdList';
 
     /**
      * Table Headers
@@ -35,10 +35,13 @@ class EloquentPaidInterestRepository extends DbRepository
      */
     public $tableHeaders = [
         'id'        => 'Id',
-		'month_year'        => 'Month',
-        'title'        => 'Title',
+		'client_id'        => 'Client',
+		'payout_type'        => 'Payout',
+		'title'        => 'Title',
 		'amount'        => 'Amount',
-		'pay_mode'        => 'Pay_mode',
+		'start_date'        => 'Date',
+		'rate_of_int'        => 'Int Rate',
+		'expected_monthly_int'        => 'Monthly',
 		'notes'        => 'Notes',
         "actions"         => "Actions"
     ];
@@ -55,32 +58,49 @@ class EloquentPaidInterestRepository extends DbRepository
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-        'month_year' =>   [
-                    'data'          => 'month_year',
-                    'name'          => 'month_year',
+		'client_id' =>   [
+                    'data'          => 'client_id',
+                    'name'          => 'client_id',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'title' =>   [
+		'payout_type' =>   [
+                    'data'          => 'payout_type',
+                    'name'          => 'payout_type',
+                    'searchable'    => true,
+                    'sortable'      => true
+                ],
+        'title' =>   [
                     'data'          => 'title',
                     'name'          => 'title',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-
 		'amount' =>   [
                     'data'          => 'amount',
                     'name'          => 'amount',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'pay_mode' =>   [
-                    'data'          => 'pay_mode',
-                    'name'          => 'pay_mode',
+		'start_date' =>   [
+                    'data'          => 'start_date',
+                    'name'          => 'start_date',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
-		'notes' =>   [
+		'rate_of_int' =>   [
+                    'data'          => 'rate_of_int',
+                    'name'          => 'rate_of_int',
+                    'searchable'    => true,
+                    'sortable'      => true
+                ],
+		'expected_monthly_int' =>   [
+                    'data'          => 'expected_monthly_int',
+                    'name'          => 'expected_monthly_int',
+                    'searchable'    => true,
+                    'sortable'      => true
+                ],
+        'notes' =>   [
                     'data'          => 'notes',
                     'name'          => 'notes',
                     'searchable'    => true,
@@ -135,13 +155,13 @@ class EloquentPaidInterestRepository extends DbRepository
      * @var array
      */
     public $moduleRoutes = [
-        'listRoute'     => 'paidinterest.index',
-        'createRoute'   => 'paidinterest.create',
-        'storeRoute'    => 'paidinterest.store',
-        'editRoute'     => 'paidinterest.edit',
-        'updateRoute'   => 'paidinterest.update',
-        'deleteRoute'   => 'paidinterest.destroy',
-        'dataRoute'     => 'paidinterest.get-list-data'
+        'listRoute'     => 'allfdlist.index',
+        'createRoute'   => 'allfdlist.create',
+        'storeRoute'    => 'allfdlist.store',
+        'editRoute'     => 'allfdlist.edit',
+        'updateRoute'   => 'allfdlist.update',
+        'deleteRoute'   => 'allfdlist.destroy',
+        'dataRoute'     => 'allfdlist.get-list-data'
     ];
 
     /**
@@ -150,10 +170,10 @@ class EloquentPaidInterestRepository extends DbRepository
      * @var array
      */
     public $moduleViews = [
-        'listView'      => 'paidinterest.index',
-        'createView'    => 'paidinterest.create',
-        'editView'      => 'paidinterest.edit',
-        'deleteView'    => 'paidinterest.destroy',
+        'listView'      => 'allfdlist.index',
+        'createView'    => 'allfdlist.create',
+        'editView'      => 'allfdlist.edit',
+        'deleteView'    => 'allfdlist.destroy',
     ];
 
     /**
@@ -162,11 +182,11 @@ class EloquentPaidInterestRepository extends DbRepository
      */
     public function __construct()
     {
-        $this->model = new PaidInterest;
+        $this->model = new AllFdList;
     }
 
     /**
-     * Create PaidInterest
+     * Create AllFdList
      *
      * @param array $input
      * @return mixed
@@ -185,7 +205,7 @@ class EloquentPaidInterestRepository extends DbRepository
     }
 
     /**
-     * Update PaidInterest
+     * Update AllFdList
      *
      * @param int $id
      * @param array $input
@@ -206,7 +226,7 @@ class EloquentPaidInterestRepository extends DbRepository
     }
 
     /**
-     * Destroy PaidInterest
+     * Destroy AllFdList
      *
      * @param int $id
      * @return mixed
@@ -269,7 +289,9 @@ class EloquentPaidInterestRepository extends DbRepository
      */
     public function getForDataTable()
     {
-        return $this->model->select($this->getTableFields())->get();
+        return $this->model->select($this->getTableFields())
+            ->with(['client'])
+            ->get();
     }
 
     /**
