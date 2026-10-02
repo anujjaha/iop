@@ -85,7 +85,7 @@
         jQuery("#block_days").val(diffDays);
         jQuery("#loan_interest").val(totalInterest);
         
-        var paidInterest = Math.ceil((((totalInvestment * 2.5) / 100) / 365) * diffDays);
+        var paidInterest = Math.ceil((((loanAmount * 2.5) / 100) / 365) * diffDays);
         jQuery("#paid_interest").val(paidInterest);
         
         jQuery("#risk_amount").val(parseInt(totalInterest-paidInterest));

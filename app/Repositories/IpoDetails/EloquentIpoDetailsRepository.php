@@ -41,13 +41,14 @@ class EloquentIpoDetailsRepository extends DbRepository
         'id'                  => 'Id',
 		'ipo_type'            => 'Ipo Type',
 		'ipo_name'            => 'Name',
-		'opening_date'        => 'P&L',
+		'opening_date'        => 'P / L',
+        'paid_interest'       => 'Loan-Interest',
+        'listed_price'        => 'Net-PL',
 		'closing_date'        => 'Dates',
 		'listing_date'        => 'Listing',
 		'lot_size'            => 'Lot Size',
         'retail_applications' => 'Applications',
 		'invested_amount'     => 'Invested',
-        'paid_interest'       => 'Interest',
 		"actions"             => "Actions"
     ];
 
@@ -78,6 +79,18 @@ class EloquentIpoDetailsRepository extends DbRepository
 		'opening_date' =>   [
                     'data'          => 'opening_date',
                     'name'          => 'opening_date',
+                    'searchable'    => true,
+                    'sortable'      => true
+                ],
+        'paid_interest' =>   [
+                    'data'          => 'paid_interest',
+                    'name'          => 'paid_interest',
+                    'searchable'    => true,
+                    'sortable'      => true
+                ],
+        'listed_price' =>   [
+                    'data'          => 'listed_price',
+                    'name'          => 'listed_price',
                     'searchable'    => true,
                     'sortable'      => true
                 ],
@@ -112,12 +125,7 @@ class EloquentIpoDetailsRepository extends DbRepository
                     'sortable'      => true
                 ],
 		
-        'paid_interest' =>   [
-                    'data'          => 'paid_interest',
-                    'name'          => 'paid_interest',
-                    'searchable'    => true,
-                    'sortable'      => true
-                ],
+        
 		'actions' => [
                 'data'          => 'actions',
                 'name'          => 'actions',
@@ -425,8 +433,8 @@ class EloquentIpoDetailsRepository extends DbRepository
             $sPl = $assignments->where('status',5)
                 ->sum('profit_loss');
 
-            $txPl = $assignments->where('status',5)
-                ->sum('tax_amount');
+            $txPl = 0;
+            //$assignments->where('status',5)->sum('tax_amount');
 
             $pl = $sPl + $txPl;
             
@@ -469,6 +477,7 @@ class EloquentIpoDetailsRepository extends DbRepository
 
         foreach ($months as $month)
         {
+            $monthUpper = strtoupper($month);
             $extraInt = $this->model->whereRaw(
                 "UPPER(DATE_FORMAT(listing_date, '%b-%Y')) = ?",
                 [strtoupper($month)]
@@ -487,6 +496,7 @@ class EloquentIpoDetailsRepository extends DbRepository
 
             $bajajPaid = $paidInt ? (float) $paidInt->amount : 0;
 
+
             $tFees = $tFees + ($totalClients * 500);
 
             $simCost = Simplan::whereRaw(
@@ -494,9 +504,14 @@ class EloquentIpoDetailsRepository extends DbRepository
                 [strtoupper($month)]
             )->sum('cost');
 
-            $op[ucfirst(strtolower($month))] = round(
-                ($totalClients * 500) + $simCost + $bajajPaid + $extraInt
-            );
+            $isCurrentMonth = $monthUpper === strtoupper(now()->format('M-Y'));
+
+            if ($isCurrentMonth) {
+                $amount = ($totalClients * 500) + $simCost + $extraInt;
+            } else {
+                $amount = ($totalClients * 500) + $simCost + $bajajPaid;
+            }
+            $op[ucfirst(strtolower($month))] = round($amount);
         }
         
         // dd($op);

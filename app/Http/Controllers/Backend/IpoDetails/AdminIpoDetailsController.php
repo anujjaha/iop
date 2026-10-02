@@ -169,6 +169,23 @@ class AdminIpoDetailsController extends Controller
             ->addColumn('opening_date', function ($item) {
                 $assignments = $item->assignments;
 
+                $pl = floor(($assignments->where('status',5)->sum('final_net_pl')) + $assignments->where('status',5)->sum('tax_amount'));
+                
+                $span = '';
+                if($pl > 0)
+                {
+                    $span = '<span class="text-bold text-success">'.$pl.'</span>';
+                }
+                else
+                {
+                    $span = '<span class="text-danger">'.$pl.'</span>';
+                }
+                return $span;    
+                
+            })
+            ->addColumn('listed_price', function ($item) {
+                $assignments = $item->assignments;
+
                 $pl = floor(($assignments->where('status',5)->sum('final_net_pl')) + $assignments->where('status',5)->sum('tax_amount')  - $item->loan_interest);
                 
                 $span = '';
@@ -239,7 +256,7 @@ class AdminIpoDetailsController extends Controller
         }
 
 
-
+        
         return view($this->repository->setAdmin(true)->getModuleView('chartView'))->with([
             'chartData'         => $chartData,
             'monthlyExpense'    => $monthlyExpense,
