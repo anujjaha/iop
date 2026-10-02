@@ -429,11 +429,13 @@ class EloquentIpoAssignmentsRepository extends DbRepository
         if($isAll == 1)
         {
             return ClientDetail::whereNotIn('id', $clientIds)
+            ->orderBy('name')
             ->get();    
         }
 
         return ClientDetail::whereNotIn('id', $clientIds)
             ->where('balance', '>', 15000)
+            ->orderBy('name')
             ->get();
     }
 
