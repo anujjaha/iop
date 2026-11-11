@@ -913,7 +913,7 @@ if (!function_exists('getMcxStats')) {
             'sell'  => $sellCount,
             'pl'    => $profit,
             'npl'   => $nprofit,
-            'open'  => $open ? $open->trade_type . '-' . $open->qty : ''
+            'open'  => $open ? $open->trade_type . '-' . $open->qty : '-'
         ];
     }
 }
