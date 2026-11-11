@@ -256,7 +256,6 @@ class AdminIpoDetailsController extends Controller
         }
 
 
-        
         return view($this->repository->setAdmin(true)->getModuleView('chartView'))->with([
             'chartData'         => $chartData,
             'monthlyExpense'    => $monthlyExpense,

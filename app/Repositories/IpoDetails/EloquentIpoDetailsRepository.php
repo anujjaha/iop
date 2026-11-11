@@ -431,7 +431,7 @@ class EloquentIpoDetailsRepository extends DbRepository
 
             $assignments = $ipo->assignments;
             $sPl = $assignments->where('status',5)
-                ->sum('profit_loss');
+                ->sum('final_net_pl');
 
             $txPl = 0;
             //$assignments->where('status',5)->sum('tax_amount');
