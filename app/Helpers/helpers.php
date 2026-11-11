@@ -18,7 +18,7 @@ use App\Models\ClientStock\ClientStock;
 use App\Models\ClientStockTransaction\ClientStockTransaction;
 use App\Models\Mobile\Mobile;
 use App\Models\PaidInterest\PaidInterest;
-
+use App\Models\McxTrade\McxTrade;
 
 /**
  * Global helpers file with misc functions.
@@ -870,4 +870,50 @@ function getMonthlyFee($clientId, $month)
     }
 
     return $query->sum('fee_amount');
+}
+
+
+
+if (!function_exists('getMcxOptions')) {
+
+    function getMcxOptions()
+    {
+        return [
+            'SILVERMIC-JUN-27' => 'SILVERMIC-JUN-27',
+            'SILVERMIC-APR-27' => 'SILVERMIC-APR-27',
+        ];
+    }
+}
+
+if (!function_exists('getTradeOptions')) {
+
+    function getTradeOptions()
+    {
+        return [
+            'B' => 'Buy and Sell',
+            'S' => 'Short Sell and Buy'
+        ];
+    }
+}
+
+if (!function_exists('getMcxStats')) {
+
+    function getMcxStats()
+    {
+        $allTrades = McxTrade::all();
+        $buyCount = $allTrades->where('trade_type', 'B')->sum('qty');
+        $sellCount = $allTrades->where('trade_type', 'S')->sum('qty');
+        $profit = $allTrades->where('is_settle', '1')->sum('profit_loss');
+        $nprofit = $allTrades->where('is_settle', '1')->sum('net_profit_loss');
+        $open = $allTrades->where('is_settle', '0')->first();
+
+        return [
+            'total' => count($allTrades),
+            'buy'   => $buyCount,
+            'sell'  => $sellCount,
+            'pl'    => $profit,
+            'npl'   => $nprofit,
+            'open'  => $open->trade_type . '-' . $open->qty
+        ];
+    }
 }
