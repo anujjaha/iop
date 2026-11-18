@@ -150,7 +150,7 @@ class AdminAllFdListController extends Controller
         return Datatables::of($this->repository->getForDataTable())
             ->escapeColumns(['id', 'sort'])
             ->addColumn('client_id', function ($item) {
-                return $item->client->getFullName();
+                return $item->client ? $item->client->getFullName() : '-';
             })
             ->addColumn('start_date', function ($item) {
                 return date('d M Y',strtotime($item->start_date)) . ' - '.date('d M Y',strtotime($item->end_date)) ;
